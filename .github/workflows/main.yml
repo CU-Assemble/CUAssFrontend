@@ -1,0 +1,21 @@
+name: Deploy
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push events but only for the "master" branch
+  push:
+    branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "cu-assemble" #Must be unique in Heroku
+          heroku_email: "tharit.pts@gmail.com"
