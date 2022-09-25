@@ -14,15 +14,18 @@ interface CardPropsObj {
   cardProps: Activity;
 }
 
-export default function ActivityCard({ name, date, desc }: Activity) {
-  //Activity
-
+export default function ActivityCard({ name, date, desc, url }: Activity) { //Activity
+  
   return (
     <div>
       <Card className="activityPostCard" style={{ width: "18rem" }}>
         <Card.Img
           variant="top"
-          src="https://png.pngtree.com/thumb_back/fh260/background/20210902/pngtree-beautiful-sports-girls-beautiful-competition-photography-map-with-pictures-image_787591.jpg"
+          src={
+            url
+              ? url
+              : "https://png.pngtree.com/thumb_back/fh260/background/20210902/pngtree-beautiful-sports-girls-beautiful-competition-photography-map-with-pictures-image_787591.jpg"
+          }
         />
         <Card.Body>
           <Card.Title>Event : {name}</Card.Title>

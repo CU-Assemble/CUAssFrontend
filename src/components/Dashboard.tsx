@@ -26,7 +26,8 @@ const getArraySlice = (arr: Activity[], l: number): Activity[][] => {
 const mockUpAct : Activity = {
     name: "mockupAct",
     date: Date.now(),
-    desc: "mockupDESC"
+    desc: "mockupDESC",
+    url: "https://i.pinimg.com/originals/f7/c2/77/f7c277d2794b25f98970d96d07e45048.jpg"
 }
 
 export default function Dashboard() {
@@ -53,7 +54,7 @@ export default function Dashboard() {
                                 {x.map(y => {
                                     return (
                                         <Col>
-                                            <ActivityCard name={y.name} date={y.date} desc={y.desc} />
+                                            <ActivityCard name={y.name} date={y.date} desc={y.desc} url={y.url} />
                                         </Col>
                                     )
                                 })}
