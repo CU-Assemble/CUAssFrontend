@@ -4,24 +4,34 @@ import { useAppSelector, useAppDispatch } from "../app/hooks";
 
 import { CardPropsType } from "../types/Types";
 
-// props = {
-//   name
-//   data
-//   desc
-// }
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
-// type CardPropsType 
+import "./ActivityCard.css"
 
-export default function ActivityCard() { //CardPropsType
+
+interface CardPropsObj  {
+  cardProps : CardPropsType
+}
+
+export default function ActivityCard({name, date, desc} : CardPropsType) { //CardPropsType
 
   //call store
   
   return (
     <div>
-      <p>Activity Card</p>
-      {/* <p>Name : {props.name}</p>
-      <p>Date : {props.date}</p>
-      <p>Desciprtion : {props.desc}</p> */}
+    <Card className="activityPostCard" style={{ width: '18rem' }}>
+      <Card.Img variant="top" src="https://png.pngtree.com/thumb_back/fh260/background/20210902/pngtree-beautiful-sports-girls-beautiful-competition-photography-map-with-pictures-image_787591.jpg" />
+      <Card.Body>
+        <Card.Title>Event : {name}</Card.Title>
+        <Card.Text>
+          Description : {desc}
+        </Card.Text>
+        <div>
+          <Button variant="success">Join</Button>
+        </div>
+      </Card.Body>
+    </Card>
     </div>
   );
 }

@@ -5,26 +5,14 @@ import "./App.css";
 import ActivityCard from "./components/ActivityCard";
 import { CardPropsType } from "./types/Types";
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Dashboard from "./components/Dashboard";
 
-let date: Date = new Date();  
-
-const sampleCardData: CardPropsType[] = [
-  {
-    name: "Badminton",
-    date: Date.now(),
-    desc: "Badminton_desc",
-  },
-  {
-    name: "Basketball",
-    date: Date.now(),
-    desc: "Basketball_desc",
-  },
-];
 
 function App() {
   return (
     <div className="App">
-      {sampleCardData.map(x => <ActivityCard/>)}
+      <Dashboard/>
     </div>
   );
 }
