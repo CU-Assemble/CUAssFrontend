@@ -45,10 +45,11 @@ export default function Dashboard() {
         <div>
             <h1>Dashboard</h1>
             <Container className='dashboardContainer'>
-                {getArraySlice(activities, 4).map(x => {
+                {getArraySlice(activities, 3).map(x => {
                     return (
                         <div>
-                            <Row xs={1} md={2} className="g-4">
+                            <Row xs={1} md={3} className="g-4"> 
+                                {/* md = 3 => 3 rows */}
                                 {x.map(y => {
                                     return (
                                         <Col>
@@ -57,11 +58,11 @@ export default function Dashboard() {
                                     )
                                 })}
                             </Row>
-                            <button onClick={()=>{handleChangeActivities([mockUpAct])}}>Mockup</button>
                         </div>
                     )
                 })
                 }
+                <button onClick={()=>{handleChangeActivities([mockUpAct])}}>Mockup</button>
             </Container>
         </div>
     )

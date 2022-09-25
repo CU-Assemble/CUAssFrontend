@@ -2,25 +2,45 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Activity } from "../../models/activityTypes";
 
 export interface activitiesState {
-  activities: Activity []
+  activities: Activity[]
 }
 
 //sample
 const sampleCardData: Activity[] = [
   {
-      name: "Badminton",
-      date: Date.now(),
-      desc: "Badminton_desc",
+    name: "Badminton",
+    date: Date.now(),
+    desc: "Badminton_desc",
   },
   {
-      name: "Basketball",
-      date: Date.now(),
-      desc: "Basketball_desc",
+    name: "Basketball",
+    date: Date.now(),
+    desc: "Basketball_desc",
   },
   {
-      name: "Basketball",
-      date: Date.now(),
-      desc: "Basketball_desc",
+    name: "Basketball",
+    date: Date.now(),
+    desc: "Basketball_desc",
+  },
+  {
+    name: "Basketball",
+    date: Date.now(),
+    desc: "Basketball_desc",
+  },
+  {
+    name: "Basketball",
+    date: Date.now(),
+    desc: "Basketball_desc",
+  },
+  {
+    name: "Basketball",
+    date: Date.now(),
+    desc: "Basketball_desc",
+  },
+  {
+    name: "Basketball",
+    date: Date.now(),
+    desc: "Basketball_desc",
   },
 ];
 
@@ -32,7 +52,7 @@ const activitySlice = createSlice({
   name: "activity",
   initialState,
   reducers: {
-    setActivities:(state, action: PayloadAction<Activity []>) => {
+    setActivities: (state, action: PayloadAction<Activity[]>) => {
       state.activities = [...action.payload];
     }
   },
