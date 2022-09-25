@@ -6,13 +6,27 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 
+//main css for bootstrap
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import { render } from "react-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Dashboard from './components/Dashboard';
+
+
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <BrowserRouter>
+      <Routes>
+          <Route path="/" element={<App/>} />
+          <Route path="dashboard" element={<App />} />
+        </Routes>
+    </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );
