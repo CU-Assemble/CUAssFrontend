@@ -7,13 +7,11 @@ import { Activity } from "./models/activityTypes";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from "./components/Dashboard";
-import LoginForm from "./components/User/LoginForm";
-
 
 function App() {
   return (
     <div className="App">
-      <LoginForm/>
+      <Dashboard/>
     </div>
   );
 }
