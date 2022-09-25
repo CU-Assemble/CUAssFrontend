@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 
-import { CardPropsType } from "../types/Types";
+import { Activity } from "../models/activityTypes";
 
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -11,10 +11,10 @@ import "./ActivityCard.css"
 
 
 interface CardPropsObj  {
-  cardProps : CardPropsType
+  cardProps : Activity
 }
 
-export default function ActivityCard({name, date, desc} : CardPropsType) { //CardPropsType
+export default function ActivityCard({name, date, desc} : Activity) { //Activity
 
   //call store
   
@@ -28,7 +28,7 @@ export default function ActivityCard({name, date, desc} : CardPropsType) { //Car
           Description : {desc}
         </Card.Text>
         <div>
-          <Button variant="success">Join</Button>
+          <Button variant="success" onClick={()=>{alert("clicked")}}>Join</Button>
         </div>
       </Card.Body>
     </Card>

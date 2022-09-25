@@ -4,14 +4,14 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 
-import { CardPropsType } from '../types/Types';
+import { Activity } from '../models/activityTypes';
 import ActivityCard from './ActivityCard';
 // import { JsxElement } from 'typescript';
 
 
 let date: Date = new Date();
 
-const sampleCardData: CardPropsType[] = [
+const sampleCardData: Activity[] = [
     {
         name: "Badminton",
         date: Date.now(),
@@ -40,8 +40,8 @@ const sampleCardData: CardPropsType[] = [
 ];
 
 //slice array to array of subarray
-const getArraySlice = (arr: CardPropsType[], l: number): CardPropsType[][] => {
-    let tmp: CardPropsType[][] = [];
+const getArraySlice = (arr: Activity[], l: number): Activity[][] => {
+    let tmp: Activity[][] = [];
     for (var i: number = 0; i < arr.length; i += l) {
         tmp.push(arr.slice(i, i + l))
     }

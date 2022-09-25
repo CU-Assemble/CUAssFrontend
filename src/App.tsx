@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import { Counter } from "./features/counter/Counter";
 import "./App.css";
 import ActivityCard from "./components/ActivityCard";
-import { CardPropsType } from "./types/Types";
+import { Activity } from "./models/activityTypes";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Dashboard from "./components/Dashboard";
