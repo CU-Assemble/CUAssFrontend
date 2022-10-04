@@ -14,6 +14,10 @@ interface CardPropsObj {
   cardProps: Activity;
 }
 
+const requestJoinActivity = () => {
+  alert("clicked join");
+}
+
 export default function ActivityCard({ name, date, desc, url }: Activity) { //Activity
   
   return (
@@ -28,7 +32,7 @@ export default function ActivityCard({ name, date, desc, url }: Activity) { //Ac
           }
         />
         <Card.Body>
-          <Card.Title>Event : {name}</Card.Title>
+          <Card.Title><a href="https://www.google.com">Event : {name}</a></Card.Title>
         </Card.Body>
         <ListGroup className="list-group-flush">
           {/* <ListGroup.Item>{`Date : ${(new Date(date)).toUTCString()}`}</ListGroup.Item> */}
@@ -41,9 +45,8 @@ export default function ActivityCard({ name, date, desc, url }: Activity) { //Ac
           <div>
             <Button
               variant="success"
-              onClick={() => {
-                alert("clicked");
-              }}
+              className="join-activity-button"
+              onClick={requestJoinActivity}
             >
               Join
             </Button>
