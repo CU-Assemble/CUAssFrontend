@@ -1,19 +1,23 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './app/store';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './index.css';
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
+import App from "./App";
+import NavigationBar from "./components/Layout/NavigationBar";
+
+import LoginForm from "./components/User/LoginForm";
+import EditForm from "./components/User/EditForm";
+import Dashboard from "./components/Dashboard";
+import ActivityPage from './components/ActivityPage';
+
+import reportWebVitals from "./reportWebVitals";
+import "./index.css";
 
 //main css for bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { render } from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import Dashboard from './components/Dashboard';
-import ActivityPage from './components/ActivityPage';
 
 import { Activity } from './models/activityTypes'; //tmp
 
@@ -32,12 +36,15 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
+        <NavigationBar/>
         <Routes>
-          <Route path="/" element={<App/>} />
-          <Route path="dashboard" element={<App />} />
+          <Route path="/" element={<App />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/createprofile" element={<EditForm />} />
           <Route path="activity/:id" element={<ActivityPage name={mockUpAct.name} date={mockUpAct.date} desc={mockUpAct.desc} url={mockUpAct.url}/>} />
         </Routes>
-    </BrowserRouter>
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );
