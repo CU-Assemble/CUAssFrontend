@@ -9,4 +9,3 @@ export default class ActivityServices {
         return http.get("/activity/:id");
     }
 }
-
