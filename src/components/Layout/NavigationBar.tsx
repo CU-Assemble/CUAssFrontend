@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Link } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -12,14 +13,14 @@ function NavigationBar() {
       <Container>
         <Navbar.Brand href="#home">CU Assemble</Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link href="#home">Dashboard</Nav.Link>
-          <Nav.Link href="#features">My Activities</Nav.Link>
-          <Nav.Link href="#pricing">Profile</Nav.Link>
+          <Nav.Link as={Link} to="#">My Activities</Nav.Link>
+          <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
+          <Nav.Link as={Link} to="#">Profile</Nav.Link>
         </Nav>
         <Nav className="ms-auto">
-          <Nav.Link href="#home">Register</Nav.Link>
-          <Nav.Link href="#features">Login</Nav.Link>
-          <Nav.Link href="#pricing">Logout</Nav.Link>
+          <Nav.Link as={Link} to="/createprofile">Register</Nav.Link>
+          <Nav.Link as={Link} to="/login">Login</Nav.Link>
+          <Nav.Link as={Link} to="#logout">Logout</Nav.Link>
         </Nav>
       </Container>
     </Navbar>
