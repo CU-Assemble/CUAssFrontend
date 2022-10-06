@@ -13,7 +13,17 @@ import { render } from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Dashboard from './components/Dashboard';
+import ActivityPage from './components/ActivityPage';
 
+import { Activity } from './models/activityTypes'; //tmp
+
+
+const mockUpAct : Activity = {
+  name: "mockupAct",
+  date: Date.now(),
+  desc: "mockupDESC",
+  url: "https://i.pinimg.com/originals/f7/c2/77/f7c277d2794b25f98970d96d07e45048.jpg"
+}
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -22,9 +32,10 @@ root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-      <Routes>
+        <Routes>
           <Route path="/" element={<App/>} />
           <Route path="dashboard" element={<App />} />
+          <Route path="activity/:id" element={<ActivityPage name={mockUpAct.name} date={mockUpAct.date} desc={mockUpAct.desc} url={mockUpAct.url}/>} />
         </Routes>
     </BrowserRouter>
     </Provider>
