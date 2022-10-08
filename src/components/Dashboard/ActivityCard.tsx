@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 
-import { Activity } from "../models/activityTypes";
+import { Activity } from "../../models/activityTypes";
+
 
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";

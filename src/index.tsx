@@ -7,7 +7,7 @@ import NavigationBar from "./components/Layout/NavigationBar";
 
 import LoginForm from "./components/User/LoginForm";
 import EditForm from "./components/User/EditForm";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard";
 import ActivityPage from './components/ActivityPage';
 
 import reportWebVitals from "./reportWebVitals";
