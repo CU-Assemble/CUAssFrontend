@@ -7,16 +7,19 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
+import Alert from "react-bootstrap/Alert";
 
 import { RegisterInput } from "../../models/userTypes";
-import { getProfileAsync, editProfileAsync, selectUser } from "../../features/user/userSlice";
+import { getProfileAsync, editProfileAsync, selectUser, selectEditMessage } from "../../features/user/userSlice";
 
 function EditForm() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
+  const editMessage = useAppSelector(selectEditMessage);
   const spaceIdx = user.name ? user.name.indexOf(" ") : 0;
 
   const [formData, setFormData] = useState<RegisterInput>({studentId: user.studentId});
+  const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
 
   useEffect(() => {
     const studentId = user["studentId"] ? user["studentId"] : "";
@@ -36,6 +39,10 @@ function EditForm() {
       return { ...prevState, ...newUserState };
     });
   }, [user]);
+
+  useEffect(() => {
+    setShowSuccessPopup(editMessage == "success");
+  }, [editMessage])
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -94,10 +101,21 @@ function EditForm() {
     });
   };
 
+  const EditSuccess = (
+    <Alert
+      variant="success"
+      onClose={() => setShowSuccessPopup(false)}
+      dismissible
+    >
+      <Alert.Heading>Edit profile successfully!</Alert.Heading>
+    </Alert>
+  );
+
   return (
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
+          {showSuccessPopup && EditSuccess}
           <h1 className="mb-3">Edit</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
