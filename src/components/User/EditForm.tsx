@@ -70,11 +70,11 @@ function EditForm() {
     });
   };
 
-  const studentIdChangeHandler = (event: any) => {
-    setFormData((prevState: RegisterInput) => {
-      return { ...prevState, studentId: event.target.value };
-    });
-  };
+  // const studentIdChangeHandler = (event: any) => {
+  //   setFormData((prevState: RegisterInput) => {
+  //     return { ...prevState, studentId: event.target.value };
+  //   });
+  // };
 
   const nicknameChangeHandler = (event: any) => {
     setFormData((prevState: RegisterInput) => {
@@ -137,7 +137,7 @@ function EditForm() {
                 />
               </Form.Group>
 
-              <Form.Group as={Col} className="" controlId="formStudentID">
+              {/* <Form.Group as={Col} className="" controlId="formStudentID">
                 <Form.Label>Student ID</Form.Label>
                 <Form.Control
                   type="text"
@@ -146,10 +146,8 @@ function EditForm() {
                   onChange={studentIdChangeHandler}
                   required
                 />
-              </Form.Group>
-            </Row>
+              </Form.Group> */}
 
-            <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formNickName">
                 <Form.Label>Nickname</Form.Label>
                 <Form.Control
@@ -160,6 +158,10 @@ function EditForm() {
                   required
                 />
               </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              
 
               <Form.Group as={Col} className="" controlId="formPhoneNumber">
                 <Form.Label>Phone number</Form.Label>
@@ -171,9 +173,20 @@ function EditForm() {
                   required
                 />
               </Form.Group>
+
+              <Form.Group as={Col} controlId="formFaculty">
+                  <Form.Label>Faculty</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Select faculty"
+                    value={formData.faculty}
+                    onChange={facultyChangeHandler}
+                    required
+                  />
+                </Form.Group>
             </Row>
 
-            <Row className="mb-3">
+            {/* <Row className="mb-3">
               <Col xs={6}>
                 <Form.Group as={Col} controlId="formFaculty">
                   <Form.Label>Faculty</Form.Label>
@@ -186,7 +199,7 @@ function EditForm() {
                   />
                 </Form.Group>
               </Col>
-            </Row>
+            </Row> */}
 
             {/* <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formImgFile">

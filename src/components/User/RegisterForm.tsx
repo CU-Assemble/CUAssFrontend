@@ -12,7 +12,6 @@ import Stack from "react-bootstrap/Stack";
 import {
   registerAsync,
   selectRegisterMessage,
-  clearStatus
 } from "../../features/user/userSlice";
 import { RegisterInput } from "../../models/userTypes";
 
