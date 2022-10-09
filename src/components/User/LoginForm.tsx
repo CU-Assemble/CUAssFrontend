@@ -7,11 +7,19 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
-import Alert from 'react-bootstrap/Alert';
+import Alert from "react-bootstrap/Alert";
 import { Link } from "react-router-dom";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { loginAsync, getProfileAsync, selectUser, selectLoginLoading, selectLoginMessage, selectLoginError, setLoginError } from "../../features/user/userSlice";
+import {
+  loginAsync,
+  getProfileAsync,
+  selectUser,
+  selectLoginLoading,
+  selectLoginMessage,
+  selectLoginError,
+  setLoginError,
+} from "../../features/user/userSlice";
 
 function LoginForm() {
   const dispatch = useAppDispatch();
@@ -24,10 +32,10 @@ function LoginForm() {
   const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
-    if(loginMessage == 'success'){
+    if (loginMessage == "success") {
       navigate("/");
     }
-  }, [loginMessage])
+  }, [loginMessage]);
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -35,21 +43,23 @@ function LoginForm() {
   };
 
   const studentIdChangeHandler = (event: any): void => {
-    setStudentId(event.target.value)
+    setStudentId(event.target.value);
   };
 
   const passwordChangeHandler = (event: any): void => {
-    setPassword(event.target.value)
+    setPassword(event.target.value);
   };
 
   const LoginError = (
-    <Alert variant="danger" onClose={() => dispatch(setLoginError(""))} dismissible>
-    <Alert.Heading>You got an error!</Alert.Heading>
-    <p>
-      {errorMessage}
-    </p>
-  </Alert>
-  )
+    <Alert
+      variant="danger"
+      onClose={() => dispatch(setLoginError(""))}
+      dismissible
+    >
+      <Alert.Heading>You got an error!</Alert.Heading>
+      <p>{errorMessage}</p>
+    </Alert>
+  );
 
   return (
     <Container className="my-5">

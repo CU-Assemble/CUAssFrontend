@@ -7,16 +7,19 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
+import Alert from "react-bootstrap/Alert";
 
 import { RegisterInput } from "../../models/userTypes";
-import { getProfileAsync, editProfileAsync, selectUser } from "../../features/user/userSlice";
+import { getProfileAsync, editProfileAsync, selectUser, selectEditMessage } from "../../features/user/userSlice";
 
 function EditForm() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
+  const editMessage = useAppSelector(selectEditMessage);
   const spaceIdx = user.name ? user.name.indexOf(" ") : 0;
 
   const [formData, setFormData] = useState<RegisterInput>({studentId: user.studentId});
+  const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
 
   useEffect(() => {
     const studentId = user["studentId"] ? user["studentId"] : "";
@@ -36,6 +39,10 @@ function EditForm() {
       return { ...prevState, ...newUserState };
     });
   }, [user]);
+
+  useEffect(() => {
+    setShowSuccessPopup(editMessage == "success");
+  }, [editMessage])
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -70,11 +77,11 @@ function EditForm() {
     });
   };
 
-  const studentIdChangeHandler = (event: any) => {
-    setFormData((prevState: RegisterInput) => {
-      return { ...prevState, studentId: event.target.value };
-    });
-  };
+  // const studentIdChangeHandler = (event: any) => {
+  //   setFormData((prevState: RegisterInput) => {
+  //     return { ...prevState, studentId: event.target.value };
+  //   });
+  // };
 
   const nicknameChangeHandler = (event: any) => {
     setFormData((prevState: RegisterInput) => {
@@ -94,11 +101,22 @@ function EditForm() {
     });
   };
 
+  const EditSuccess = (
+    <Alert
+      variant="success"
+      onClose={() => setShowSuccessPopup(false)}
+      dismissible
+    >
+      <Alert.Heading>Edit profile successfully!</Alert.Heading>
+    </Alert>
+  );
+
   return (
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-          <h1 className="mb-3">Edit</h1>
+          {showSuccessPopup && EditSuccess}
+          <h1 className="mb-3">Edit Profile</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formFirstname">
@@ -137,7 +155,7 @@ function EditForm() {
                 />
               </Form.Group>
 
-              <Form.Group as={Col} className="" controlId="formStudentID">
+              {/* <Form.Group as={Col} className="" controlId="formStudentID">
                 <Form.Label>Student ID</Form.Label>
                 <Form.Control
                   type="text"
@@ -146,10 +164,8 @@ function EditForm() {
                   onChange={studentIdChangeHandler}
                   required
                 />
-              </Form.Group>
-            </Row>
+              </Form.Group> */}
 
-            <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formNickName">
                 <Form.Label>Nickname</Form.Label>
                 <Form.Control
@@ -160,6 +176,10 @@ function EditForm() {
                   required
                 />
               </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              
 
               <Form.Group as={Col} className="" controlId="formPhoneNumber">
                 <Form.Label>Phone number</Form.Label>
@@ -171,9 +191,20 @@ function EditForm() {
                   required
                 />
               </Form.Group>
+
+              <Form.Group as={Col} controlId="formFaculty">
+                  <Form.Label>Faculty</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Select faculty"
+                    value={formData.faculty}
+                    onChange={facultyChangeHandler}
+                    required
+                  />
+                </Form.Group>
             </Row>
 
-            <Row className="mb-3">
+            {/* <Row className="mb-3">
               <Col xs={6}>
                 <Form.Group as={Col} controlId="formFaculty">
                   <Form.Label>Faculty</Form.Label>
@@ -186,7 +217,7 @@ function EditForm() {
                   />
                 </Form.Group>
               </Col>
-            </Row>
+            </Row> */}
 
             {/* <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formImgFile">
@@ -220,7 +251,7 @@ function EditForm() {
             </Row> */}
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="outline-info" type="submit" className="ms-auto">
+              <Button variant="info" type="submit" className="ms-auto">
                 Save Changes
               </Button>
             </Stack>
