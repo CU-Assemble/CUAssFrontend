@@ -116,7 +116,7 @@ function EditForm() {
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
           {showSuccessPopup && EditSuccess}
-          <h1 className="mb-3">Edit</h1>
+          <h1 className="mb-3">Edit Profile</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formFirstname">
@@ -251,7 +251,7 @@ function EditForm() {
             </Row> */}
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="outline-info" type="submit" className="ms-auto">
+              <Button variant="info" type="submit" className="ms-auto">
                 Save Changes
               </Button>
             </Stack>
