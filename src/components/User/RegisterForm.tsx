@@ -12,6 +12,7 @@ import Stack from "react-bootstrap/Stack";
 import {
   registerAsync,
   selectRegisterMessage,
+  clearStatus
 } from "../../features/user/userSlice";
 import { RegisterInput } from "../../models/userTypes";
 
@@ -21,15 +22,23 @@ function RegisterForm() {
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState<RegisterInput>({});
+  const [passwordValid, setPasswordValid] = useState<boolean>(true);
+  const [idValid, setIdValid] = useState<boolean>(true);
+  const [redirect, setRedirect] = useState<boolean>(false);
   
   useEffect(() => {
-    if (registerMessage == "success") {
+    if (registerMessage == "success" && redirect) {
       navigate("/login");
+      setRedirect(false);
     }
   }, [registerMessage]);
   
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    if(!passwordValid || !idValid){
+      event.stopPropagation();
+      return
+    }
     dispatch(
       registerAsync({
         studentId: formData.studentId,
@@ -41,6 +50,7 @@ function RegisterForm() {
         password: formData.password,
       })
     );
+    setRedirect(true);
   };
 
   const firstNameChangeHandler = (event: any) => {
@@ -62,6 +72,9 @@ function RegisterForm() {
   };
 
   const studentIdChangeHandler = (event: any) => {
+    const newId = event.target.value;
+    const idIsValid = /^\d+$/.test(newId) && 5900000000 <= parseInt(newId) && parseInt(newId) < 6600000000;
+    setIdValid(idIsValid);
     setFormData((prevState: RegisterInput) => {
       return { ...prevState, studentId: event.target.value };
     });
@@ -86,12 +99,14 @@ function RegisterForm() {
   };
 
   const passwordChangeHandler = (event: any) => {
+    setPasswordValid(event.target.value == formData.cfPassword || formData.cfPassword=="");
     setFormData((prevState: RegisterInput) => {
       return { ...prevState, password: event.target.value };
     });
   };
 
   const cfPasswordChangeHandler = (event: any) => {
+    setPasswordValid(event.target.value == formData.password || event.target.value=="");
     setFormData((prevState: RegisterInput) => {
       return { ...prevState, cfPassword: event.target.value };
     });
@@ -148,8 +163,12 @@ function RegisterForm() {
                   placeholder="Enter student ID"
                   value={formData.studentId}
                   onChange={studentIdChangeHandler}
+                  isInvalid={!idValid}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Student ID must contain only number and must be between year 59 to 65. 
+                </Form.Control.Feedback>
               </Form.Group>
             </Row>
 
@@ -218,8 +237,12 @@ function RegisterForm() {
                   placeholder="Please re-enter your password"
                   value={formData.cfPassword}
                   onChange={cfPasswordChangeHandler}
+                  isInvalid={!passwordValid}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Password doesn't match.
+                </Form.Control.Feedback>
               </Form.Group>
             </Row>
 
