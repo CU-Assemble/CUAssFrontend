@@ -21,13 +21,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { Activity } from './models/activityTypes'; //tmp
 
+import mockUpAct from "./components/mockUpActivity";
 
-const mockUpAct : Activity = {
-  name: "mockupAct",
-  date: Date.now(),
-  desc: "mockupDESC",
-  url: "https://i.pinimg.com/originals/f7/c2/77/f7c277d2794b25f98970d96d07e45048.jpg"
-}
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -42,7 +37,7 @@ root.render(
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/createprofile" element={<EditForm />} />
-          <Route path="activity/:id" element={<ActivityPage name={mockUpAct.name} date={mockUpAct.date} desc={mockUpAct.desc} url={mockUpAct.url}/>} />
+          <Route path="/activity/:id" element={<ActivityPage/>} />
         </Routes>
       </BrowserRouter>
     </Provider>

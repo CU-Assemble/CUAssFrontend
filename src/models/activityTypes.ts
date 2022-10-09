@@ -1,4 +1,5 @@
 export interface Activity {
+  id: string,
   name: string, //key?
   ownerID: string,
   location: string,
