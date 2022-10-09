@@ -65,12 +65,7 @@ function App() {
         <Route
           path="activity/:id"
           element={
-            <ActivityPage
-              name={mockUpAct.name}
-              date={mockUpAct.date}
-              desc={mockUpAct.desc}
-              url={mockUpAct.url}
-            />
+            <ActivityPage/>
           }
         />
       </Routes>

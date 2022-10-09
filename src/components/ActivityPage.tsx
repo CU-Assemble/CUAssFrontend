@@ -5,10 +5,8 @@ import { Activity } from "../models/activityTypes";
 import ActivityServices from "../services/activityServices";
 import mockUpAct from "./mockUpActivity";
 
-const activityServices = new ActivityServices()
-
 const getActivityByID = async (id:string) => {
-    return await activityServices.get(id)
+    return await ActivityServices.get(id)
 }
 
 
@@ -27,7 +25,6 @@ export default function ActivityPage() {
             </Container>
         );
     } else {
-        console.log(id)
         return (<Navigate to="/"/>)
     }
 
