@@ -4,11 +4,13 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 
-import { Activity } from '../models/activityTypes';
+import { Activity } from '../../models/activityTypes';
 import ActivityCard from './ActivityCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../app/store';
-import { setActivities } from '../features/activityPost/activitySlice';
+import { RootState } from '../../app/store';
+import { setActivities } from '../../features/activityPost/activitySlice';
+
+import mockUpAct from '../mockUpActivity';
 // import { JsxElement } from 'typescript';
 
 
@@ -21,13 +23,6 @@ const getArraySlice = (arr: Activity[], l: number): Activity[][] => {
         tmp.push(arr.slice(i, i + l))
     }
     return tmp
-}
-
-const mockUpAct : Activity = {
-    name: "mockupAct",
-    date: Date.now(),
-    desc: "mockupDESC",
-    url: "https://i.pinimg.com/originals/f7/c2/77/f7c277d2794b25f98970d96d07e45048.jpg"
 }
 
 export default function Dashboard() {
@@ -54,7 +49,7 @@ export default function Dashboard() {
                                 {x.map(y => {
                                     return (
                                         <Col>
-                                            <ActivityCard name={y.name} date={y.date} desc={y.desc} url={y.url} />
+                                            <ActivityCard activityDetail={mockUpAct}/>
                                         </Col>
                                     )
                                 })}

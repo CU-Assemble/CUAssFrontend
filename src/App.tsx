@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
 import "./App.css";
+import ActivityCard from "./components/Dashboard/ActivityCard";
 import { Routes, Route, Navigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
@@ -8,10 +9,12 @@ import NavigationBar from "./components/Layout/NavigationBar";
 import LoginForm from "./components/User/LoginForm";
 import RegisterForm from "./components/User/RegisterForm";
 import EditForm from "./components/User/EditForm";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard";
 import ActivityPage from "./components/ActivityPage";
 import LandingPage from "./components/LandingPage/LandingPage";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+import mockUpAct from "./components/mockUpActivity";
 
 import {
   selectIsLoggedIn,
@@ -21,13 +24,6 @@ import {
 } from "./features/user/userSlice";
 
 import { Activity } from "./models/activityTypes"; //tmp
-
-const mockUpAct: Activity = {
-  name: "mockupAct",
-  date: Date.now(),
-  desc: "mockupDESC",
-  url: "https://i.pinimg.com/originals/f7/c2/77/f7c277d2794b25f98970d96d07e45048.jpg",
-};
 
 function App() {
   const isLoggedIn = useAppSelector(selectIsLoggedIn);

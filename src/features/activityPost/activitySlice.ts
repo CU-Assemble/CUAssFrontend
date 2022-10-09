@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import mockUpAct from "../../components/mockUpActivity";
 import { Activity } from "../../models/activityTypes";
 
 export interface activitiesState {
@@ -7,41 +8,13 @@ export interface activitiesState {
 
 //sample
 const sampleCardData: Activity[] = [
-  {
-    name: "Badminton",
-    date: Date.now(),
-    desc: "Badminton_desc",
-  },
-  {
-    name: "Basketball",
-    date: Date.now(),
-    desc: "Basketball_desc",
-  },
-  {
-    name: "Basketball",
-    date: Date.now(),
-    desc: "Basketball_desc",
-  },
-  {
-    name: "Basketball",
-    date: Date.now(),
-    desc: "Basketball_desc",
-  },
-  {
-    name: "Basketball",
-    date: Date.now(),
-    desc: "Basketball_desc",
-  },
-  {
-    name: "Basketball",
-    date: Date.now(),
-    desc: "Basketball_desc",
-  },
-  {
-    name: "Basketball",
-    date: Date.now(),
-    desc: "Basketball_desc",
-  },
+  mockUpAct,
+  mockUpAct,
+  mockUpAct,
+  mockUpAct,
+  mockUpAct,
+  mockUpAct,
+  mockUpAct
 ];
 
 const initialState: activitiesState = {
