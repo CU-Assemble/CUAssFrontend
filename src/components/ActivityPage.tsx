@@ -7,7 +7,7 @@ import mockUpAct from "./mockUpActivity";
 
 const activityServices = new ActivityServices()
 
-const getActivityByID =async (id:string) => {
+const getActivityByID = async (id:string) => {
     return await activityServices.get(id)
 }
 

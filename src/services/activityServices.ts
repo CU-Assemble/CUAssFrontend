@@ -1,8 +1,9 @@
 import http from "./axiosModule";
 
-const url = "http://localhost:8080";
+const url = "http://localhost:8080"; //gateway
 
-export default class ActivityServices {
+export default class ActivityServices { 
+
     getAll() {
         console.log(`get ${url}/activities`)
         // return http.get(`${url}/activities`);
@@ -12,6 +13,5 @@ export default class ActivityServices {
         console.log(`get ${url}/activity/${id}`)
         // return http.get(`${url}/activity/${id}`);
     }
-
 
 }
