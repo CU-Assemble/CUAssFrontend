@@ -1,16 +1,79 @@
-import React from "react";
-import logo from "./logo.svg";
-import { Counter } from "./features/counter/Counter";
+import { useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "./app/hooks";
 import "./App.css";
 import ActivityCard from "./components/Dashboard/ActivityCard";
-import { Activity } from "./models/activityTypes";
+import { Routes, Route, Navigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import NavigationBar from "./components/Layout/NavigationBar";
+import LoginForm from "./components/User/LoginForm";
+import RegisterForm from "./components/User/RegisterForm";
+import EditForm from "./components/User/EditForm";
 import Dashboard from "./components/Dashboard/Dashboard";
+import ActivityPage from "./components/ActivityPage";
+import LandingPage from "./components/LandingPage/LandingPage";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import mockUpAct from "./components/mockUpActivity";
+
+import {
+  selectIsLoggedIn,
+  setIsLoggedIn,
+  setJwt,
+  updateUser,
+} from "./features/user/userSlice";
+
+import { Activity } from "./models/activityTypes"; //tmp
 
 function App() {
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const jwtToken = localStorage.getItem("token");
+    if (jwtToken) {
+      dispatch(setJwt(jwtToken));
+      dispatch(setIsLoggedIn(true));
+      try {
+        const decodedData: any = jwt_decode(jwtToken);
+        const studentId = decodedData["StudentId"];
+        dispatch(updateUser({ studentId }));
+      } catch (e) {}
+    }
+  }, []);
+
   return (
     <div className="App">
+      <NavigationBar />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/login"
+          element={!isLoggedIn ? <LoginForm /> : <Navigate to={"/"} replace />}
+        />
+        <Route
+          path="/createprofile"
+          element={
+            !isLoggedIn ? <RegisterForm /> : <Navigate to={"/"} replace />
+          }
+        />
+        <Route
+          path="/profile"
+          element={isLoggedIn ? <EditForm /> : <Navigate to={"/"} replace />}
+        />
+        <Route
+          path="activity/:id"
+          element={
+            <ActivityPage
+              name={mockUpAct.name}
+              date={mockUpAct.date}
+              desc={mockUpAct.desc}
+              url={mockUpAct.url}
+            />
+          }
+        />
+      </Routes>
     </div>
   );
 }
