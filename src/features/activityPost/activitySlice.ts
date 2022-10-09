@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import mockUpAct from "../../components/mockUpActivity";
 import { Activity } from "../../models/activityTypes";
+import activityServices from "../../services/activityServices";
 
 export interface activitiesState {
   activities: Activity[]
@@ -18,8 +19,17 @@ const sampleCardData: Activity[] = [
 ];
 
 const initialState: activitiesState = {
-  activities: sampleCardData
+  activities: []
 };
+
+export const getAllActivities = createAsyncThunk(
+  'activity/getAll',
+  async () => {
+    const response = await activityServices.getAll();
+    // The value we return becomes the `fulfilled` action payload
+    return response.data;
+  }
+);
 
 const activitySlice = createSlice({
   name: "activity",
@@ -31,15 +41,6 @@ const activitySlice = createSlice({
   },
   extraReducers: {}
 })
-
-// export const getAllActivities = createAsyncThunk(
-//   'counter/fetchCount',
-//   async (amount: number) => {
-//     const response = await fetchCount(amount);
-//     // The value we return becomes the `fulfilled` action payload
-//     return response.data;
-//   }
-// );
 
 export const { setActivities } = activitySlice.actions;
 
