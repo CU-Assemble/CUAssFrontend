@@ -70,7 +70,7 @@ export default function ParticipantCard(props : {pid:string}) {
                         <Card.Img 
                             style={{"objectFit": "cover", "margin":"1px"}}
                             variant="center"
-                            src={"https://images-platform.99static.com//ywu0w6BbzK51tna45IRBAnghaoU=/0x0:2000x2000/fit-in/500x500/99designs-contests-attachments/89/89391/attachment_89391104"}/>
+                            src={"https://www.1999.co.jp/itbig54/10542740a2_m.jpg"}/>
                     </Col>
                     <Col sm={7} md={7}>
                     <Card.Body>
