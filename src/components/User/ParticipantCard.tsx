@@ -15,7 +15,7 @@ export default function ParticipantCard(props : {pid:string}) {
       
     return (
     <div>
-        <Card >
+        <Card style={{"maxWidth":"500px"}}>
             <Row xs={1} md={2} className="g-4">
                 <Col sm={5} md={5}>
                     <Card.Img 

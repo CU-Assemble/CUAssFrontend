@@ -49,12 +49,12 @@ export default function ActivityPage() {
         if (activityDetail.participants !== undefined) {
             // const tmp = (showAllParticipant)? activityDetail.participants : activityDetail.participants.slice(0, 3)  
             const tmp = getArraySlice(activityDetail.participants, 3)
-            return <CardGroup>
+            return <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
                 {tmp.map((p : string[])=>{
                     //get participantbyid
                         return (
                         <div>
-                            <Row xs={1} md={3} className="g-4"> 
+                            <Row className="g-4"> 
                                 {/* md = 3 => 3 rows */}
                                 {p.map(y => {
                                     return (
@@ -137,13 +137,13 @@ export default function ActivityPage() {
                     <div style={{"marginTop":"2%", "marginBottom":"2%", "marginLeft":"5%", "marginRight":"5%"}}>
                         <Row><h2>{activityDetail.name}</h2></Row>
                         {getAccordion()}
+                        {participantCards}
                     </div>
                     {/* <Row><p>Location : {activityDetail.location}</p></Row>
                     <Row><p>Desciption : {activityDetail.desc}</p></Row>
                     <Row><p>Location : {activityDetail.location}</p></Row>
                     <Row><p>Number of Participant : {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant} </p></Row> */}
                     {/* {activityDetail.participants && getParticipantCard(activityDetail.participants)} */}
-                    {participantCards}
                 </Container>
             </div>
         );
