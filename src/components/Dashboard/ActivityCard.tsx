@@ -37,14 +37,11 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
           }
         />
         <Card.Body>
-          <Card.Title><a href="https://www.google.com">Event : {activityDetail.name}</a></Card.Title>
+          <Card.Title><a href={`/activity/${activityDetail.id}`}>Event : {activityDetail.name}</a></Card.Title>
         </Card.Body>
         <ListGroup className="list-group-flush">
           {/* <ListGroup.Item>{`Date : ${(new Date(date)).toUTCString()}`}</ListGroup.Item> */}
-          <ListGroup.Item>{`Date : ${new Date(
-            // activityDetail.date
-            Date.now()
-          ).toLocaleString()}`}</ListGroup.Item>
+          <ListGroup.Item>{`Date : ${activityDetail.date}`}</ListGroup.Item>
           <ListGroup.Item>Description : {activityDetail.desc}</ListGroup.Item>
         </ListGroup>
         <Card.Footer>
