@@ -1,17 +1,17 @@
 import http from "./axiosModule";
 
-const url = ""; //gateway
+const url = "https://6343af8fb9ab4243cad57d7d.mockapi.io"; //gateway
 
 class ActivityServices { 
 
     getAll() {
-        console.log(`get ${url}/activities`)
-        return http.get(`${url}/activities`);
+        const data = http.get(`${url}/activitys`);
+        return data;
     }
     
     get(id : string) {
-        console.log(`get ${url}/activity/${id}`)
-        return http.get(`${url}/activity/${id}`);
+        const data = http.get(`${url}/activitys/${id}`);
+        return data;
     }
 
 }
