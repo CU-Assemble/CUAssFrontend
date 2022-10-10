@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -8,17 +8,19 @@ import { Activity } from '../../models/activityTypes';
 import ActivityCard from './ActivityCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import { setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, setActivities } from '../../features/activityPost/activitySlice';
 
 import mockUpAct from '../mockUpActivity';
+import { useAppDispatch } from '../../app/hooks';
+import { Button } from 'react-bootstrap';
 // import { JsxElement } from 'typescript';
 
 
 let date: Date = new Date();
 
 //slice array to array of subarray
-const getArraySlice = (arr: Activity[], l: number): Activity[][] => {
-    let tmp: Activity[][] = [];
+export const getArraySlice = (arr: any[], l: number): any[][] => {
+    let tmp: any[][] = [];
     for (var i: number = 0; i < arr.length; i += l) {
         tmp.push(arr.slice(i, i + l))
     }
@@ -29,13 +31,16 @@ export default function Dashboard() {
 
     const activities = useSelector((state: RootState) => state.activityReducer.activities);
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const handleChangeActivities = (activityList : Activity []) => {
         dispatch(setActivities(activityList));
     };
 
-    console.log(activities)
+
+    useEffect(() => {
+        dispatch(fetchActivities())
+    }, []);
 
     return (
         <div>
@@ -49,7 +54,7 @@ export default function Dashboard() {
                                 {x.map(y => {
                                     return (
                                         <Col>
-                                            <ActivityCard activityDetail={mockUpAct}/>
+                                            <ActivityCard activityDetail={y}/>
                                         </Col>
                                     )
                                 })}
@@ -58,7 +63,12 @@ export default function Dashboard() {
                     )
                 })
                 }
-                <button onClick={()=>{handleChangeActivities([mockUpAct])}}>Mockup</button>
+                <Button
+                    variant="primary"
+                    className="join-activity-button"
+                    onClick={()=>{dispatch(fetchActivities())}}
+                > Refresh
+                </Button>
             </Container>
         </div>
     )
