@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CardGroup, Col, Container, Row } from "react-bootstrap";
+import { Accordion, CardGroup, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
@@ -74,11 +74,49 @@ export default function ActivityPage() {
         }
     }
 
+    const getAccordion = () => {
+        return (
+        <div>
+            <Accordion>
+                <Accordion.Item eventKey="0">
+                    <Accordion.Header>Date</Accordion.Header>
+                    <Accordion.Body>
+                        {activityDetail.date}
+                    </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="1">
+                    <Accordion.Header>Location</Accordion.Header>
+                    <Accordion.Body>
+                        {activityDetail.location}
+                    </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="2">
+                    <Accordion.Header>Description</Accordion.Header>
+                    <Accordion.Body>
+                        {activityDetail.desc}
+                    </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="3">
+                    <Accordion.Header>Number of Participant</Accordion.Header>
+                    <Accordion.Body>
+                        {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant}
+                    </Accordion.Body>
+                </Accordion.Item>
+            </Accordion>
+        </div>
+        )
+    }
+
+    // <Row><p>Location : {activityDetail.location}</p></Row>
+    // <Row><p>Desciption : {activityDetail.desc}</p></Row>
+    // <Row><p>Location : {activityDetail.location}</p></Row>
+    // <Row><p>Number of Participant : {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant} </p></Row>
+
     const participantCards = getParticipantCard();
 
     if (id) {
         return (
-            <div>
+            <div style={{"marginLeft":"5%", "marginRight":"5%"}}>
                 <Container className="activity-page-container">
                     {/* <Figure>
                         <Figure.Image
@@ -90,17 +128,20 @@ export default function ActivityPage() {
                         ></Figure.Image>
                     </Figure> */}
                     <Image
-                        className="img-fluid"
-                        style={{}}
+                        className="img img-thumbnail rounded mx-auto d-block"
+                        style={{"maxHeight":"400px", "margin":"2%", "objectFit": "contain"}}
                         alt="Activity Image"
                         // src={activityDetail.url}
                         src="https://wallpaperaccess.com/full/12313.jpg">
                     </Image>
-                    <Row><h2>{activityDetail.name}</h2></Row>
-                    <Row><p>Location : {activityDetail.location}</p></Row>
+                    <div style={{"marginTop":"2%", "marginBottom":"2%", "marginLeft":"5%", "marginRight":"5%"}}>
+                        <Row><h2>{activityDetail.name}</h2></Row>
+                        {getAccordion()}
+                    </div>
+                    {/* <Row><p>Location : {activityDetail.location}</p></Row>
                     <Row><p>Desciption : {activityDetail.desc}</p></Row>
                     <Row><p>Location : {activityDetail.location}</p></Row>
-                    <Row><p>Number of Participant : {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant} </p></Row>
+                    <Row><p>Number of Participant : {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant} </p></Row> */}
                     {/* {activityDetail.participants && getParticipantCard(activityDetail.participants)} */}
                     {participantCards}
                 </Container>
