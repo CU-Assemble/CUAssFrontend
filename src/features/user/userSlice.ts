@@ -180,7 +180,7 @@ export const userSlice = createSlice({
         state.user.faculty = user.Faculty;
       })
       .addCase(getProfileAsync.rejected, (state, action) => {})
-      
+
       .addCase(editProfileAsync.pending, (state) => {
         state.status.edit.message = "loading";
         state.status.edit.loading = true;
@@ -192,7 +192,7 @@ export const userSlice = createSlice({
       .addCase(editProfileAsync.rejected, (state, action) => {
         state.status.edit.message = "failed";
         state.status.edit.loading = false;
-        
+
         const errorMessage = action.error.message;
         state.status.edit.error = errorMessage
           ? errorMessage
@@ -215,6 +215,8 @@ export const {
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectIsLoggedIn = (state: RootState) =>
   state.userReducer.isLoggedIn;
+export const selectJwt = (state: RootState) =>
+  state.userReducer.jwt;
 
 export const selectLoginLoading = (state: RootState) =>
   state.userReducer.status.login.loading;
