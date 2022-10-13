@@ -10,7 +10,7 @@ import LoginForm from "./components/User/LoginForm";
 import RegisterForm from "./components/User/RegisterForm";
 import EditForm from "./components/User/EditForm";
 import Dashboard from "./components/Dashboard/Dashboard";
-import ActivityPage from "./components/ActivityPage";
+import ActivityPage from "./components/Activity/ActivityPage";
 import LandingPage from "./components/LandingPage/LandingPage";
 import CreateActivityForm from "./components/Activity/CreateActivityForm";
 import EditActivityForm from "./components/Activity/EditActivityForm";
@@ -66,15 +66,12 @@ function App() {
         />
         <Route
           path="/createactivity"
-          element={
-            isLoggedIn ? <CreateActivityForm/>: <Navigate to={"/"} replace />
-          }
+          element={isLoggedIn ? <CreateActivityForm /> : <Navigate to={"/"} replace />}
         />
         <Route
           path="activity/:id"
           element={
-            // <ActivityPage/>
-            <LandingPage/>
+            <ActivityPage/>
           }
         />
       </Routes>
