@@ -1,7 +1,6 @@
 import http from "./axiosModule";
 import { LoginInput, RegisterInput } from '../models/userTypes';
 
-
 class UserServices {
     getAll() {
         return http.get("/users");
