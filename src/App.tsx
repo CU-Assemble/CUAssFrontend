@@ -1,56 +1,80 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "./app/hooks";
+import "./App.css";
+import ActivityCard from "./components/Dashboard/ActivityCard";
+import { Routes, Route, Navigate } from "react-router-dom";
+import jwt_decode from "jwt-decode";
+
+import NavigationBar from "./components/Layout/NavigationBar";
+import LoginForm from "./components/User/LoginForm";
+import RegisterForm from "./components/User/RegisterForm";
+import EditForm from "./components/User/EditForm";
+import Dashboard from "./components/Dashboard/Dashboard";
+import ActivityPage from "./components/Activity/ActivityPage";
+import LandingPage from "./components/LandingPage/LandingPage";
+import CreateActivityForm from "./components/Activity/CreateActivityForm";
+import EditActivityForm from "./components/Activity/EditActivityForm";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import mockUpAct from "./components/mockUpActivity";
+
+import {
+  selectIsLoggedIn,
+  setIsLoggedIn,
+  setJwt,
+  updateUser,
+} from "./features/user/userSlice";
+
+import { Activity } from "./models/activityTypes"; //tmp
 
 function App() {
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const jwtToken = localStorage.getItem("token");
+    if (jwtToken) {
+      dispatch(setJwt(jwtToken));
+      dispatch(setIsLoggedIn(true));
+      try {
+        const decodedData: any = jwt_decode(jwtToken);
+        const studentId = decodedData["StudentId"];
+        dispatch(updateUser({ studentId }));
+      } catch (e) {}
+    }
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+      <NavigationBar />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/login"
+          element={!isLoggedIn ? <LoginForm /> : <Navigate to={"/"} replace />}
+        />
+        <Route
+          path="/createprofile"
+          element={
+            !isLoggedIn ? <RegisterForm /> : <Navigate to={"/"} replace />
+          }
+        />
+        <Route
+          path="/profile"
+          element={isLoggedIn ? <EditForm /> : <Navigate to={"/"} replace />}
+        />
+        <Route
+          path="/createactivity"
+          element={isLoggedIn ? <CreateActivityForm /> : <Navigate to={"/"} replace />}
+        />
+        <Route
+          path="activity/:id"
+          element={
+            <ActivityPage/>
+          }
+        />
+      </Routes>
     </div>
   );
 }
