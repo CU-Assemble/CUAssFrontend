@@ -149,7 +149,7 @@ export const userSlice = createSlice({
         const errorMessage = action.error.message;
         state.status.login.error = errorMessage
           ? errorMessage
-          : "Student ID or Password is incorrest.";
+          : "Student ID or Password is incorrect.";
       })
 
       .addCase(registerAsync.pending, (state) => {
