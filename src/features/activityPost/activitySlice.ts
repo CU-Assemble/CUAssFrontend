@@ -1,13 +1,26 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../../app/store";
 import mockUpAct from "../../components/mockUpActivity";
 import { Activity } from "../../models/activityTypes";
 import activityServices from "../../services/activityServices";
 
-import { ActivityResponseType } from "../../models/activityTypes";
+import { ActivityResponseType, NewActivity } from "../../models/activityTypes";
 
 export interface activitiesState {
   activity: Activity
   activities: Activity[]
+  status: {
+    create: {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
+    edit: {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
+  };
 }
 
 //sample
@@ -45,7 +58,19 @@ const initialState: activitiesState = {
     maxParticipant: 0,
     activityType: [""]
   },
-  activities: []
+  activities: [],
+  status: {
+    create: {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+    edit: {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+  },
 };
 
 export const fetchActivities = createAsyncThunk(
@@ -73,13 +98,24 @@ export const fetchActivityById = createAsyncThunk(
   }
 );
 
+export const createActivityAsync = createAsyncThunk(
+  'activity/createActivity',
+  async (input: NewActivity) => {
+    const response = await activityServices.create(input);
+    return response.data;
+  }
+);
+
 const activitySlice = createSlice({
   name: "activity",
   initialState,
   reducers: {
     setActivities: (state, action: PayloadAction<Activity[]>) => {
       state.activities = [...action.payload];
-    }
+    },
+    setCreateError: (state, action: PayloadAction<string>) => {
+      state.status.create.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchActivities.fulfilled,(state, action:PayloadAction<ActivityResponseType[]>) => {
@@ -88,9 +124,36 @@ const activitySlice = createSlice({
     .addCase(fetchActivityById.fulfilled, (state, action: PayloadAction<ActivityResponseType>) => {
       state.activity = ActivityResponseAdapter(action.payload)
     })
+
+    .addCase(createActivityAsync.pending, (state) => {
+      state.status.create.message = "loading";
+      state.status.create.loading = true;
+    })
+    .addCase(createActivityAsync.fulfilled, (state, action) => {
+      state.status.create.message = "success";
+      state.status.create.loading = false;
+      console.log(action.payload);
+    })
+    .addCase(createActivityAsync.rejected, (state, action) => {
+      state.status.create.message = "failed";
+      state.status.create.loading = false;
+
+      const errorMessage = action.error.message;
+      state.status.create.error = errorMessage
+        ? errorMessage
+        : "Fail to create a new activity.";
+    });
   }
 })
 
-export const { setActivities } = activitySlice.actions;
+export const { setActivities, setCreateError } = activitySlice.actions;
+
+export const selectCreateLoading = (state: RootState) =>
+  state.activityReducer.status.create.loading;
+export const selectCreateMessage = (state: RootState) =>
+  state.activityReducer.status.create.message;
+export const selectCreateError = (state: RootState) =>
+  state.activityReducer.status.create.error;
+
 
 export default activitySlice.reducer
