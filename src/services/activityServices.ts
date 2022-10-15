@@ -18,6 +18,10 @@ class ActivityServices {
     create(data: NewActivity) {
         return http.post('/activities', JSON.stringify(data))
     }
+
+    edit(data: NewActivity) {
+        return http.put(`/activities/${data.ActivityId}`, JSON.stringify(data))
+    }
 }
 
 export default new ActivityServices();
