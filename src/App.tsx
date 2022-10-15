@@ -66,12 +66,15 @@ function App() {
         />
         <Route
           path="/createactivity"
-          element={isLoggedIn ? <CreateActivityForm /> : <Navigate to={"/"} replace />}
-        />
-        <Route
-          path="activity/:id"
           element={
-            <ActivityPage/>
+            isLoggedIn ? <CreateActivityForm /> : <Navigate to={"/"} replace />
+          }
+        />
+        <Route path="activity/:id" element={<ActivityPage />} />
+        <Route
+          path="myactivities/:id"
+          element={
+            isLoggedIn ? <EditActivityForm /> : <Navigate to={"/"} replace />
           }
         />
       </Routes>

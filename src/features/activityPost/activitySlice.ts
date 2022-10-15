@@ -106,6 +106,14 @@ export const createActivityAsync = createAsyncThunk(
   }
 );
 
+export const editActivityAsync = createAsyncThunk(
+  "activity/editActivity",
+  async (input: NewActivity) => {
+    const response = await activityServices.edit(input);
+    return response.data;
+  }
+);
+
 const activitySlice = createSlice({
   name: "activity",
   initialState,
@@ -115,6 +123,9 @@ const activitySlice = createSlice({
     },
     setCreateError: (state, action: PayloadAction<string>) => {
       state.status.create.error = action.payload;
+    },
+    setEditError: (state, action: PayloadAction<string>) => {
+      state.status.edit.error = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -142,11 +153,32 @@ const activitySlice = createSlice({
       state.status.create.error = errorMessage
         ? errorMessage
         : "Fail to create a new activity.";
+    })
+
+    .addCase(editActivityAsync.pending, (state) => {
+      state.status.edit.message = "loading";
+      state.status.edit.loading = true;
+    })
+    .addCase(editActivityAsync.fulfilled, (state, action) => {
+      state.status.edit.message = "success";
+      state.status.edit.loading = false;
+    })
+    .addCase(editActivityAsync.rejected, (state, action) => {
+      state.status.edit.message = "failed";
+      state.status.edit.loading = false;
+    
+      const errorMessage = action.error.message;
+      state.status.edit.error = errorMessage
+        ? errorMessage
+        : "Fail to edit an activity.";
     });
   }
 })
 
-export const { setActivities, setCreateError } = activitySlice.actions;
+export const { setActivities, setCreateError, setEditError } = activitySlice.actions;
+
+export const selectActivity = (state: RootState) =>
+  state.activityReducer.activity;
 
 export const selectCreateLoading = (state: RootState) =>
   state.activityReducer.status.create.loading;
@@ -154,6 +186,13 @@ export const selectCreateMessage = (state: RootState) =>
   state.activityReducer.status.create.message;
 export const selectCreateError = (state: RootState) =>
   state.activityReducer.status.create.error;
+
+export const selectEditLoading = (state: RootState) =>
+  state.activityReducer.status.edit.loading;
+export const selectEditMessage = (state: RootState) =>
+  state.activityReducer.status.edit.message;
+export const selectEditError = (state: RootState) =>
+  state.activityReducer.status.edit.error;
 
 
 export default activitySlice.reducer

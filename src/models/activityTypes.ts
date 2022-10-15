@@ -29,6 +29,7 @@ export interface ActivityResponseType {
 }
 
 export interface NewActivity {
+  ActivityId?: string,
   Name?: string,
   Description?: string,
   ImageProfile?: string,
