@@ -106,6 +106,14 @@ export const createActivityAsync = createAsyncThunk(
   }
 );
 
+export const editActivityAsync = createAsyncThunk(
+  "activity/editActivity",
+  async (input: NewActivity) => {
+    const response = await activityServices.edit(input);
+    return response.data;
+  }
+);
+
 const activitySlice = createSlice({
   name: "activity",
   initialState,
@@ -147,6 +155,9 @@ const activitySlice = createSlice({
 })
 
 export const { setActivities, setCreateError } = activitySlice.actions;
+
+export const selectActivity = (state: RootState) =>
+  state.activityReducer.activity;
 
 export const selectCreateLoading = (state: RootState) =>
   state.activityReducer.status.create.loading;
