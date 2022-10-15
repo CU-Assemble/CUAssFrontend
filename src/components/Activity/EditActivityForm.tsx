@@ -7,12 +7,14 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
+import Alert from "react-bootstrap/Alert";
 import { MultiSelect } from "react-multi-select-component";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   fetchActivityById,
   selectActivity,
   editActivityAsync,
+  selectEditMessage,
 } from "../../features/activityPost/activitySlice";
 import { NewActivity } from "../../models/activityTypes";
 
@@ -43,10 +45,12 @@ function EditActivityForm() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const activityDetail = useAppSelector(selectActivity);
+  const editMessage = useAppSelector(selectEditMessage);
   console.log(activityDetail);
 
   const [formData, setFormData] = useState<NewActivity>({ActivityId: id});
   const [selectedType, setSelectedType] = useState<any[]>([]);
+  const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
 
   useEffect(() => {
     if (id) {
@@ -73,6 +77,10 @@ function EditActivityForm() {
     });
     setSelectedType(mapDataToOption(["game", "walk","boardGame"]))
   }, [activityDetail]);
+
+  useEffect(() => {
+    setShowSuccessPopup(editMessage == "success");
+  }, [editMessage])
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -121,10 +129,21 @@ function EditActivityForm() {
     });
   };
 
+  const EditSuccess = (
+    <Alert
+      variant="success"
+      onClose={() => setShowSuccessPopup(false)}
+      dismissible
+    >
+      <Alert.Heading>Edit an activity successfully!</Alert.Heading>
+    </Alert>
+  );
+
   return (
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
+        {showSuccessPopup && EditSuccess}
           <h1 className="mb-3">Edit Activity</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">

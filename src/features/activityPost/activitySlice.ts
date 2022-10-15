@@ -150,6 +150,24 @@ const activitySlice = createSlice({
       state.status.create.error = errorMessage
         ? errorMessage
         : "Fail to create a new activity.";
+    })
+
+    .addCase(editActivityAsync.pending, (state) => {
+      state.status.edit.message = "loading";
+      state.status.edit.loading = true;
+    })
+    .addCase(editActivityAsync.fulfilled, (state, action) => {
+      state.status.edit.message = "success";
+      state.status.edit.loading = false;
+    })
+    .addCase(editActivityAsync.rejected, (state, action) => {
+      state.status.edit.message = "failed";
+      state.status.edit.loading = false;
+
+      const errorMessage = action.error.message;
+      state.status.edit.error = errorMessage
+        ? errorMessage
+        : "Fail to edit an activity.";
     });
   }
 })
@@ -165,6 +183,13 @@ export const selectCreateMessage = (state: RootState) =>
   state.activityReducer.status.create.message;
 export const selectCreateError = (state: RootState) =>
   state.activityReducer.status.create.error;
+
+export const selectEditLoading = (state: RootState) =>
+  state.activityReducer.status.edit.loading;
+export const selectEditMessage = (state: RootState) =>
+  state.activityReducer.status.edit.message;
+export const selectEditError = (state: RootState) =>
+  state.activityReducer.status.edit.error;
 
 
 export default activitySlice.reducer
