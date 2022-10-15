@@ -29,13 +29,14 @@ export interface ActivityResponseType {
 }
 
 export interface NewActivity {
-  name?: string,
-  location?: string,
-  maxParticipant?: number,
-  date?: string,
-  desc?: string,
-  url?: string,
-  duration?: number,
+  Name?: string,
+  Description?: string,
+  ImageProfile?: string,
+  Type?: string [],
+  Location?: string,
+  MaxParticipant?: number,
+  Date?: string,
+  Duration?: number,
 }
 
 // activityName
