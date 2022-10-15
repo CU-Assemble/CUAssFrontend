@@ -15,6 +15,8 @@ import {
   selectActivity,
   editActivityAsync,
   selectEditMessage,
+  selectEditError,
+  setEditError,
 } from "../../features/activityPost/activitySlice";
 import { NewActivity } from "../../models/activityTypes";
 
@@ -46,6 +48,7 @@ function EditActivityForm() {
   const dispatch = useAppDispatch();
   const activityDetail = useAppSelector(selectActivity);
   const editMessage = useAppSelector(selectEditMessage);
+  const errorMessage = useAppSelector(selectEditError);
   console.log(activityDetail);
 
   const [formData, setFormData] = useState<NewActivity>({ActivityId: id});
@@ -139,11 +142,23 @@ function EditActivityForm() {
     </Alert>
   );
 
+  const EditError = (
+    <Alert
+      variant="danger"
+      onClose={() => dispatch(setEditError(""))}
+      dismissible
+    >
+      <Alert.Heading>You got an error!</Alert.Heading>
+      <p>{errorMessage}</p>
+    </Alert>
+  );
+
   return (
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
         {showSuccessPopup && EditSuccess}
+        {errorMessage && EditError}
           <h1 className="mb-3">Edit Activity</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">

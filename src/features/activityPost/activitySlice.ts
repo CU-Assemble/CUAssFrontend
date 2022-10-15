@@ -124,6 +124,9 @@ const activitySlice = createSlice({
     setCreateError: (state, action: PayloadAction<string>) => {
       state.status.create.error = action.payload;
     },
+    setEditError: (state, action: PayloadAction<string>) => {
+      state.status.edit.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchActivities.fulfilled,(state, action:PayloadAction<ActivityResponseType[]>) => {
@@ -163,7 +166,7 @@ const activitySlice = createSlice({
     .addCase(editActivityAsync.rejected, (state, action) => {
       state.status.edit.message = "failed";
       state.status.edit.loading = false;
-
+    
       const errorMessage = action.error.message;
       state.status.edit.error = errorMessage
         ? errorMessage
@@ -172,7 +175,7 @@ const activitySlice = createSlice({
   }
 })
 
-export const { setActivities, setCreateError } = activitySlice.actions;
+export const { setActivities, setCreateError, setEditError } = activitySlice.actions;
 
 export const selectActivity = (state: RootState) =>
   state.activityReducer.activity;
