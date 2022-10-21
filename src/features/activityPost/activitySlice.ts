@@ -1,13 +1,26 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../../app/store";
 import mockUpAct from "../../components/mockUpActivity";
 import { Activity } from "../../models/activityTypes";
 import activityServices from "../../services/activityServices";
 
-import { ActivityResponseType } from "../../models/activityTypes";
+import { ActivityResponseType, NewActivity } from "../../models/activityTypes";
 
 export interface activitiesState {
   activity: Activity
   activities: Activity[]
+  status: {
+    create: {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
+    edit: {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
+  };
 }
 
 //sample
@@ -45,7 +58,19 @@ const initialState: activitiesState = {
     maxParticipant: 0,
     activityType: [""]
   },
-  activities: []
+  activities: [],
+  status: {
+    create: {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+    edit: {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+  },
 };
 
 export const fetchActivities = createAsyncThunk(
@@ -85,13 +110,36 @@ export const fetchMyActivities = createAsyncThunk(
   }
 );
 
+export const createActivityAsync = createAsyncThunk(
+  'activity/createActivity',
+  async (input: NewActivity) => {
+    const response = await activityServices.create(input);
+    return response.data;
+  }
+);
+
+export const editActivityAsync = createAsyncThunk(
+  "activity/editActivity",
+  async (input: NewActivity) => {
+    const response = await activityServices.edit(input);
+    return response.data;
+
+  }
+);
+
 const activitySlice = createSlice({
   name: "activity",
   initialState,
   reducers: {
     setActivities: (state, action: PayloadAction<Activity[]>) => {
       state.activities = [...action.payload];
-    }
+    },
+    setCreateError: (state, action: PayloadAction<string>) => {
+      state.status.create.error = action.payload;
+    },
+    setEditError: (state, action: PayloadAction<string>) => {
+      state.status.edit.error = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchActivities.fulfilled,(state, action:PayloadAction<ActivityResponseType[]>) => {
@@ -100,9 +148,64 @@ const activitySlice = createSlice({
     .addCase(fetchActivityById.fulfilled, (state, action: PayloadAction<ActivityResponseType>) => {
       state.activity = ActivityResponseAdapter(action.payload)
     })
+
+    .addCase(createActivityAsync.pending, (state) => {
+      state.status.create.message = "loading";
+      state.status.create.loading = true;
+    })
+    .addCase(createActivityAsync.fulfilled, (state, action) => {
+      state.status.create.message = "success";
+      state.status.create.loading = false;
+      console.log(action.payload);
+    })
+    .addCase(createActivityAsync.rejected, (state, action) => {
+      state.status.create.message = "failed";
+      state.status.create.loading = false;
+
+      const errorMessage = action.error.message;
+      state.status.create.error = errorMessage
+        ? errorMessage
+        : "Fail to create a new activity.";
+    })
+
+    .addCase(editActivityAsync.pending, (state) => {
+      state.status.edit.message = "loading";
+      state.status.edit.loading = true;
+    })
+    .addCase(editActivityAsync.fulfilled, (state, action) => {
+      state.status.edit.message = "success";
+      state.status.edit.loading = false;
+    })
+    .addCase(editActivityAsync.rejected, (state, action) => {
+      state.status.edit.message = "failed";
+      state.status.edit.loading = false;
+    
+      const errorMessage = action.error.message;
+      state.status.edit.error = errorMessage
+        ? errorMessage
+        : "Fail to edit an activity.";
+    });
   }
 })
 
-export const { setActivities } = activitySlice.actions;
+export const { setActivities, setCreateError, setEditError } = activitySlice.actions;
+
+export const selectActivity = (state: RootState) =>
+  state.activityReducer.activity;
+
+export const selectCreateLoading = (state: RootState) =>
+  state.activityReducer.status.create.loading;
+export const selectCreateMessage = (state: RootState) =>
+  state.activityReducer.status.create.message;
+export const selectCreateError = (state: RootState) =>
+  state.activityReducer.status.create.error;
+
+export const selectEditLoading = (state: RootState) =>
+  state.activityReducer.status.edit.loading;
+export const selectEditMessage = (state: RootState) =>
+  state.activityReducer.status.edit.message;
+export const selectEditError = (state: RootState) =>
+  state.activityReducer.status.edit.error;
+
 
 export default activitySlice.reducer

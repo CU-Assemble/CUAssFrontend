@@ -12,6 +12,8 @@ import EditForm from "./components/User/EditForm";
 import Dashboard from "./components/Dashboard/Dashboard";
 import ActivityPage from "./components/Activity/ActivityPage";
 import LandingPage from "./components/LandingPage/LandingPage";
+import CreateActivityForm from "./components/Activity/CreateActivityForm";
+import EditActivityForm from "./components/Activity/EditActivityForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import mockUpAct from "./components/mockUpActivity";
@@ -64,9 +66,16 @@ function App() {
           element={isLoggedIn ? <EditForm /> : <Navigate to={"/"} replace />}
         />
         <Route
-          path="/activity/:id"
+          path="/createactivity"
           element={
-            <ActivityPage/>
+            isLoggedIn ? <CreateActivityForm /> : <Navigate to={"/"} replace />
+          }
+        />
+        <Route path="activity/:id" element={<ActivityPage />} />
+        <Route
+          path="myactivities/:id"
+          element={
+            isLoggedIn ? <EditActivityForm /> : <Navigate to={"/"} replace />
           }
         />
         <Route

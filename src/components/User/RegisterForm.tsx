@@ -8,17 +8,21 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
+import Alert from "react-bootstrap/Alert";
 
 import {
   registerAsync,
   selectRegisterMessage,
+  selectRegisterError,
+  setRegisterError,
 } from "../../features/user/userSlice";
 import { RegisterInput } from "../../models/userTypes";
 
 function RegisterForm() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const registerMessage = useAppSelector(selectRegisterMessage);
-  const navigate = useNavigate();
+  const errorMessage = useAppSelector(selectRegisterError);
   
   const [formData, setFormData] = useState<RegisterInput>({});
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
@@ -111,11 +115,22 @@ function RegisterForm() {
     });
   };
 
+  const RegisterError = (
+    <Alert
+      variant="danger"
+      onClose={() => dispatch(setRegisterError(""))}
+      dismissible
+    >
+      <Alert.Heading>You got an error!</Alert.Heading>
+      <p>{errorMessage}</p>
+    </Alert>
+  );
 
   return (
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
+        {errorMessage && RegisterError}
           <h1 className="mb-3">Register</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
