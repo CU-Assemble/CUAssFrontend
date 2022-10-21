@@ -3,6 +3,7 @@ import { RootState, AppThunk } from "../../app/store";
 import { User, LoginInput, RegisterInputAPI } from "../../models/userTypes";
 import UserServices from "../../services/userService";
 import jwt_decode from "jwt-decode";
+import { AxiosError } from "axios";
 
 export interface UserState {
   user: User;
@@ -60,9 +61,17 @@ export const loginAsync = createAsyncThunk(
 
 export const registerAsync = createAsyncThunk(
   "user/register",
-  async (input: RegisterInputAPI) => {
-    const response = await UserServices.register(input);
-    return response.data;
+  async (input: RegisterInputAPI, { rejectWithValue }) => {
+    try {
+      const response = await UserServices.register(input);
+      return response.data;
+    } catch (err: any) {
+      let error: AxiosError<any> = err
+      if(!error.response){
+        throw error;
+      }
+      return rejectWithValue(error.response.data)
+    }
   }
 );
 
@@ -149,7 +158,7 @@ export const userSlice = createSlice({
         const errorMessage = action.error.message;
         state.status.login.error = errorMessage
           ? errorMessage
-          : "Student ID or Password is incorrest.";
+          : "Student ID or Password is incorrect.";
       })
 
       .addCase(registerAsync.pending, (state) => {
@@ -162,12 +171,14 @@ export const userSlice = createSlice({
         state.status.register.loading = false;
         console.log(action.payload);
       })
-      .addCase(registerAsync.rejected, (state, action) => {
+      .addCase(registerAsync.rejected, (state, action: any) => {
         state.status.register.message = "failed";
         state.status.register.loading = false;
-        console.dir(action);
-        console.log(action);
-        console.log("failed");
+        
+        const errorMessage = action.payload.message;
+        state.status.register.error = errorMessage
+          ? errorMessage
+          : "Fail to register a new user.";
       })
 
       .addCase(getProfileAsync.pending, (state) => {})
@@ -180,7 +191,7 @@ export const userSlice = createSlice({
         state.user.faculty = user.Faculty;
       })
       .addCase(getProfileAsync.rejected, (state, action) => {})
-      
+
       .addCase(editProfileAsync.pending, (state) => {
         state.status.edit.message = "loading";
         state.status.edit.loading = true;
@@ -192,7 +203,7 @@ export const userSlice = createSlice({
       .addCase(editProfileAsync.rejected, (state, action) => {
         state.status.edit.message = "failed";
         state.status.edit.loading = false;
-        
+
         const errorMessage = action.error.message;
         state.status.edit.error = errorMessage
           ? errorMessage
@@ -215,6 +226,8 @@ export const {
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectIsLoggedIn = (state: RootState) =>
   state.userReducer.isLoggedIn;
+export const selectJwt = (state: RootState) =>
+  state.userReducer.jwt;
 
 export const selectLoginLoading = (state: RootState) =>
   state.userReducer.status.login.loading;

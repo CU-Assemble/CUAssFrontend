@@ -28,6 +28,18 @@ export interface ActivityResponseType {
   ActivityId: string
 }
 
+export interface NewActivity {
+  ActivityId?: string,
+  Name?: string,
+  Description?: string,
+  ImageProfile?: string,
+  Type?: string [],
+  Location?: string,
+  MaxParticipant?: number,
+  Date?: string,
+  Duration?: number,
+}
+
 // activityName
 // description
 // imageProfile
