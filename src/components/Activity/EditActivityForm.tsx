@@ -8,6 +8,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
 import Alert from "react-bootstrap/Alert";
+import Image from "react-bootstrap/Image";
+
 import { MultiSelect } from "react-multi-select-component";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -51,7 +53,7 @@ function EditActivityForm() {
   const errorMessage = useAppSelector(selectEditError);
   console.log(activityDetail);
 
-  const [formData, setFormData] = useState<NewActivity>({ActivityId: id});
+  const [formData, setFormData] = useState<NewActivity>({ ActivityId: id });
   const [selectedType, setSelectedType] = useState<any[]>([]);
   const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
 
@@ -68,7 +70,7 @@ function EditActivityForm() {
       const newUserState = {
         Name: activityDetail.name,
         Description: activityDetail.desc,
-        // ImageProfile?: string,
+        ImageProfile: activityDetail.url,
         //Type: activityDetail.activityType,
         Type: ["game", "boardGame"],
         Location: activityDetail.location,
@@ -78,12 +80,12 @@ function EditActivityForm() {
       };
       return { ...prevState, ...newUserState };
     });
-    setSelectedType(mapDataToOption(["game", "walk","boardGame"]))
+    setSelectedType(mapDataToOption(["game", "walk", "boardGame"]));
   }, [activityDetail]);
 
   useEffect(() => {
     setShowSuccessPopup(editMessage == "success");
-  }, [editMessage])
+  }, [editMessage]);
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -92,7 +94,7 @@ function EditActivityForm() {
         ActivityId: formData.ActivityId,
         Name: formData.Name,
         Description: formData.Description,
-        Type: selectedType.map(x => x.value),
+        Type: selectedType.map((x) => x.value),
         Location: formData.Location,
         MaxParticipant: formData.MaxParticipant,
         Date: formData.Date,
@@ -131,6 +133,17 @@ function EditActivityForm() {
       return { ...prevState, Description: event.target.value };
     });
   };
+  const imageChangeHandler = (event: any) => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prevState: NewActivity) => {
+        return { ...prevState, ImageProfile: reader.result as string };
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const EditSuccess = (
     <Alert
@@ -157,8 +170,8 @@ function EditActivityForm() {
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-        {showSuccessPopup && EditSuccess}
-        {errorMessage && EditError}
+          {showSuccessPopup && EditSuccess}
+          {errorMessage && EditError}
           <h1 className="mb-3">Edit Activity</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
@@ -209,11 +222,6 @@ function EditActivityForm() {
                   labelledBy="Select"
                 />
               </Form.Group>
-
-              {/* <Form.Group as={Col} className="" controlId="formImgFile">
-                <Form.Label>Picture</Form.Label>
-                <Form.Control type="file" required />
-              </Form.Group> */}
             </Row>
 
             <Row className="mb-3">
@@ -252,6 +260,24 @@ function EditActivityForm() {
                 />
               </Form.Group>
             </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col} className="" controlId="formImgFile">
+                <Form.Label>Picture</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={imageChangeHandler}
+                  required
+                />
+              </Form.Group>
+            </Row>
+            {formData.ImageProfile && (
+              <Image
+                className="imgPreview mb-3"
+                src={formData.ImageProfile}
+                alt="preview"
+              />
+            )}
 
             <Stack direction="horizontal" gap={3}>
               <Button variant="outline-info" type="submit" className="ms-auto">

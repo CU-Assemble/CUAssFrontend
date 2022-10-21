@@ -8,18 +8,24 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
 import Alert from "react-bootstrap/Alert";
+import Image from "react-bootstrap/Image";
 
-import { createActivityAsync, selectCreateMessage, selectCreateError, setCreateError } from "../../features/activityPost/activitySlice";
+import {
+  createActivityAsync,
+  selectCreateMessage,
+  selectCreateError,
+  setCreateError,
+} from "../../features/activityPost/activitySlice";
 import { NewActivity } from "../../models/activityTypes";
 import { MultiSelect } from "react-multi-select-component";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const options = [
   { label: "Sport", value: "sport" },
-  { label: "Food", value: "food"},
-  { label: "Music", value: "music"},
-  { label: "Arts", value: "arts"},
-  { label: "Game", value: "game"},
+  { label: "Food", value: "food" },
+  { label: "Music", value: "music" },
+  { label: "Arts", value: "arts" },
+  { label: "Game", value: "game" },
   { label: "Board game", value: "boardGame" },
   { label: "Travel", value: "travel" },
   { label: "Study", value: "study" },
@@ -29,7 +35,7 @@ const options = [
 function CreateActivityForm() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const createMessage = useAppSelector(selectCreateMessage)
+  const createMessage = useAppSelector(selectCreateMessage);
   const errorMessage = useAppSelector(selectCreateError);
 
   const [formData, setFormData] = useState<NewActivity>({});
@@ -49,11 +55,12 @@ function CreateActivityForm() {
       createActivityAsync({
         Name: formData.Name,
         Description: formData.Description,
-        Type: selectedType.map(x => x.value),
+        Type: selectedType.map((x) => x.value),
         Location: formData.Location,
         MaxParticipant: formData.MaxParticipant,
         Date: formData.Date,
         Duration: formData.Duration,
+        ImageProfile: formData.ImageProfile,
       })
     );
     setRedirect(true);
@@ -89,6 +96,17 @@ function CreateActivityForm() {
       return { ...prevState, Description: event.target.value };
     });
   };
+  const imageChangeHandler = (event: any) => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prevState: NewActivity) => {
+        return { ...prevState, ImageProfile: reader.result as string };
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const CreateError = (
     <Alert
@@ -105,7 +123,7 @@ function CreateActivityForm() {
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-        {errorMessage && CreateError}
+          {errorMessage && CreateError}
           <h1 className="mb-3">New Activity</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
@@ -156,11 +174,6 @@ function CreateActivityForm() {
                   labelledBy="Select"
                 />
               </Form.Group>
-
-              {/* <Form.Group as={Col} className="" controlId="formImgFile">
-                <Form.Label>Picture</Form.Label>
-                <Form.Control type="file" required />
-              </Form.Group> */}
             </Row>
 
             <Row className="mb-3">
@@ -199,6 +212,24 @@ function CreateActivityForm() {
                 />
               </Form.Group>
             </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col} className="" controlId="formImgFile">
+                <Form.Label>Picture</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={imageChangeHandler}
+                  required
+                />
+              </Form.Group>
+            </Row>
+            {formData.ImageProfile && (
+              <Image
+                className="imgPreview mb-3"
+                src={formData.ImageProfile}
+                alt="preview"
+              />
+            )}
 
             <Stack direction="horizontal" gap={3}>
               <Button variant="success" type="submit" className="ms-auto">
