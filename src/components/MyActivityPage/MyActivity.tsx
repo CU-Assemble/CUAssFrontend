@@ -9,6 +9,7 @@ import { Activity } from '../../models/activityTypes';
 import { fetchActivities, fetchMyActivities, setActivities } from '../../features/activityPost/activitySlice';
 import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 import ActivityCard from '../Dashboard/ActivityCard';
+import FetchActivityButton from '../Layout/FetchActivityButton';
 
 
 export default function MyActivity() {
@@ -39,6 +40,7 @@ export default function MyActivity() {
             variant="success"
             className="create-activity-button"
             onClick={()=>{navigate("/createactivity")}}
+            style={{"marginTop":"1%"}}
         > Create New Activity
         </Button>
         <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
@@ -58,6 +60,7 @@ export default function MyActivity() {
                 )
             })}
         </CardGroup>
+        <FetchActivityButton txt={"Refresh"}/>
 
     </div>
   )

@@ -13,6 +13,7 @@ import { fetchActivities, setActivities } from '../../features/activityPost/acti
 import mockUpAct from '../mockUpActivity';
 import { useAppDispatch } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
+import FetchActivityButton from '../Layout/FetchActivityButton';
 // import { JsxElement } from 'typescript';
 
 
@@ -43,36 +44,35 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <div style={{"margin":"2%"}}>
-            <Container className='dashboardContainer'>
-                <h1>Dashboard</h1>
-                <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
-                    {getArraySlice(activities, 3).map(x => {
-                        return (
-                            <div>
-                                {/* <Row xs={1} md={3} className="g-4">  */}
-                                <Row>
-                                    {/* md = 3 => 3 rows */}
-                                    {x.map(y => {
-                                        return (
-                                            <Col>
-                                                <ActivityCard activityDetail={y}/>
-                                            </Col>
-                                        )
-                                    })}
-                                </Row>
-                            </div>
-                        )
-                    })
-                }
-                </CardGroup>
-                <Button
-                    variant="primary"
-                    className="join-activity-button"
-                    onClick={()=>{dispatch(fetchActivities())}}
-                > Refresh
-                </Button>
-            </Container>
+        <div 
+        style={
+            {"marginLeft":"5%", "marginRight":"5%", "marginTop": "2%"}
+        }
+        >
+            {/* <Container className='dashboardContainer'> */}
+            <h1>Dashboard</h1>
+            <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
+                {getArraySlice(activities, 3).map(x => {
+                    return (
+                        <div>
+                            {/* <Row xs={1} md={3} className="g-4">  */}
+                            <Row>
+                                {/* md = 3 => 3 rows */}
+                                {x.map(y => {
+                                    return (
+                                        <Col>
+                                            <ActivityCard activityDetail={y}/>
+                                        </Col>
+                                    )
+                                })}
+                            </Row>
+                        </div>
+                    )
+                })
+            }
+            </CardGroup>
+            <FetchActivityButton txt={"Refresh"}/>
+            {/* </Container> */}
         </div>
     )
 }
