@@ -73,6 +73,18 @@ export const fetchActivityById = createAsyncThunk(
   }
 );
 
+export const fetchMyActivities = createAsyncThunk(
+  'activity/getMyActivities',
+  async (sid : string) => {
+    const response = await activityServices.getMyActivities(sid);
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null
+    }
+  }
+);
+
 const activitySlice = createSlice({
   name: "activity",
   initialState,

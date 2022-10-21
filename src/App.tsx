@@ -24,6 +24,7 @@ import {
 } from "./features/user/userSlice";
 
 import { Activity } from "./models/activityTypes"; //tmp
+import MyActivity from "./components/MyActivityPage/MyActivity";
 
 function App() {
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
@@ -63,11 +64,18 @@ function App() {
           element={isLoggedIn ? <EditForm /> : <Navigate to={"/"} replace />}
         />
         <Route
-          path="activity/:id"
+          path="/activity/:id"
           element={
             <ActivityPage/>
           }
         />
+        <Route
+          path="/myactivities"
+          element={
+            <MyActivity/>
+          }
+        />
+
       </Routes>
     </div>
   );

@@ -14,6 +14,11 @@ class ActivityServices {
         return data;
     }
 
+    getMyActivities(sid: string) {
+        const data = http.get(`${url}/getActivitiesByParticipant/${sid}`);
+        return data;
+    }
+
 }
 
 export default new ActivityServices();
