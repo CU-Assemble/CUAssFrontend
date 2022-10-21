@@ -49,25 +49,29 @@ export default function ActivityPage() {
         if (activityDetail.participants !== undefined) {
             // const tmp = (showAllParticipant)? activityDetail.participants : activityDetail.participants.slice(0, 3)  
             const tmp = getArraySlice(activityDetail.participants, 3)
-            return <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
-                {tmp.map((p : string[])=>{
-                    //get participantbyid
-                        return (
-                        <div>
-                            <Row className="g-4"> 
-                                {/* md = 3 => 3 rows */}
-                                {p.map(y => {
-                                    return (
-                                        <Col>
-                                            <ParticipantCard pid={y}/>
-                                        </Col>
-                                    )
-                                })}
-                            </Row>
-                        </div>
-                        )
-                })}
-            </CardGroup>
+            return (
+                <div style={{"marginTop":"2%", "marginBottom":"2%"}}>
+                {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
+                    {tmp.map((p : string[])=>{
+                        //get participantbyid
+                            return (
+                            <div>
+                                <Row style={{"marginTop":"1%", "marginBottom":"1%"}}> 
+                                    {/* md = 3 => 3 rows */}
+                                    {p.map(y => {
+                                        return (
+                                            <Col md={{span: 4}}>
+                                                <ParticipantCard pid={y}/>
+                                            </Col>
+                                        )
+                                    })}
+                                </Row>
+                            </div>
+                            )
+                    })}
+                {/* </CardGroup> */}
+                </div>
+            )
         }
         else {
             return <div></div>

@@ -29,6 +29,24 @@ class ActivityServices {
         return http.put(`/activities/${data.ActivityId}`, JSON.stringify(data))
     }
 
+    join(aid: string) {
+        return http.post(
+            '/attendActivity',
+            JSON.stringify({
+                aid: aid
+            })
+        )
+    }
+
+    leave(aid: string) {
+        return http.post(
+            '/leaveActivity',
+            JSON.stringify({
+                aid: aid
+            })
+        )
+    }
+
 }
 
 export default new ActivityServices();
