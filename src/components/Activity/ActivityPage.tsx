@@ -133,10 +133,10 @@ export default function ActivityPage() {
                     </Figure> */}
                     <Image
                         className="img img-thumbnail rounded mx-auto d-block"
-                        style={{"maxHeight":"400px", "margin":"2%", "objectFit": "contain"}}
+                        style={{"height":"400px", "margin":"2%", "objectFit": "contain"}}
                         alt="Activity Image"
-                        // src={activityDetail.url}
-                        src="https://wallpaperaccess.com/full/12313.jpg">
+                        src={activityDetail.url}>
+                        {/* src={"https://wallpaperaccess.com/full/12313.jpg"}> */}
                     </Image>
                     <div style={{"marginTop":"2%", "marginBottom":"2%", "marginLeft":"5%", "marginRight":"5%"}}>
                         <Row><h2>{activityDetail.name}</h2></Row>
