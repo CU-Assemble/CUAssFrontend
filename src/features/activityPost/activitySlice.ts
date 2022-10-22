@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import mockUpAct from "../../components/mockUpActivity";
 import { Activity } from "../../models/activityTypes";
 import activityServices from "../../services/activityServices";
 
@@ -22,17 +21,6 @@ export interface activitiesState {
     };
   };
 }
-
-//sample
-const sampleCardData: Activity[] = [
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct
-];
 
 const ActivityResponseAdapter = (e: ActivityResponseType) => <Activity>{
   id: e.ActivityId,

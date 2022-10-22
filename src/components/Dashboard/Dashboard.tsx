@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
 import { fetchActivities, setActivities } from '../../features/activityPost/activitySlice';
 
-import mockUpAct from '../mockUpActivity';
 import { useAppDispatch } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
 import FetchActivityButton from '../Layout/FetchActivityButton';
