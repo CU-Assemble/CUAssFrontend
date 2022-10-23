@@ -15,6 +15,11 @@ class ActivityServices {
         return data;
     }
 
+    getMyActivities(sid: string) {
+        const data = http.get(`${url}/getActivitiesByParticipant/${sid}`);
+        return data;
+    }
+
     create(data: NewActivity) {
         return http.post('/activities', JSON.stringify(data))
     }
@@ -22,6 +27,7 @@ class ActivityServices {
     edit(data: NewActivity) {
         return http.put(`/activities/${data.ActivityId}`, JSON.stringify(data))
     }
+
 }
 
 export default new ActivityServices();

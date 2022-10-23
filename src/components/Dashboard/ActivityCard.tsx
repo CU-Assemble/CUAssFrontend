@@ -10,18 +10,52 @@ import Card from "react-bootstrap/Card";
 
 import "./ActivityCard.css";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
 
 // interface CardPropsObj {
 //   cardProps: Activity;
 // }
 
-const requestJoinActivity = () => {
+const requestAttendActivity = () => {
   alert("clicked join");
 }
+
+const requestLeaveActivity = () => {
+  alert("clicked leave");
+}
+
+const requestEditActivity = () => {
+  alert("clicked edit");
+}
+
+const requestDeleteActivity = () => {
+  alert("clicked delete");
+}
+
 
 export default function ActivityCard(props: {activityDetail:Activity}) { //Activity
 
   const activityDetail = props.activityDetail
+
+  // const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const isLoggedIn = true
+  // const currentUser = useAppSelector(selectUser);
+  const currentUser = {
+    "studentId": "6230524921",
+    "CreatedAt": "2022-10-10T02:52:40.245071+07:00",
+    "UpdatedAt": "2022-10-10T02:55:50.508777+07:00",
+    "DeletedAt": null,
+    "Name": "Phet",
+    "Nickname": "tt",
+    "Faculty": "Engineer",
+    "Tel": "112",
+    "Email": "scfscsd@sdcfs.cds",
+    "Password": "$2a$14$myaVhVH8rl4BJriXa2pm6ePeGrOoykUtpl0JKpWE/yZFfYJn4/.g2"
+   }
+  const dispatch = useAppDispatch();
+
+  const isParticipant = ((activityDetail.participants !== undefined) && activityDetail.participants.indexOf(currentUser.studentId) > -1)
+  const isOwner = (activityDetail.ownerID === currentUser.studentId)
 
   console.log(activityDetail)
   
@@ -46,13 +80,41 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
         </ListGroup>
         <Card.Footer>
           <div>
-            <Button
+            {/* check if current user is owner? */}
+            {!isOwner? <Button
               variant="success"
-              className="join-activity-button"
-              onClick={requestJoinActivity}
-            >
-              Join
-            </Button>
+              className="activity-card-btn join-activity-button"
+              onClick={requestAttendActivity}
+              disabled={!(isLoggedIn && !isParticipant)}
+            > {isParticipant? "Joined" : "Join"}
+            </Button> : null}
+
+            {(!isOwner 
+              && activityDetail.ownerID !== currentUser.studentId 
+              && isParticipant)? <Button
+              variant="danger"
+              className="activity-card-btn leave-activity-button"
+              onClick={requestLeaveActivity}
+              disabled={!(isLoggedIn && isParticipant)}
+            > Leave
+            </Button> : null}
+
+            {isOwner? <Button
+              variant="outline-info"
+              className="activity-card-btn edit-activity-button"
+              onClick={requestEditActivity}
+              disabled={!isLoggedIn}
+            > Edit
+            </Button> : null}
+
+            {isOwner? <Button
+              variant="danger"
+              className="activity-card-btn delete-activity-button"
+              onClick={requestDeleteActivity}
+              disabled={!isLoggedIn}
+            > Delete
+            </Button> : null}
+
           </div>
         </Card.Footer>
       </Card>
