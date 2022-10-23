@@ -219,7 +219,6 @@ function CreateActivityForm() {
                 <Form.Control
                   type="file"
                   onChange={imageChangeHandler}
-                  required
                 />
               </Form.Group>
             </Row>

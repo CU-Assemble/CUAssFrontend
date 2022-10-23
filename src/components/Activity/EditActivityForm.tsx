@@ -99,6 +99,7 @@ function EditActivityForm() {
         MaxParticipant: formData.MaxParticipant,
         Date: formData.Date,
         Duration: formData.Duration,
+        ImageProfile: formData.ImageProfile,
       })
     );
   };
@@ -267,7 +268,6 @@ function EditActivityForm() {
                 <Form.Control
                   type="file"
                   onChange={imageChangeHandler}
-                  required
                 />
               </Form.Group>
             </Row>
