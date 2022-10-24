@@ -1,8 +1,8 @@
 import http from "./axiosModule";
 import { NewActivity } from "../models/activityTypes";
 
-const url = "https://6343af8fb9ab4243cad57d7d.mockapi.io"; //gateway
-// const url = "http://10.144.30.83:8000/"
+// const url = "https://6343af8fb9ab4243cad57d7d.mockapi.io"; //gateway
+const url = ""
 
 class ActivityServices { 
 
@@ -45,6 +45,12 @@ class ActivityServices {
             JSON.stringify({
                 aid: aid
             })
+        )
+    }
+
+    getActivitiesByParticipant(pid: string) {
+        return http.get(
+            `/getActivitiesByParticipant/${pid}`
         )
     }
 

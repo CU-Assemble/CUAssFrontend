@@ -25,9 +25,9 @@ const requestLeaveActivity = () => {
   alert("clicked leave");
 }
 
-const requestEditActivity = () => {
-  alert("clicked edit");
-}
+// const requestEditActivity = () => {
+//   alert("clicked edit");
+// }
 
 const requestDeleteActivity = () => {
   alert("clicked delete");
