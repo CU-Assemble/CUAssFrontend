@@ -15,4 +15,4 @@ const mockUpAct : Activity = {
     activityType: ['type_0']
 }
 
-export default mockUpAct;
+// export default mockUpAct;

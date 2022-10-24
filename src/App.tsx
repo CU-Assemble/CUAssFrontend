@@ -16,8 +16,6 @@ import CreateActivityForm from "./components/Activity/CreateActivityForm";
 import EditActivityForm from "./components/Activity/EditActivityForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import mockUpAct from "./components/mockUpActivity";
-
 import {
   selectIsLoggedIn,
   setIsLoggedIn,

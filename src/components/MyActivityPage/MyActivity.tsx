@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { Button, CardGroup, Col, Row } from 'react-bootstrap'
 import { getArraySlice } from '../Dashboard/Dashboard';
@@ -9,6 +9,7 @@ import { Activity } from '../../models/activityTypes';
 import { fetchActivities, fetchMyActivities, setActivities } from '../../features/activityPost/activitySlice';
 import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 import ActivityCard from '../Dashboard/ActivityCard';
+import FetchActivityButton from '../Layout/FetchActivityButton';
 
 
 export default function MyActivity() {
@@ -32,6 +33,8 @@ export default function MyActivity() {
         dispatch(fetchActivities())
     }, []);
 
+    const [max_rows, setMaxRows] = useState(-1);
+
     return (
     <div style={{"marginLeft":"5%", "marginRight":"5%", "marginTop": "2%"}}>
         <h1>My Activities</h1>
@@ -39,10 +42,11 @@ export default function MyActivity() {
             variant="success"
             className="create-activity-button"
             onClick={()=>{navigate("/createactivity")}}
+            style={{"marginTop":"1%"}}
         > Create New Activity
         </Button>
         <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
-            {getArraySlice(activities, 3).map(x => {
+            {getArraySlice(activities, 3, max_rows).map(x => {
                 return (
                     <div>
                         <Row>
@@ -58,6 +62,7 @@ export default function MyActivity() {
                 )
             })}
         </CardGroup>
+        <FetchActivityButton txt={"Refresh"}/>
 
     </div>
   )

@@ -12,8 +12,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import { render } from "react-dom";
 
-import mockUpAct from "./components/mockUpActivity";
-
 import { BrowserRouter } from "react-router-dom";
 
 

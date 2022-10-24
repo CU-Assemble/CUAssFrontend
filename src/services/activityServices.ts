@@ -2,6 +2,7 @@ import http from "./axiosModule";
 import { NewActivity } from "../models/activityTypes";
 
 const url = "https://6343af8fb9ab4243cad57d7d.mockapi.io"; //gateway
+// const url = "http://10.144.30.83:8000/"
 
 class ActivityServices { 
 
@@ -27,6 +28,24 @@ class ActivityServices {
 
     edit(data: NewActivity) {
         return http.put(`/activity/${data.ActivityId}`, JSON.stringify(data))
+    }
+
+    join(aid: string) {
+        return http.post(
+            '/attendActivity',
+            JSON.stringify({
+                aid: aid
+            })
+        )
+    }
+
+    leave(aid: string) {
+        return http.post(
+            '/leaveActivity',
+            JSON.stringify({
+                aid: aid
+            })
+        )
     }
 
 }
