@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Card, Row, Col } from 'react-bootstrap'
-
+import UserServices from "../../services/userService"
 
 interface UserInfo {
     StudentId: string,
@@ -53,14 +53,18 @@ export default function ParticipantCard(props : {pid:string}) {
     //     // url: "https://images-platform.99static.com//ywu0w6BbzK51tna45IRBAnghaoU=/0x0:2000x2000/fit-in/500x500/99designs-contests-attachments/89/89391/attachment_89391104"
     // }
 
+    
+
     const [user, setUser] = useState(currentUser)
     // useEffect
-    useEffect(()=>{
-        axios({
-            method: 'get',
-            url: `https://6343af8fb9ab4243cad57d7d.mockapi.io/users/${props.pid}`, //url
-            timeout: 2000
-        })
+    useEffect(() => {
+
+        const fetchData = async (pid: string) => {
+            const data = await UserServices.getById(props.pid)
+            return data
+        }
+
+        fetchData(props.pid)
         .then((res)=>{
             console.log(res.data)
             setUser(res.data)
