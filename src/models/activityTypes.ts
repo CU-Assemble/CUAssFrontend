@@ -33,11 +33,12 @@ export interface NewActivity {
   Name?: string,
   Description?: string,
   ImageProfile?: string,
-  Type?: string [],
+  ActivityType?: string [],
   Location?: string,
   MaxParticipant?: number,
   Date?: string,
   Duration?: number,
+  OwnerId?: string,
 }
 
 // activityName

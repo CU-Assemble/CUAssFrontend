@@ -16,6 +16,7 @@ import {
   selectCreateError,
   setCreateError,
 } from "../../features/activityPost/activitySlice";
+import { selectUser } from "../../features/user/userSlice";
 import { NewActivity } from "../../models/activityTypes";
 import { MultiSelect } from "react-multi-select-component";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -37,6 +38,7 @@ function CreateActivityForm() {
   const dispatch = useAppDispatch();
   const createMessage = useAppSelector(selectCreateMessage);
   const errorMessage = useAppSelector(selectCreateError);
+  const user = useAppSelector(selectUser);
 
   const [formData, setFormData] = useState<NewActivity>({});
   const [selectedType, setSelectedType] = useState<any[]>([]);
@@ -51,16 +53,26 @@ function CreateActivityForm() {
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    console.log({Name: formData.Name,
+      Description: formData.Description,
+      ActivityType: selectedType.map((x) => x.value),
+      Location: formData.Location,
+      MaxParticipant: formData.MaxParticipant,
+      Date: formData.Date,
+      Duration: formData.Duration,
+      ImageProfile: formData.ImageProfile,
+      OwnerId: user.studentId,})
     dispatch(
       createActivityAsync({
         Name: formData.Name,
         Description: formData.Description,
-        Type: selectedType.map((x) => x.value),
+        ActivityType: selectedType.map((x) => x.value),
         Location: formData.Location,
         MaxParticipant: formData.MaxParticipant,
         Date: formData.Date,
         Duration: formData.Duration,
         ImageProfile: formData.ImageProfile,
+        OwnerId: user.studentId,
       })
     );
     setRedirect(true);

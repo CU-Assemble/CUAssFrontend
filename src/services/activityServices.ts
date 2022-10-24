@@ -21,7 +21,7 @@ class ActivityServices {
     }
 
     create(data: NewActivity) {
-        return http.post('/activities', JSON.stringify(data))
+        return http.post('/activity', JSON.stringify(data))
     }
 
     edit(data: NewActivity) {

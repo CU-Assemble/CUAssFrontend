@@ -26,6 +26,7 @@ function LoginForm() {
   const user = useAppSelector(selectUser);
   const loginMessage = useAppSelector(selectLoginMessage);
   const errorMessage = useAppSelector(selectLoginError);
+  const loginLoading = useAppSelector(selectLoginLoading);
   const navigate = useNavigate();
 
   const [studentId, setStudentId] = useState<string>("");
@@ -100,8 +101,8 @@ function LoginForm() {
               >
                 Register
               </Button>
-              <Button variant="success" type="submit" className="">
-                Submit
+              <Button variant="success" type="submit" className="" disabled={loginLoading ? true : false}>
+                {loginLoading? 'Loading...': 'Submit'}
               </Button>
             </Stack>
           </Form>
