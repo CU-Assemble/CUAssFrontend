@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Accordion, CardGroup, Col, Container, Row } from "react-bootstrap";
+import { Accordion, Button, CardGroup, Col, Container, Row } from "react-bootstrap";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
-import { fetchActivityById } from "../../features/activityPost/activitySlice";
+import { 
+    fetchActivityById, 
+    selectActivity,
+    selectFetchActivityByIdError,
+    selectFetchActivityByIdLoading,
+    selectFetchActivityByIdMessage } from "../../features/activityPost/activitySlice";
 import { Activity } from "../../models/activityTypes";
 import ActivityServices from "../../services/activityServices";
 import ParticipantCard from "../User/ParticipantCard";
@@ -19,48 +24,60 @@ import { getArraySlice } from "../Dashboard/Dashboard";
 export default function ActivityPage() { 
     //passing obj as item in props requires defining the type in props
 
-
-    const [showAllParticipant, setShowAllParticipant] = useState(false)
-
-    // const [participants, setParticipants] = useState([])
-
     const {id} = useParams()
-
-    const activity = useAppSelector((state : RootState) => {
-        return state.activityReducer.activity
-    })
-
-    const dispatch = useAppDispatch();
-
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const n_cols = 3;
+    
+    const activity = useAppSelector(selectActivity)
+    
+    const [showAllParticipant, setShowAllParticipant] = useState(false)
+    const [activityDetail, setActivityDetail]  = useState(activity)
+
+    const fetchMessage =  useAppSelector(selectFetchActivityByIdMessage)
+
+    const [max_rows, setMaxRows] = useState(1);
+
+    // async function loadContent(id : string) {
+    //     await dispatch(fetchActivityById(id));
+    // }
     
     useEffect(() => {
         if (id) {
-            dispatch(fetchActivityById(id))
+            dispatch(fetchActivityById(id)); // request api
         } else {
             navigate("/")
         }
     }, []);
 
-    const activityDetail = activity
+    useEffect(() => {
+        if (fetchMessage == "success") {
+            console.log("load success")
+            setActivityDetail(activity)
+        } else {
+            console.log("error")
+            console.log(activity)
+        }
+    }, [fetchMessage]);
 
-
-    const getParticipantCard = () => {
+    const getParticipantCard = (n_rows : number): JSX.Element => {
         if (activityDetail.participants !== undefined) {
             // const tmp = (showAllParticipant)? activityDetail.participants : activityDetail.participants.slice(0, 3)  
-            const tmp = getArraySlice(activityDetail.participants, 3)
+            const tmp = getArraySlice(activityDetail.participants, n_cols, n_rows)
             return (
                 <div style={{"marginTop":"2%", "marginBottom":"2%"}}>
                 {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
-                    {tmp.map((p : string[])=>{
+                    {tmp.map((p : string[], idx_0:number)=>{
                         //get participantbyid
                             return (
-                            <div>
+                            <div key={`row_${idx_0}`}>
                                 <Row style={{"marginTop":"1%", "marginBottom":"1%"}}> 
                                     {/* md = 3 => 3 rows */}
-                                    {p.map(y => {
+                                    {p.map((y, idx_1) => {
                                         return (
-                                            <Col md={{span: 4}}>
+                                            <Col
+                                                key={`card_${idx_1}`} 
+                                                md={{span: 4}}>
                                                 <ParticipantCard pid={y}/>
                                             </Col>
                                         )
@@ -74,9 +91,19 @@ export default function ActivityPage() {
             )
         }
         else {
+            console.log("oh no")
+            console.log(activityDetail)
             return <div></div>
         }
     }
+
+    const [participantCards, setParticipantCards] = useState(getParticipantCard(max_rows));
+    
+    useEffect(()=>{
+        if (max_rows && activity.participants) {
+            setParticipantCards(getParticipantCard(max_rows));
+        }    
+    },[activity, max_rows]);
 
     const getAccordion = () => {
         return (
@@ -111,13 +138,6 @@ export default function ActivityPage() {
         )
     }
 
-    // <Row><p>Location : {activityDetail.location}</p></Row>
-    // <Row><p>Desciption : {activityDetail.desc}</p></Row>
-    // <Row><p>Location : {activityDetail.location}</p></Row>
-    // <Row><p>Number of Participant : {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant} </p></Row>
-
-    const participantCards = getParticipantCard();
-
     if (id) {
         return (
             <div style={{"marginLeft":"5%", "marginRight":"5%"}}>
@@ -142,12 +162,21 @@ export default function ActivityPage() {
                         <Row><h2>{activityDetail.name}</h2></Row>
                         {getAccordion()}
                         {participantCards}
+                        <Button
+                            // style={{"marginTop":"5px", "marginBottom":"5px"}}
+                            variant="danger"
+                            className="load-more-btn load-more-activity-button"
+                            onClick={()=>{setMaxRows(max_rows + 1)}}
+                            disabled={
+                                (activityDetail.participants === undefined) 
+                                || ( 
+                                    (activityDetail.participants != undefined)
+                                    && (max_rows >= Math.ceil(activityDetail.participants?.length / n_cols)
+                                    ))
+                            }
+                            >Load More
+                        </Button>
                     </div>
-                    {/* <Row><p>Location : {activityDetail.location}</p></Row>
-                    <Row><p>Desciption : {activityDetail.desc}</p></Row>
-                    <Row><p>Location : {activityDetail.location}</p></Row>
-                    <Row><p>Number of Participant : {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant} </p></Row> */}
-                    {/* {activityDetail.participants && getParticipantCard(activityDetail.participants)} */}
                 </Container>
             </div>
         );

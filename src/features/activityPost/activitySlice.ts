@@ -19,6 +19,11 @@ export interface activitiesState {
       loading: boolean;
       error: string;
     };
+    fetchActivityById : {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
   };
 }
 
@@ -58,6 +63,11 @@ const initialState: activitiesState = {
       loading: false,
       error: "",
     },
+    fetchActivityById : {
+      message: "idle",
+      loading: false,
+      error: "",
+    }
   },
 };
 
@@ -66,7 +76,7 @@ export const fetchActivities = createAsyncThunk(
   async () => {
     const response = await activityServices.getAll();
     // The value we return becomes the `fulfilled` action payload
-    if (response.status == 200) {
+    if (response.status === 200) {
       return response.data;
     } else {
       return null
@@ -78,7 +88,7 @@ export const fetchActivityById = createAsyncThunk(
   'activity/getById',
   async (id : string) => {
     const response = await activityServices.get(id);
-    if (response.status == 200) {
+    if (response.status === 200) {
       return response.data;
     } else {
       return null
@@ -90,7 +100,7 @@ export const fetchMyActivities = createAsyncThunk(
   'activity/getMyActivities',
   async (sid : string) => {
     const response = await activityServices.getMyActivities(sid);
-    if (response.status == 200) {
+    if (response.status === 200) {
       return response.data;
     } else {
       return null
@@ -133,10 +143,6 @@ const activitySlice = createSlice({
     builder.addCase(fetchActivities.fulfilled,(state, action:PayloadAction<ActivityResponseType[]>) => {
       state.activities = action.payload.map((e : ActivityResponseType) => ActivityResponseAdapter(e))
     })
-    .addCase(fetchActivityById.fulfilled, (state, action: PayloadAction<ActivityResponseType>) => {
-      state.activity = ActivityResponseAdapter(action.payload)
-    })
-
     .addCase(createActivityAsync.pending, (state) => {
       state.status.create.message = "loading";
       state.status.create.loading = true;
@@ -172,7 +178,22 @@ const activitySlice = createSlice({
       state.status.edit.error = errorMessage
         ? errorMessage
         : "Fail to edit an activity.";
-    });
+    })
+    .addCase(fetchActivityById.pending, (state) => {
+      state.status.fetchActivityById.message = "loading";
+      state.status.fetchActivityById.loading = true;
+    })
+    .addCase(fetchActivityById.fulfilled, (state, action) => {
+      console.log("finished loading")
+      state.status.fetchActivityById.message = "success";
+      state.status.fetchActivityById.loading = false;
+      state.activity = ActivityResponseAdapter(action.payload)
+    })
+    .addCase(fetchActivityById.rejected, (state, action) => {
+      state.status.fetchActivityById.message = "failed";
+      state.status.fetchActivityById.loading = false;
+    })
+    ;
   }
 })
 
@@ -195,5 +216,11 @@ export const selectEditMessage = (state: RootState) =>
 export const selectEditError = (state: RootState) =>
   state.activityReducer.status.edit.error;
 
+export const selectFetchActivityByIdLoading = (state: RootState) =>
+  state.activityReducer.status.fetchActivityById.loading;
+export const selectFetchActivityByIdMessage = (state: RootState) =>
+  state.activityReducer.status.fetchActivityById.message;
+export const selectFetchActivityByIdError = (state: RootState) =>
+  state.activityReducer.status.fetchActivityById.error;
 
 export default activitySlice.reducer
