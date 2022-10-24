@@ -11,7 +11,8 @@ class ActivityServices {
     }
     
     get(id : string) {
-        const data = http.get(`${url}/activitys/${id}`);
+        //const data = http.get(`${url}/activitys/${id}`);
+        const data = http.get(`/activity/${id}`);
         return data;
     }
 
@@ -25,7 +26,7 @@ class ActivityServices {
     }
 
     edit(data: NewActivity) {
-        return http.put(`/activities/${data.ActivityId}`, JSON.stringify(data))
+        return http.put(`/activity/${data.ActivityId}`, JSON.stringify(data))
     }
 
 }

@@ -14,7 +14,7 @@ export interface Activity {
 }
 
 export interface ActivityResponseType {
-  Type: string [],
+  ActivityType: string [],
   Participant: string [],
   Name: string,
   Description: string,

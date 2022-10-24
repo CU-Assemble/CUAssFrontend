@@ -19,6 +19,7 @@ import {
   selectEditMessage,
   selectEditError,
   setEditError,
+  selectEditLoading,
 } from "../../features/activityPost/activitySlice";
 import { NewActivity } from "../../models/activityTypes";
 
@@ -51,6 +52,7 @@ function EditActivityForm() {
   const activityDetail = useAppSelector(selectActivity);
   const editMessage = useAppSelector(selectEditMessage);
   const errorMessage = useAppSelector(selectEditError);
+  const editLoading = useAppSelector(selectEditLoading);
   console.log(activityDetail);
 
   const [formData, setFormData] = useState<NewActivity>({ ActivityId: id });
@@ -71,8 +73,7 @@ function EditActivityForm() {
         Name: activityDetail.name,
         Description: activityDetail.desc,
         ImageProfile: activityDetail.url,
-        //Type: activityDetail.activityType,
-        ActivityType: ["game", "boardGame"],
+        ActivityType: activityDetail.activityType? activityDetail.activityType: [],
         Location: activityDetail.location,
         MaxParticipant: activityDetail.maxParticipant,
         Date: activityDetail.date,
@@ -80,7 +81,7 @@ function EditActivityForm() {
       };
       return { ...prevState, ...newUserState };
     });
-    setSelectedType(mapDataToOption(["game", "walk", "boardGame"]));
+    setSelectedType(mapDataToOption(activityDetail.activityType? activityDetail.activityType: []));
   }, [activityDetail]);
 
   useEffect(() => {
@@ -280,8 +281,8 @@ function EditActivityForm() {
             )}
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="outline-info" type="submit" className="ms-auto">
-                Save Changes
+              <Button variant="outline-info" type="submit" className="ms-auto" disabled={editLoading ? true : false}>
+                {editLoading? 'Loading...': 'Save Changes'}
               </Button>
             </Stack>
           </Form>
