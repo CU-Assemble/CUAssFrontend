@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 
@@ -102,7 +103,9 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
             {isOwner? <Button
               variant="outline-info"
               className="activity-card-btn edit-activity-button"
-              onClick={requestEditActivity}
+              //onClick={requestEditActivity}
+              as={Link as any}
+              to={`/myactivities/${activityDetail.id}`}
               disabled={!isLoggedIn}
             > Edit
             </Button> : null}
