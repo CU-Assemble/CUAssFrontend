@@ -10,12 +10,13 @@ import Stack from "react-bootstrap/Stack";
 import Alert from "react-bootstrap/Alert";
 
 import { RegisterInput } from "../../models/userTypes";
-import { getProfileAsync, editProfileAsync, selectUser, selectEditMessage } from "../../features/user/userSlice";
+import { getProfileAsync, editProfileAsync, selectUser, selectEditMessage, selectEditLoading } from "../../features/user/userSlice";
 
 function EditForm() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const editMessage = useAppSelector(selectEditMessage);
+  const editLoading = useAppSelector(selectEditLoading);
   const spaceIdx = user.name ? user.name.indexOf(" ") : 0;
 
   const [formData, setFormData] = useState<RegisterInput>({studentId: user.studentId});
@@ -251,8 +252,8 @@ function EditForm() {
             </Row> */}
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="info" type="submit" className="ms-auto">
-                Save Changes
+              <Button variant="info" type="submit" className="ms-auto" disabled={editLoading ? true : false}>
+              {editLoading? 'Loading...': 'Save Changes'}
               </Button>
             </Stack>
           </Form>

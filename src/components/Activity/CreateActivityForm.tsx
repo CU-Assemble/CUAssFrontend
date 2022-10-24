@@ -15,7 +15,9 @@ import {
   selectCreateMessage,
   selectCreateError,
   setCreateError,
+  selectCreateLoading,
 } from "../../features/activityPost/activitySlice";
+import { selectUser } from "../../features/user/userSlice";
 import { NewActivity } from "../../models/activityTypes";
 import { MultiSelect } from "react-multi-select-component";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -37,6 +39,8 @@ function CreateActivityForm() {
   const dispatch = useAppDispatch();
   const createMessage = useAppSelector(selectCreateMessage);
   const errorMessage = useAppSelector(selectCreateError);
+  const user = useAppSelector(selectUser);
+  const createLoading = useAppSelector(selectCreateLoading);
 
   const [formData, setFormData] = useState<NewActivity>({});
   const [selectedType, setSelectedType] = useState<any[]>([]);
@@ -51,16 +55,27 @@ function CreateActivityForm() {
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    console.log({Name: formData.Name,
+      Description: formData.Description || '',
+      ActivityType: selectedType.map((x) => x.value),
+      Location: formData.Location,
+      MaxParticipant: formData.MaxParticipant,
+      Date: formData.Date,
+      Duration: formData.Duration,
+      ImageProfile: formData.ImageProfile || '',
+      OwnerId: user.studentId,})
+    
     dispatch(
       createActivityAsync({
         Name: formData.Name,
-        Description: formData.Description,
-        Type: selectedType.map((x) => x.value),
+        Description: formData.Description || '',
+        ActivityType: selectedType.map((x) => x.value),
         Location: formData.Location,
         MaxParticipant: formData.MaxParticipant,
         Date: formData.Date,
         Duration: formData.Duration,
-        ImageProfile: formData.ImageProfile,
+        ImageProfile: formData.ImageProfile || '',
+        OwnerId: user.studentId,
       })
     );
     setRedirect(true);
@@ -219,7 +234,6 @@ function CreateActivityForm() {
                 <Form.Control
                   type="file"
                   onChange={imageChangeHandler}
-                  required
                 />
               </Form.Group>
             </Row>
@@ -232,8 +246,8 @@ function CreateActivityForm() {
             )}
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="success" type="submit" className="ms-auto">
-                Create
+              <Button variant="success" type="submit" className="ms-auto" disabled={createLoading ? true : false}>
+              {createLoading? 'Loading...': 'Create'}
               </Button>
             </Stack>
           </Form>
