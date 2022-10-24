@@ -8,6 +8,7 @@ class ActivityServices {
 
     getAll() {
         const data = http.get(`${url}/activitys`);
+        console.log(data)
         return data;
     }
     

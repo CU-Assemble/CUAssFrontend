@@ -16,6 +16,7 @@ import ParticipantCard from "../User/ParticipantCard";
 import Figure from 'react-bootstrap/Figure';
 import Image from 'react-bootstrap/Image'
 import { getArraySlice } from "../Dashboard/Dashboard";
+import { fetchMatchingById } from "../../features/matching/matchingSlice";
 
 //This JSX tag's 'children' prop expects single child of type 'Element', but multiple children were provided
 //dont forget to wrap with div
@@ -34,7 +35,7 @@ export default function ActivityPage() {
     const [showAllParticipant, setShowAllParticipant] = useState(false)
     const [activityDetail, setActivityDetail]  = useState(activity)
 
-    const fetchMessage =  useAppSelector(selectFetchActivityByIdMessage)
+    const fetchActivityMessage =  useAppSelector(selectFetchActivityByIdMessage)
 
     const [max_rows, setMaxRows] = useState(1);
 
@@ -51,14 +52,34 @@ export default function ActivityPage() {
     }, []);
 
     useEffect(() => {
-        if (fetchMessage == "success") {
+        if (fetchActivityMessage == "success") {
             console.log("load success")
             setActivityDetail(activity)
         } else {
             console.log("error")
             console.log(activity)
         }
-    }, [fetchMessage]);
+    }, [fetchActivityMessage]);
+
+    useEffect(() => {
+        if (activity.participants != undefined) {
+            console.log("start fetch matching")
+            // dispatch(fetchMatchingById())
+        } else {
+            console.log("error")
+            console.log(activity)
+        }
+    }, [activity]);
+
+    useEffect(() => {
+        if (fetchActivityMessage == "success") {
+            console.log("load success")
+            setActivityDetail(activity)
+        } else {
+            console.log("error")
+            console.log(activity)
+        }
+    }, [fetchActivityMessage]);
 
     const getParticipantCard = (n_rows : number): JSX.Element => {
         if (activityDetail.participants !== undefined) {
@@ -69,6 +90,7 @@ export default function ActivityPage() {
                 {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
                     {tmp.map((p : string[], idx_0:number)=>{
                         //get participantbyid
+                            console.log(p)
                             return (
                             <div key={`row_${idx_0}`}>
                                 <Row style={{"marginTop":"1%", "marginBottom":"1%"}}> 

@@ -5,18 +5,18 @@ const url = ""
 class MatchingServices {
 
     get(mid: string) {
-        http.get(`matching/${mid}`)
+        return http.get(`matching/${mid}`)
     }
 
     post(mid: string) {
-        http.post(`matching`),
+        return http.post(`matching`),
         JSON.stringify({
             mid: mid
         })
     }
 
     delete(mid: string) {
-        http.delete(`matching/${mid}`)
+        return http.delete(`matching/${mid}`)
     }
 
     getMatchingByActivity(aid: string) {
@@ -24,7 +24,6 @@ class MatchingServices {
             `/getMatchingByActivity/${aid}`
         )
     }
-
 
 }
 

@@ -140,8 +140,9 @@ const activitySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchActivities.fulfilled,(state, action:PayloadAction<ActivityResponseType[]>) => {
-      state.activities = action.payload.map((e : ActivityResponseType) => ActivityResponseAdapter(e))
+    builder.addCase(fetchActivities.fulfilled,(state, action) => {
+      console.log(action.payload)
+      state.activities = action.payload.data.map((e : ActivityResponseType) => ActivityResponseAdapter(e))
     })
     .addCase(createActivityAsync.pending, (state) => {
       state.status.create.message = "loading";
@@ -185,6 +186,7 @@ const activitySlice = createSlice({
     })
     .addCase(fetchActivityById.fulfilled, (state, action) => {
       console.log("finished loading")
+      console.log(action.payload)
       state.status.fetchActivityById.message = "success";
       state.status.fetchActivityById.loading = false;
       state.activity = ActivityResponseAdapter(action.payload)
