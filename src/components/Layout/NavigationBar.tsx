@@ -25,7 +25,7 @@ function NavigationBar() {
       <Container>
         <Navbar.Brand as={Link} to="/">CU Assemble</Navbar.Brand>
         <Nav className="me-auto">
-          {isLoggedIn && <Nav.Link as={Link} to="#">My Activities</Nav.Link>}
+          {isLoggedIn && <Nav.Link as={Link} to="/myactivities">My Activities</Nav.Link>}
           <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
           {isLoggedIn && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
           {isLoggedIn && <Nav.Link as={Link} to="/createactivity">New Activity</Nav.Link>}
