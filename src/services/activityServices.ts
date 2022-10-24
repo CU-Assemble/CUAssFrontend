@@ -12,7 +12,8 @@ class ActivityServices {
     }
     
     get(id : string) {
-        const data = http.get(`${url}/activitys/${id}`);
+        //const data = http.get(`${url}/activitys/${id}`);
+        const data = http.get(`/activity/${id}`);
         return data;
     }
 

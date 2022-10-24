@@ -33,7 +33,7 @@ const ActivityResponseAdapter = (e: ActivityResponseType) => <Activity>{
   ownerID: e.OwnerId,
   location: e.Location,
   maxParticipant: Number(e.MaxParticipant),
-  activityType: e.Type,
+  activityType: e.ActivityType,
   participants: e.Participant,
   chatID: e.ChatId,
   date: e.Date,

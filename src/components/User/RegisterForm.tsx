@@ -15,6 +15,7 @@ import {
   selectRegisterMessage,
   selectRegisterError,
   setRegisterError,
+  selectRegisterLoading
 } from "../../features/user/userSlice";
 import { RegisterInput } from "../../models/userTypes";
 
@@ -23,6 +24,7 @@ function RegisterForm() {
   const dispatch = useAppDispatch();
   const registerMessage = useAppSelector(selectRegisterMessage);
   const errorMessage = useAppSelector(selectRegisterError);
+  const registerLoading = useAppSelector(selectRegisterLoading);
   
   const [formData, setFormData] = useState<RegisterInput>({});
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
@@ -261,8 +263,8 @@ function RegisterForm() {
             </Row>
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="success" type="submit" className="ms-auto">
-                Sign Up
+              <Button variant="success" type="submit" className="ms-auto" disabled={registerLoading ? true : false}>
+              {registerLoading? 'Loading...': 'Sign Up'}
               </Button>
             </Stack>
           </Form>

@@ -175,7 +175,7 @@ export const userSlice = createSlice({
         state.status.register.message = "failed";
         state.status.register.loading = false;
         
-        const errorMessage = action.payload.message;
+        const errorMessage = action?.payload?.message;
         state.status.register.error = errorMessage
           ? errorMessage
           : "Fail to register a new user.";
