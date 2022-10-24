@@ -100,6 +100,7 @@ export default function ActivityPage() {
     const [participantCards, setParticipantCards] = useState(getParticipantCard(max_rows));
     
     useEffect(()=>{
+        console.log(activity)
         if (max_rows && activity.participants) {
             setParticipantCards(getParticipantCard(max_rows));
         }    

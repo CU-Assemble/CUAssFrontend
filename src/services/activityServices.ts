@@ -22,11 +22,11 @@ class ActivityServices {
     }
 
     create(data: NewActivity) {
-        return http.post('/activities', JSON.stringify(data))
+        return http.post('/activity', JSON.stringify(data))
     }
 
     edit(data: NewActivity) {
-        return http.put(`/activities/${data.ActivityId}`, JSON.stringify(data))
+        return http.put(`/activity/${data.ActivityId}`, JSON.stringify(data))
     }
 
     join(aid: string) {
