@@ -14,3 +14,7 @@ export interface MatchingResponseType {
     ParticipantId: User[]
 }
 
+export interface MatchingDict {
+    [matchingId : string] : Matching
+}
+
