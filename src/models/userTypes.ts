@@ -36,4 +36,14 @@ export interface RegisterInputAPI {
     email?: string;
     password?: string;
   }
+
+  
+export interface UserResponseFromMatching {
+  Email : string
+  Faculty : string
+  Name : string
+  Nickname : string
+  StudentId : string
+  Tel  : string
+}
   

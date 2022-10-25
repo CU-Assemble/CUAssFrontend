@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Accordion, Button, CardGroup, Col, Container, Row } from "react-bootstrap";
-import { useNavigate, useParams, Navigate } from "react-router-dom";
+import { useNavigate, useParams, Navigate, Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { 
     fetchActivityById, 
+    joinActivityAsync, 
+    selectJoinActivityMessage, 
+    leaveActivityAsync, 
+    selectLeaveActivityMessage, 
     selectActivity,
     selectFetchActivityByIdError,
     selectFetchActivityByIdLoading,
@@ -16,59 +20,142 @@ import ParticipantCard from "../User/ParticipantCard";
 import Figure from 'react-bootstrap/Figure';
 import Image from 'react-bootstrap/Image'
 import { getArraySlice } from "../Dashboard/Dashboard";
+import { deleteMatchingAsync, fetchMatchingByActivityId, fetchMatchingById, selectDeleteMatchingAsyncMessage, selectfetchMatchingByActivityIdError, selectfetchMatchingByActivityIdMessage, selectMatching, setMatching } from "../../features/matching/matchingSlice";
+import { User } from "../../models/userTypes";
+import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
 
 //This JSX tag's 'children' prop expects single child of type 'Element', but multiple children were provided
 //dont forget to wrap with div
 
+interface ActivityWtParticipants {
+    activity : Activity,
+    participants : string []
+}
+
+const checkStudentIdInParticipantList = (participants : User[], sid: string) => {
+    for (let i=0; i< participants.length; i++) {
+        if (participants[i].studentId == sid) return true
+    }
+    return false
+}
 
 export default function ActivityPage() { 
     //passing obj as item in props requires defining the type in props
 
     const {id} = useParams()
+    
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const n_cols = 3;
+
+    const isLoggedIn = useAppSelector(selectIsLoggedIn);
+    const currentUser = useAppSelector(selectUser);
     
     const activity = useAppSelector(selectActivity)
     
-    const [showAllParticipant, setShowAllParticipant] = useState(false)
     const [activityDetail, setActivityDetail]  = useState(activity)
 
-    const fetchMessage =  useAppSelector(selectFetchActivityByIdMessage)
+    const [participants, setParticipants] = useState<User[]>([])
 
+    const isParticipant = ((participants !== undefined) && (currentUser.studentId !== undefined) && checkStudentIdInParticipantList(participants, currentUser.studentId))
+    const isOwner = (activityDetail.ownerID === currentUser.studentId)
+
+    const fetchActivityMessage = useAppSelector(selectFetchActivityByIdMessage)
+    const fetchMatchingByActivityIdMessage = useAppSelector(selectfetchMatchingByActivityIdMessage)
+
+    const joinActivityMessage = useAppSelector(selectJoinActivityMessage)
+    const leaveActivityMessage = useAppSelector(selectLeaveActivityMessage)
+    const deleteMatchingAsyncMessage = useAppSelector(selectDeleteMatchingAsyncMessage)
+    
+    const matching = useAppSelector(selectMatching)
+    
+    const [showAllParticipant, setShowAllParticipant] = useState(false)
     const [max_rows, setMaxRows] = useState(1);
 
     // async function loadContent(id : string) {
     //     await dispatch(fetchActivityById(id));
     // }
+
+    
+    const requestAttendActivity = (e:React.FormEvent, aid:string) => {
+        // alert("clicked join");
+        e.preventDefault()
+        dispatch(joinActivityAsync(aid));
+    }
+
+    const requestLeaveActivity = (e:React.FormEvent, aid: string) => {
+        // alert("clicked leave");
+        e.preventDefault()
+        dispatch(leaveActivityAsync(aid));
+    }
+
+    // const requestEditActivity = () => {
+    //   alert("clicked edit");
+    // }
+
+    const requestDeleteActivity = (e:React.FormEvent, mid: string) => {
+        // alert("clicked delete");
+        e.preventDefault()
+        dispatch(deleteMatchingAsync(mid));
+    }
     
     useEffect(() => {
         if (id) {
             dispatch(fetchActivityById(id)); // request api
+            dispatch(fetchMatchingByActivityId(id)); // request api
         } else {
             navigate("/")
         }
     }, []);
 
     useEffect(() => {
-        if (fetchMessage == "success") {
+        if (fetchActivityMessage == "success") {
             console.log("load success")
             setActivityDetail(activity)
         } else {
             console.log("error")
             console.log(activity)
         }
-    }, [fetchMessage]);
+    }, [fetchActivityMessage]);
+
+    useEffect(() => {
+        if (fetchMatchingByActivityIdMessage == "success") {
+            console.log("load success")
+            setMatching(matching)
+            setParticipants(matching.participants)
+        } else {
+            console.log("error")
+            console.log(matching)
+        }
+    }, [fetchMatchingByActivityIdMessage]);
+
+    useEffect(() => {
+        if (fetchActivityMessage == "success") {
+            console.log("load success")
+            setActivityDetail(activity)
+        } else {
+            console.log("error")
+            console.log(activity)
+        }
+    }, [fetchActivityMessage]);
+
+    useEffect(() => {
+        if ((joinActivityMessage === "success") || (leaveActivityMessage === "success") || (deleteMatchingAsyncMessage || "success")) {
+            navigate("/dashboard")
+        }
+    }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
 
     const getParticipantCard = (n_rows : number): JSX.Element => {
-        if (activityDetail.participants !== undefined) {
-            // const tmp = (showAllParticipant)? activityDetail.participants : activityDetail.participants.slice(0, 3)  
-            const tmp = getArraySlice(activityDetail.participants, n_cols, n_rows)
+        if (participants !== undefined) {
+            // const tmp = (showAllParticipant)? participants : participants.slice(0, 3)  
+            const tmp = getArraySlice(participants, n_cols, n_rows)
+            console.log(tmp)
             return (
                 <div style={{"marginTop":"2%", "marginBottom":"2%"}}>
                 {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
-                    {tmp.map((p : string[], idx_0:number)=>{
+                    {tmp.map((p : User[], idx_0:number)=>{
                         //get participantbyid
+                            console.log(p)
                             return (
                             <div key={`row_${idx_0}`}>
                                 <Row style={{"marginTop":"1%", "marginBottom":"1%"}}> 
@@ -78,7 +165,7 @@ export default function ActivityPage() {
                                             <Col
                                                 key={`card_${idx_1}`} 
                                                 md={{span: 4}}>
-                                                <ParticipantCard pid={y}/>
+                                                <ParticipantCard user={y}/>
                                             </Col>
                                         )
                                     })}
@@ -131,7 +218,7 @@ export default function ActivityPage() {
                 <Accordion.Item eventKey="3">
                     <Accordion.Header>Number of Participant</Accordion.Header>
                     <Accordion.Body>
-                        {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant}
+                        {participants? participants.length : 0}/{activityDetail.maxParticipant}
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
@@ -163,20 +250,41 @@ export default function ActivityPage() {
                         <Row><h2>{activityDetail.name}</h2></Row>
                         {getAccordion()}
                         {participantCards}
-                        <Button
-                            // style={{"marginTop":"5px", "marginBottom":"5px"}}
+                        {!isOwner? <Button
+                            variant="success"
+                            className="activity-card-btn join-activity-button"
+                            onClick={(e : React.FormEvent)=>{requestAttendActivity(e,activity.id)}}
+                            disabled={!(isLoggedIn && !isParticipant)}
+                            > {isParticipant? "Joined" : "Join"}
+                        </Button> : null}
+
+                        {(!isOwner 
+                        && activityDetail.ownerID !== currentUser.studentId 
+                        && isParticipant)? <Button
                             variant="danger"
-                            className="load-more-btn load-more-activity-button"
-                            onClick={()=>{setMaxRows(max_rows + 1)}}
-                            disabled={
-                                (activityDetail.participants === undefined) 
-                                || ( 
-                                    (activityDetail.participants != undefined)
-                                    && (max_rows >= Math.ceil(activityDetail.participants?.length / n_cols)
-                                    ))
-                            }
-                            >Load More
-                        </Button>
+                            className="activity-card-btn leave-activity-button"
+                            onClick={(e : React.FormEvent)=>{requestLeaveActivity(e,activity.id)}}
+                            disabled={!(isLoggedIn && isParticipant)}
+                            > Leave
+                        </Button> : null}
+
+                        {isOwner? <Button
+                            variant="outline-info"
+                            className="activity-card-btn edit-activity-button"
+                            //onClick={requestEditActivity}
+                            as={Link as any}
+                            to={`/myactivities/${activityDetail.id}`}
+                            disabled={!isLoggedIn}
+                            > Edit
+                        </Button> : null}
+
+                        {isOwner? <Button
+                            variant="danger"
+                            className="activity-card-btn delete-activity-button"
+                            onClick={(e : React.FormEvent)=>{requestAttendActivity(e,matching.matchingId)}}
+                            disabled={!isLoggedIn}
+                            > Delete
+                        </Button> : null}
                     </div>
                 </Container>
             </div>

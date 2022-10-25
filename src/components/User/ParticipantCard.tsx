@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Card, Row, Col } from 'react-bootstrap'
-
+import { User } from '../../models/userTypes';
+import UserServices from "../../services/userService"
 
 interface UserInfo {
     StudentId: string,
@@ -15,20 +16,6 @@ interface UserInfo {
     Email: string,
     Password: string
 }
-
-const currentUser = {
-    StudentId: "",
-    CreatedAt: "",
-    UpdatedAt: "",
-    DeletedAt: "",
-    Name: "",
-    Nickname: "",
-    Faculty: "",
-    Tel: "",
-    Email: "",
-    Password: ""
-}
-
 const getDefaultImg = () => {
 
     const d : string [] = [
@@ -41,7 +28,7 @@ const getDefaultImg = () => {
 
 }
 
-export default function ParticipantCard(props : {pid:string}) {
+export default function ParticipantCard(props : {user:User}) {
 
     //call getuserbyid
 
@@ -52,29 +39,33 @@ export default function ParticipantCard(props : {pid:string}) {
     //     url: "https://www.1999.co.jp/itbig54/10542740a2_m.jpg"
     //     // url: "https://images-platform.99static.com//ywu0w6BbzK51tna45IRBAnghaoU=/0x0:2000x2000/fit-in/500x500/99designs-contests-attachments/89/89391/attachment_89391104"
     // }
-
-    const [user, setUser] = useState(currentUser)
+    
+    const [cardOwner, setCardOwner] = useState(props.user)
+    
     // useEffect
-    useEffect(()=>{
-        axios({
-            method: 'get',
-            url: `https://6343af8fb9ab4243cad57d7d.mockapi.io/users/${props.pid}`, //url
-            timeout: 2000
-        })
-        .then((res)=>{
-            console.log(res.data)
-            setUser(res.data)
-        })
-        .catch(error => {
-            // console.log("error!!")
-            // console.log(error)
-        })
-      },[]);
+    // useEffect(() => {
 
-    if (!user) {
+    //     const fetchData = async (pid: string) => {
+    //         const data = await UserServices.getById(pid)
+    //         return data
+    //     }
+
+    //     fetchData(props.user.StudentId)
+    //     .then((res)=>{
+    //         console.log(res.data)
+    //         setUser(res.data)
+    //     })
+    //     .catch(error => {
+    //         // console.log("error!!")
+    //         // console.log(error)
+    //     })
+    //   },[]);
+
+    if (props.user === undefined) {
         return(<div></div>);
     } 
     else {
+    console.log(props.user)
     return (
         <div>
             <Card style={{"maxWidth":"500px"}}>
@@ -104,8 +95,8 @@ export default function ParticipantCard(props : {pid:string}) {
                         </Col>
                         <Col sm={7} md={7}>
                             <Card.Text style={{textAlign:"left"}}>
-                                <p>Name : {user.Name}</p>
-                                <p>Faculty : {user.Faculty}</p>
+                                <p>Name : {props.user.name}</p>
+                                <p>Faculty : {props.user.faculty}</p>
                                 <p>Year : {"4"}</p>
                             </Card.Text>
                         </Col>

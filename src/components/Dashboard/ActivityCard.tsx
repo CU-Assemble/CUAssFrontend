@@ -25,9 +25,9 @@ const requestLeaveActivity = () => {
   alert("clicked leave");
 }
 
-const requestEditActivity = () => {
-  alert("clicked edit");
-}
+// const requestEditActivity = () => {
+//   alert("clicked edit");
+// }
 
 const requestDeleteActivity = () => {
   alert("clicked delete");
@@ -38,24 +38,12 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
 
   const activityDetail = props.activityDetail
 
-  // const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  const isLoggedIn = true
-  // const currentUser = useAppSelector(selectUser);
-  const currentUser = {
-    "studentId": "6230524921",
-    "CreatedAt": "2022-10-10T02:52:40.245071+07:00",
-    "UpdatedAt": "2022-10-10T02:55:50.508777+07:00",
-    "DeletedAt": null,
-    "Name": "Phet",
-    "Nickname": "tt",
-    "Faculty": "Engineer",
-    "Tel": "112",
-    "Email": "scfscsd@sdcfs.cds",
-    "Password": "$2a$14$myaVhVH8rl4BJriXa2pm6ePeGrOoykUtpl0JKpWE/yZFfYJn4/.g2"
-   }
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const currentUser = useAppSelector(selectUser);
+
   const dispatch = useAppDispatch();
 
-  const isParticipant = ((activityDetail.participants !== undefined) && activityDetail.participants.indexOf(currentUser.studentId) > -1)
+  const isParticipant = ((activityDetail.participants !== undefined) && (currentUser.studentId !== undefined) && activityDetail.participants.indexOf(currentUser.studentId) > -1)
   const isOwner = (activityDetail.ownerID === currentUser.studentId)
 
   console.log(activityDetail)
