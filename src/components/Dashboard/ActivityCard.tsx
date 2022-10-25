@@ -60,7 +60,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
           }
         />
         <Card.Body>
-          <Card.Title><a href={`/activity/${activityDetail.id}`}>Event : {activityDetail.name}</a></Card.Title>
+          <Card.Title><Link to={`/activity/${activityDetail.id}`}>Event : {activityDetail.name}</Link></Card.Title>
         </Card.Body>
         <ListGroup className="list-group-flush">
           {/* <ListGroup.Item>{`Date : ${(new Date(date)).toUTCString()}`}</ListGroup.Item> */}
