@@ -98,7 +98,7 @@ function EditActivityForm() {
         ActivityType: selectedType.map((x) => x.value),
         Location: formData.Location,
         MaxParticipant: formData.MaxParticipant,
-        Date: formData.Date,
+        Date: "0",
         Duration: formData.Duration,
         ImageProfile: formData.ImageProfile,
       })
