@@ -160,7 +160,7 @@ export default function ActivityPage() {
     // console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
     useEffect(() => {
         console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
-        if ((joinActivityMessage === "success") || (leaveActivityMessage === "success") || (deleteMatchingAsyncMessage || "success")) {
+        if ((joinActivityMessage === "success") || (leaveActivityMessage === "success") || (deleteMatchingAsyncMessage === "success")) {
             // navigate("/dashboard")
         }
     }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
