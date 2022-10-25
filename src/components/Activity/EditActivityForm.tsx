@@ -21,6 +21,7 @@ import {
   setEditError,
   selectEditLoading,
 } from "../../features/activityPost/activitySlice";
+import { selectUser } from "../../features/user/userSlice";
 import { NewActivity } from "../../models/activityTypes";
 
 const options = [
@@ -53,6 +54,7 @@ function EditActivityForm() {
   const editMessage = useAppSelector(selectEditMessage);
   const errorMessage = useAppSelector(selectEditError);
   const editLoading = useAppSelector(selectEditLoading);
+  const user = useAppSelector(selectUser);
   console.log(activityDetail);
 
   const [formData, setFormData] = useState<NewActivity>({ ActivityId: id });
@@ -78,6 +80,7 @@ function EditActivityForm() {
         MaxParticipant: activityDetail.maxParticipant,
         Date: activityDetail.date,
         Duration: activityDetail.duration,
+        OwnerId: user.studentId,
       };
       return { ...prevState, ...newUserState };
     });
@@ -101,6 +104,7 @@ function EditActivityForm() {
         Date: "0",
         Duration: formData.Duration,
         ImageProfile: formData.ImageProfile,
+        OwnerId: user.studentId,
       })
     );
   };
