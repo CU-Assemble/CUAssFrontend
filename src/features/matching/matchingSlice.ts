@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { Activity } from "../../models/activityTypes";
 import { Matching, MatchingDict, MatchingResponseType } from "../../models/matchingTypes";
+import { User, UserResponseFromMatching } from "../../models/userTypes";
 import activityServices from "../../services/activityServices";
 import matchingService from "../../services/matchingService";
 
@@ -66,6 +67,15 @@ const MatchingResponseAdapter = (e: MatchingResponseType) => <Matching>{
     activity: e.Activity,
     matchingId: e.MatchingId,
     participants: e.ParticipantId
+}
+
+const UserMatchingResponseAdapter = (e: UserResponseFromMatching) => <User>{
+    faculty: e.Faculty,
+    email: e.Email,
+    name: e.Name,
+    nickname: e.Nickname,
+    studentId: e.StudentId,
+    tel: e.Tel
 }
 
 export const fetchMatchingById = createAsyncThunk(
@@ -157,8 +167,12 @@ const matchingSlice = createSlice({
           .addCase(fetchMatchingByActivityId.fulfilled, (state, action) => {
             state.status.fetchMatchingByActivityId.message = "success";
             state.status.fetchMatchingByActivityId.loading = false;
-            console.log(action.payload);
-            state.matching = MatchingResponseAdapter(action.payload)
+            console.log(action.payload.data.data);
+            let tmp = action.payload.data.data
+            tmp.ParticipantId = tmp.ParticipantId.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
+            state.matching = MatchingResponseAdapter(tmp)
+            console.log(state.matching)
+            // state.matching.participants = state.matching.participants.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
           })
 
           .addCase(fetchMatchingByIds.pending, (state) => {
@@ -195,5 +209,27 @@ export const selectParticipantsFromMatching = (state: RootState) =>
 
 export const selectMatchingId = (state: RootState) =>
     state.matchingReducer.matching.matchingId;
+
+export const selectfetchMatchingByActivityIdLoading = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingByActivityId.loading;
+export const selectfetchMatchingByActivityIdMessage = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingByActivityId.message;
+export const selectfetchMatchingByActivityIdError = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingByActivityId.error;
+
+export const selectfetchMatchingByIdLoading = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingById.loading;
+export const selectfetchMatchingByIdMessage = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingById.message;
+export const selectfetchMatchingByIdError = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingById.error;
+
+export const selectfetchMatchingByIdsLoading = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingByIds.loading;
+export const selectfetchMatchingByIdsMessage = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingByIds.message;
+export const selectfetchMatchingByIdsError = (state: RootState) =>
+  state.matchingReducer.status.fetchMatchingByIds.error;
+
 
 export default matchingSlice.reducer

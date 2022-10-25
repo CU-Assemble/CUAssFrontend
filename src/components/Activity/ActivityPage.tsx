@@ -16,11 +16,16 @@ import ParticipantCard from "../User/ParticipantCard";
 import Figure from 'react-bootstrap/Figure';
 import Image from 'react-bootstrap/Image'
 import { getArraySlice } from "../Dashboard/Dashboard";
-import { fetchMatchingById } from "../../features/matching/matchingSlice";
+import { fetchMatchingByActivityId, fetchMatchingById, selectfetchMatchingByActivityIdError, selectfetchMatchingByActivityIdMessage, selectMatching, setMatching } from "../../features/matching/matchingSlice";
+import { User } from "../../models/userTypes";
 
 //This JSX tag's 'children' prop expects single child of type 'Element', but multiple children were provided
 //dont forget to wrap with div
 
+interface ActivityWtParticipants {
+    activity : Activity,
+    participants : string []
+} 
 
 export default function ActivityPage() { 
     //passing obj as item in props requires defining the type in props
@@ -32,11 +37,16 @@ export default function ActivityPage() {
     
     const activity = useAppSelector(selectActivity)
     
-    const [showAllParticipant, setShowAllParticipant] = useState(false)
     const [activityDetail, setActivityDetail]  = useState(activity)
 
-    const fetchActivityMessage =  useAppSelector(selectFetchActivityByIdMessage)
+    const [participants, setParticipants] = useState<User[]>([])
 
+    const fetchActivityMessage =  useAppSelector(selectFetchActivityByIdMessage)
+    const fetchMatchingByActivityIdMessage = useAppSelector(selectfetchMatchingByActivityIdMessage)
+
+    const matching = useAppSelector(selectMatching)
+    
+    const [showAllParticipant, setShowAllParticipant] = useState(false)
     const [max_rows, setMaxRows] = useState(1);
 
     // async function loadContent(id : string) {
@@ -46,6 +56,7 @@ export default function ActivityPage() {
     useEffect(() => {
         if (id) {
             dispatch(fetchActivityById(id)); // request api
+            dispatch(fetchMatchingByActivityId(id)); // request api
         } else {
             navigate("/")
         }
@@ -62,14 +73,15 @@ export default function ActivityPage() {
     }, [fetchActivityMessage]);
 
     useEffect(() => {
-        if (activity.participants != undefined) {
-            console.log("start fetch matching")
-            // dispatch(fetchMatchingById())
+        if (fetchMatchingByActivityIdMessage == "success") {
+            console.log("load success")
+            setMatching(matching)
+            setParticipants(matching.participants)
         } else {
             console.log("error")
-            console.log(activity)
+            console.log(matching)
         }
-    }, [activity]);
+    }, [fetchMatchingByActivityIdMessage]);
 
     useEffect(() => {
         if (fetchActivityMessage == "success") {
@@ -82,13 +94,14 @@ export default function ActivityPage() {
     }, [fetchActivityMessage]);
 
     const getParticipantCard = (n_rows : number): JSX.Element => {
-        if (activityDetail.participants !== undefined) {
-            // const tmp = (showAllParticipant)? activityDetail.participants : activityDetail.participants.slice(0, 3)  
-            const tmp = getArraySlice(activityDetail.participants, n_cols, n_rows)
+        if (participants !== undefined) {
+            // const tmp = (showAllParticipant)? participants : participants.slice(0, 3)  
+            const tmp = getArraySlice(participants, n_cols, n_rows)
+            console.log(tmp)
             return (
                 <div style={{"marginTop":"2%", "marginBottom":"2%"}}>
                 {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
-                    {tmp.map((p : string[], idx_0:number)=>{
+                    {tmp.map((p : User[], idx_0:number)=>{
                         //get participantbyid
                             console.log(p)
                             return (
@@ -100,7 +113,7 @@ export default function ActivityPage() {
                                             <Col
                                                 key={`card_${idx_1}`} 
                                                 md={{span: 4}}>
-                                                <ParticipantCard pid={y}/>
+                                                <ParticipantCard user={y}/>
                                             </Col>
                                         )
                                     })}
@@ -153,7 +166,7 @@ export default function ActivityPage() {
                 <Accordion.Item eventKey="3">
                     <Accordion.Header>Number of Participant</Accordion.Header>
                     <Accordion.Body>
-                        {activityDetail.participants? activityDetail.participants.length : 0}/{activityDetail.maxParticipant}
+                        {participants? participants.length : 0}/{activityDetail.maxParticipant}
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
@@ -191,10 +204,10 @@ export default function ActivityPage() {
                             className="load-more-btn load-more-activity-button"
                             onClick={()=>{setMaxRows(max_rows + 1)}}
                             disabled={
-                                (activityDetail.participants === undefined) 
+                                (participants === undefined) 
                                 || ( 
-                                    (activityDetail.participants != undefined)
-                                    && (max_rows >= Math.ceil(activityDetail.participants?.length / n_cols)
+                                    (participants != undefined)
+                                    && (max_rows >= Math.ceil(participants?.length / n_cols)
                                     ))
                             }
                             >Load More
