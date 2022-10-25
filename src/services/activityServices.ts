@@ -31,20 +31,20 @@ class ActivityServices {
         return http.put(`/activity/${data.ActivityId}`, JSON.stringify(data))
     }
 
-    join(aid: string) {
+    join(aid: string, sid: string) {
         return http.post(
-            '/attendActivity',
+            `/attendActivity/${aid}`,
             JSON.stringify({
-                aid: aid
+                userId: sid
             })
         )
     }
 
-    leave(aid: string) {
+    leave(aid: string, sid: string) {
         return http.post(
-            '/leaveActivity',
+            `/leaveActivity/${aid}`,
             JSON.stringify({
-                aid: aid
+                userId: sid
             })
         )
     }

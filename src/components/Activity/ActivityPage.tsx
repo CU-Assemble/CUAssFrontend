@@ -80,13 +80,27 @@ export default function ActivityPage() {
     const requestAttendActivity = (e:React.FormEvent, aid:string) => {
         // alert("clicked join");
         e.preventDefault()
-        dispatch(joinActivityAsync(aid));
+        if (currentUser.studentId != undefined) {
+            dispatch(joinActivityAsync({
+                aid: aid, 
+                sid: currentUser.studentId}
+            ));
+        } else {
+            console.log("request attend no userid")
+        }
     }
 
     const requestLeaveActivity = (e:React.FormEvent, aid: string) => {
         // alert("clicked leave");
         e.preventDefault()
-        dispatch(leaveActivityAsync(aid));
+        if (currentUser.studentId != undefined) {
+            dispatch(leaveActivityAsync({
+                aid: aid, 
+                sid: currentUser.studentId}
+            ));
+        } else {
+            console.log("request leave no userid")
+        }
     }
 
     // const requestEditActivity = () => {
@@ -121,8 +135,12 @@ export default function ActivityPage() {
     useEffect(() => {
         if (fetchMatchingByActivityIdMessage == "success") {
             console.log("load success")
+
+            console.log(matching)
             setMatching(matching)
             setParticipants(matching.participants)
+            console.log(participants)
+
         } else {
             console.log("error")
             console.log(matching)
@@ -139,9 +157,11 @@ export default function ActivityPage() {
         }
     }, [fetchActivityMessage]);
 
+    // console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
     useEffect(() => {
+        console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
         if ((joinActivityMessage === "success") || (leaveActivityMessage === "success") || (deleteMatchingAsyncMessage || "success")) {
-            //navigate("/dashboard")
+            // navigate("/dashboard")
         }
     }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
 
