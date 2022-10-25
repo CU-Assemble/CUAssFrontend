@@ -29,7 +29,6 @@ function NavigationBar() {
           <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
           {isLoggedIn && <Nav.Link as={Link} to="/profile">Profile</Nav.Link>}
           {isLoggedIn && <Nav.Link as={Link} to="/createactivity">New Activity</Nav.Link>}
-          {isLoggedIn && <Nav.Link as={Link} to="/myactivities/63563f5d6a4bf8081ced247f">Edit Activity</Nav.Link>}
         </Nav>
         <Nav className="ms-auto">
           {!isLoggedIn && <Nav.Link as={Link} to="/createprofile">Register</Nav.Link>}
