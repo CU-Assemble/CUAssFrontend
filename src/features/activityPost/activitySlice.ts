@@ -147,16 +147,18 @@ export const editActivityAsync = createAsyncThunk(
 
 export const joinActivityAsync = createAsyncThunk(
   "activity/joinActivity",
-  async (aid: string) => {
-    const response = await activityServices.join(aid);
+  async (data:{aid:string, sid: string}) => {
+    const {aid, sid} = data
+    const response = await activityServices.join(aid, sid);
     return response.data;
   }
 );
 
 export const leaveActivityAsync = createAsyncThunk(
   "activity/leaveActivity",
-  async (aid: string) => {
-    const response = await activityServices.leave(aid);
+  async (data:{aid:string, sid: string}) => {
+    const {aid, sid} = data
+    const response = await activityServices.leave(aid, sid);
     return response.data;
   }
 );
