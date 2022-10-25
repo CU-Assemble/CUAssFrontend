@@ -25,7 +25,12 @@ export interface MatchingState {
             message: string;
             loading: boolean;
             error: string;
-        }
+        },
+        deleteMatchingAsync: {
+          message: string;
+          loading: boolean;
+          error: string;
+      }
 
     }
 }
@@ -60,6 +65,11 @@ const initialState: MatchingState = {
             loading: false,
             error: "",
         },
+        deleteMatchingAsync: {
+            message: "idle",
+            loading: false,
+            error: "",
+        }
     }
 }
 
@@ -118,6 +128,14 @@ export const fetchMatchingByIds = createAsyncThunk(
         }
         return responses
     }
+);
+
+export const deleteMatchingAsync = createAsyncThunk(
+  "matching/deleteMatching",
+  async (mid: string) => {
+    const response = await matchingService.delete(mid);
+    return response.data;
+  }
 );
 
 
@@ -189,6 +207,20 @@ const matchingSlice = createSlice({
             console.log(action.payload);
             setMatchings(action.payload.map((e : MatchingResponseType) => MatchingResponseAdapter(e)))
           })
+          .addCase(deleteMatchingAsync.pending, (state) => {
+            state.status.deleteMatchingAsync.message = "loading";
+            state.status.deleteMatchingAsync.loading = true;
+          })
+          .addCase(deleteMatchingAsync.rejected, (state, action) => {
+            state.status.deleteMatchingAsync.message = "failed";
+            state.status.deleteMatchingAsync.loading = false;
+          })
+          .addCase(deleteMatchingAsync.fulfilled, (state, action) => {
+            state.status.deleteMatchingAsync.message = "success";
+            state.status.deleteMatchingAsync.loading = false;
+            console.log(action.payload);
+            setMatching(initialState.matching)
+          })
           ;
     }
     })
@@ -231,5 +263,11 @@ export const selectfetchMatchingByIdsMessage = (state: RootState) =>
 export const selectfetchMatchingByIdsError = (state: RootState) =>
   state.matchingReducer.status.fetchMatchingByIds.error;
 
+export const selectDeleteMatchingAsyncLoading = (state: RootState) =>
+  state.matchingReducer.status.deleteMatchingAsync.loading;
+export const selectDeleteMatchingAsyncMessage = (state: RootState) =>
+  state.matchingReducer.status.deleteMatchingAsync.message;
+export const selectDeleteMatchingAsyncError = (state: RootState) =>
+  state.matchingReducer.status.deleteMatchingAsync.error;
 
 export default matchingSlice.reducer

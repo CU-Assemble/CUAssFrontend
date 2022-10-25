@@ -24,6 +24,16 @@ export interface activitiesState {
       loading: boolean;
       error: string;
     };
+    joinActivityAsync : {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
+    leaveActivityAsync : {
+      message: string;
+      loading: boolean;
+      error: string;
+    }
   };
 }
 
@@ -64,6 +74,16 @@ const initialState: activitiesState = {
       error: "",
     },
     fetchActivityById : {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+    joinActivityAsync : {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+    leaveActivityAsync : {
       message: "idle",
       loading: false,
       error: "",
@@ -122,6 +142,22 @@ export const editActivityAsync = createAsyncThunk(
     const response = await activityServices.edit(input);
     return response.data;
 
+  }
+);
+
+export const joinActivityAsync = createAsyncThunk(
+  "activity/joinActivity",
+  async (aid: string) => {
+    const response = await activityServices.join(aid);
+    return response.data;
+  }
+);
+
+export const leaveActivityAsync = createAsyncThunk(
+  "activity/leaveActivity",
+  async (aid: string) => {
+    const response = await activityServices.leave(aid);
+    return response.data;
   }
 );
 
@@ -195,6 +231,34 @@ const activitySlice = createSlice({
       state.status.fetchActivityById.message = "failed";
       state.status.fetchActivityById.loading = false;
     })
+    .addCase(joinActivityAsync.pending, (state) => {
+      state.status.joinActivityAsync.message = "loading";
+      state.status.joinActivityAsync.loading = true;
+    })
+    .addCase(joinActivityAsync.fulfilled, (state, action) => {
+      console.log("finished joining")
+      console.log(action.payload)
+      state.status.joinActivityAsync.message = "success";
+      state.status.joinActivityAsync.loading = false;
+    })
+    .addCase(joinActivityAsync.rejected, (state, action) => {
+      state.status.joinActivityAsync.message = "failed";
+      state.status.joinActivityAsync.loading = false;
+    })
+    .addCase(leaveActivityAsync.pending, (state) => {
+      state.status.leaveActivityAsync.message = "loading";
+      state.status.leaveActivityAsync.loading = true;
+    })
+    .addCase(leaveActivityAsync.fulfilled, (state, action) => {
+      console.log("finished joining")
+      console.log(action.payload)
+      state.status.leaveActivityAsync.message = "success";
+      state.status.leaveActivityAsync.loading = false;
+    })
+    .addCase(leaveActivityAsync.rejected, (state, action) => {
+      state.status.leaveActivityAsync.message = "failed";
+      state.status.leaveActivityAsync.loading = false;
+    })
     ;
   }
 })
@@ -224,5 +288,19 @@ export const selectFetchActivityByIdMessage = (state: RootState) =>
   state.activityReducer.status.fetchActivityById.message;
 export const selectFetchActivityByIdError = (state: RootState) =>
   state.activityReducer.status.fetchActivityById.error;
+
+export const selectJoinActivityLoading = (state: RootState) =>
+  state.activityReducer.status.joinActivityAsync.loading;
+export const selectJoinActivityMessage = (state: RootState) =>
+  state.activityReducer.status.joinActivityAsync.message;
+export const selectJoinActivityError = (state: RootState) =>
+  state.activityReducer.status.joinActivityAsync.error;
+
+export const selectLeaveActivityLoading = (state: RootState) =>
+  state.activityReducer.status.leaveActivityAsync.loading;
+export const selectLeaveActivityMessage = (state: RootState) =>
+  state.activityReducer.status.leaveActivityAsync.message;
+export const selectLeaveActivityError = (state: RootState) =>
+  state.activityReducer.status.leaveActivityAsync.error;
 
 export default activitySlice.reducer

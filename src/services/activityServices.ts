@@ -49,11 +49,11 @@ class ActivityServices {
         )
     }
 
-    getActivitiesByParticipant(pid: string) {
-        return http.get(
-            `/getActivitiesByParticipant/${pid}`
-        )
-    }
+    // getActivitiesByParticipant(pid: string) {
+    //     return http.get(
+    //         `/getActivitiesByParticipant/${pid}`
+    //     )
+    // }
 
 }
 

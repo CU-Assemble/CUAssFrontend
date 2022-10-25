@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Accordion, Button, CardGroup, Col, Container, Row } from "react-bootstrap";
-import { useNavigate, useParams, Navigate } from "react-router-dom";
+import { useNavigate, useParams, Navigate, Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { 
     fetchActivityById, 
+    joinActivityAsync, 
+    selectJoinActivityMessage, 
+    leaveActivityAsync, 
+    selectLeaveActivityMessage, 
     selectActivity,
     selectFetchActivityByIdError,
     selectFetchActivityByIdLoading,
@@ -16,8 +20,9 @@ import ParticipantCard from "../User/ParticipantCard";
 import Figure from 'react-bootstrap/Figure';
 import Image from 'react-bootstrap/Image'
 import { getArraySlice } from "../Dashboard/Dashboard";
-import { fetchMatchingByActivityId, fetchMatchingById, selectfetchMatchingByActivityIdError, selectfetchMatchingByActivityIdMessage, selectMatching, setMatching } from "../../features/matching/matchingSlice";
+import { deleteMatchingAsync, fetchMatchingByActivityId, fetchMatchingById, selectDeleteMatchingAsyncMessage, selectfetchMatchingByActivityIdError, selectfetchMatchingByActivityIdMessage, selectMatching, setMatching } from "../../features/matching/matchingSlice";
 import { User } from "../../models/userTypes";
+import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
 
 //This JSX tag's 'children' prop expects single child of type 'Element', but multiple children were provided
 //dont forget to wrap with div
@@ -25,15 +30,26 @@ import { User } from "../../models/userTypes";
 interface ActivityWtParticipants {
     activity : Activity,
     participants : string []
-} 
+}
+
+const checkStudentIdInParticipantList = (participants : User[], sid: string) => {
+    for (let i=0; i< participants.length; i++) {
+        if (participants[i].studentId == sid) return true
+    }
+    return false
+}
 
 export default function ActivityPage() { 
     //passing obj as item in props requires defining the type in props
 
     const {id} = useParams()
+    
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const n_cols = 3;
+
+    const isLoggedIn = useAppSelector(selectIsLoggedIn);
+    const currentUser = useAppSelector(selectUser);
     
     const activity = useAppSelector(selectActivity)
     
@@ -41,9 +57,16 @@ export default function ActivityPage() {
 
     const [participants, setParticipants] = useState<User[]>([])
 
-    const fetchActivityMessage =  useAppSelector(selectFetchActivityByIdMessage)
+    const isParticipant = ((participants !== undefined) && (currentUser.studentId !== undefined) && checkStudentIdInParticipantList(participants, currentUser.studentId))
+    const isOwner = (activityDetail.ownerID === currentUser.studentId)
+
+    const fetchActivityMessage = useAppSelector(selectFetchActivityByIdMessage)
     const fetchMatchingByActivityIdMessage = useAppSelector(selectfetchMatchingByActivityIdMessage)
 
+    const joinActivityMessage = useAppSelector(selectJoinActivityMessage)
+    const leaveActivityMessage = useAppSelector(selectLeaveActivityMessage)
+    const deleteMatchingAsyncMessage = useAppSelector(selectDeleteMatchingAsyncMessage)
+    
     const matching = useAppSelector(selectMatching)
     
     const [showAllParticipant, setShowAllParticipant] = useState(false)
@@ -52,6 +75,29 @@ export default function ActivityPage() {
     // async function loadContent(id : string) {
     //     await dispatch(fetchActivityById(id));
     // }
+
+    
+    const requestAttendActivity = (e:React.FormEvent, aid:string) => {
+        // alert("clicked join");
+        e.preventDefault()
+        dispatch(joinActivityAsync(aid));
+    }
+
+    const requestLeaveActivity = (e:React.FormEvent, aid: string) => {
+        // alert("clicked leave");
+        e.preventDefault()
+        dispatch(leaveActivityAsync(aid));
+    }
+
+    // const requestEditActivity = () => {
+    //   alert("clicked edit");
+    // }
+
+    const requestDeleteActivity = (e:React.FormEvent, mid: string) => {
+        // alert("clicked delete");
+        e.preventDefault()
+        dispatch(deleteMatchingAsync(mid));
+    }
     
     useEffect(() => {
         if (id) {
@@ -92,6 +138,12 @@ export default function ActivityPage() {
             console.log(activity)
         }
     }, [fetchActivityMessage]);
+
+    useEffect(() => {
+        if ((joinActivityMessage === "success") || (leaveActivityMessage === "success") || (deleteMatchingAsyncMessage || "success")) {
+            navigate("/dashboard")
+        }
+    }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
 
     const getParticipantCard = (n_rows : number): JSX.Element => {
         if (participants !== undefined) {
@@ -198,20 +250,41 @@ export default function ActivityPage() {
                         <Row><h2>{activityDetail.name}</h2></Row>
                         {getAccordion()}
                         {participantCards}
-                        <Button
-                            // style={{"marginTop":"5px", "marginBottom":"5px"}}
+                        {!isOwner? <Button
+                            variant="success"
+                            className="activity-card-btn join-activity-button"
+                            onClick={(e : React.FormEvent)=>{requestAttendActivity(e,activity.id)}}
+                            disabled={!(isLoggedIn && !isParticipant)}
+                            > {isParticipant? "Joined" : "Join"}
+                        </Button> : null}
+
+                        {(!isOwner 
+                        && activityDetail.ownerID !== currentUser.studentId 
+                        && isParticipant)? <Button
                             variant="danger"
-                            className="load-more-btn load-more-activity-button"
-                            onClick={()=>{setMaxRows(max_rows + 1)}}
-                            disabled={
-                                (participants === undefined) 
-                                || ( 
-                                    (participants != undefined)
-                                    && (max_rows >= Math.ceil(participants?.length / n_cols)
-                                    ))
-                            }
-                            >Load More
-                        </Button>
+                            className="activity-card-btn leave-activity-button"
+                            onClick={(e : React.FormEvent)=>{requestLeaveActivity(e,activity.id)}}
+                            disabled={!(isLoggedIn && isParticipant)}
+                            > Leave
+                        </Button> : null}
+
+                        {isOwner? <Button
+                            variant="outline-info"
+                            className="activity-card-btn edit-activity-button"
+                            //onClick={requestEditActivity}
+                            as={Link as any}
+                            to={`/myactivities/${activityDetail.id}`}
+                            disabled={!isLoggedIn}
+                            > Edit
+                        </Button> : null}
+
+                        {isOwner? <Button
+                            variant="danger"
+                            className="activity-card-btn delete-activity-button"
+                            onClick={(e : React.FormEvent)=>{requestAttendActivity(e,matching.matchingId)}}
+                            disabled={!isLoggedIn}
+                            > Delete
+                        </Button> : null}
                     </div>
                 </Container>
             </div>
