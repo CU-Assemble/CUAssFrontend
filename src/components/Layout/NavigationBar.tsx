@@ -37,40 +37,40 @@ function NavigationBar() {
         <Nav className="me-auto">
           {isLoggedIn && (
             <Nav.Link as={Link} to="/myactivities">
-              My Activities
+              {t("My Activities")}
             </Nav.Link>
           )}
           <Nav.Link as={Link} to="/dashboard">
-            Dashboard
+            {t("Dashboard")}
           </Nav.Link>
           {isLoggedIn && (
             <Nav.Link as={Link} to="/profile">
-              Profile
+              {t("Profile")}
             </Nav.Link>
           )}
           {isLoggedIn && (
             <Nav.Link as={Link} to="/createactivity">
-              New Activity
+              {t("New Activity")}
             </Nav.Link>
           )}
         </Nav>
         <Nav className="ms-auto">
           {!isLoggedIn && (
             <Nav.Link as={Link} to="/createprofile">
-              Register
+              {t("Register")}
             </Nav.Link>
           )}
           {!isLoggedIn && (
             <Nav.Link as={Link} to="/login">
-              Login
+              {t("Login")}
             </Nav.Link>
           )}
           {isLoggedIn && (
             <Nav.Link as={Link} to="/" onClick={logoutHandler}>
-              Logout
+              {t("Logout")}
             </Nav.Link>
           )}
-          <NavDropdown title={i18n.language == "en"? "🇬🇧": "🇹🇭"} id="nav-dropdown">
+          <NavDropdown title={i18n.language === "en"? "🇬🇧": "🇹🇭"} id="nav-dropdown">
             <NavDropdown.Item eventKey="en" onClick={() => i18n.changeLanguage('en')}>🇬🇧 English</NavDropdown.Item>
             <NavDropdown.Item eventKey="th" onClick={() => i18n.changeLanguage('th')}>🇹🇭 Thai</NavDropdown.Item>
           </NavDropdown>
