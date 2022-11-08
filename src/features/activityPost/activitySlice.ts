@@ -7,7 +7,8 @@ import { ActivityResponseType, NewActivity } from "../../models/activityTypes";
 
 export interface activitiesState {
   activity: Activity
-  activities: Activity[]
+  activities: Activity[],
+  cardsPerRow: number,
   status: {
     create: {
       message: string;
@@ -62,6 +63,7 @@ const initialState: activitiesState = {
     activityType: [""]
   },
   activities: [],
+  cardsPerRow: 4,
   status: {
     create: {
       message: "idle",
@@ -269,6 +271,9 @@ export const { setActivities, setCreateError, setEditError } = activitySlice.act
 
 export const selectActivity = (state: RootState) =>
   state.activityReducer.activity;
+
+export const selectCardsPerRow = (state: RootState) =>
+  state.activityReducer.cardsPerRow;
 
 export const selectCreateLoading = (state: RootState) =>
   state.activityReducer.status.create.loading;

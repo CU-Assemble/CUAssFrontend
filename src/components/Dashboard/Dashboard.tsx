@@ -8,9 +8,9 @@ import { Activity } from '../../models/activityTypes';
 import ActivityCard from './ActivityCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import { fetchActivities, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, selectCardsPerRow, setActivities } from '../../features/activityPost/activitySlice';
 
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
 import FetchActivityButton from '../Layout/FetchActivityButton';
 // import { JsxElement } from 'typescript';
@@ -52,6 +52,8 @@ export default function Dashboard() {
     }, []);
 
     const [max_rows, setMaxRows] = useState(-1)
+    // const [cards_per_row, setCardPerRows] = useState(4)
+    const cards_per_row = useAppSelector(selectCardsPerRow)
 
     return (
         <div 
@@ -61,9 +63,10 @@ export default function Dashboard() {
         >
             {/* <Container className='dashboardContainer'> */}
             <h1>Dashboard</h1>
-            <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
-                {getArraySlice(activities, 3, max_rows).map((x, idx) => {
+            {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
+                {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
                     return (
+                        <CardGroup style={{"marginTop":"1%", "marginBottom":"1%"}}>
                         <div key={`dashboard_div_${idx}`}>
                             {/* <Row xs={1} md={3} className="g-4">  */}
                             <Row>
@@ -77,10 +80,11 @@ export default function Dashboard() {
                                 })}
                             </Row>
                         </div>
+                        </CardGroup>
                     )
                 })
             }
-            </CardGroup>
+            {/* </CardGroup> */}
             <FetchActivityButton txt={"Refresh"}/>
             {/* </Container> */}
         </div>
