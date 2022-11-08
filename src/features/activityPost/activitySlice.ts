@@ -63,7 +63,7 @@ const initialState: activitiesState = {
     activityType: [""]
   },
   activities: [],
-  cardsPerRow: 4,
+  cardsPerRow: 5,
   status: {
     create: {
       message: "idle",
