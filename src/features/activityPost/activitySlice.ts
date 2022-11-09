@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import mockUpAct from "../../components/mockUpActivity";
 import { Activity } from "../../models/activityTypes";
 import activityServices from "../../services/activityServices";
 
@@ -20,19 +19,23 @@ export interface activitiesState {
       loading: boolean;
       error: string;
     };
+    fetchActivityById : {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
+    joinActivityAsync : {
+      message: string;
+      loading: boolean;
+      error: string;
+    };
+    leaveActivityAsync : {
+      message: string;
+      loading: boolean;
+      error: string;
+    }
   };
 }
-
-//sample
-const sampleCardData: Activity[] = [
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct,
-  mockUpAct
-];
 
 const ActivityResponseAdapter = (e: ActivityResponseType) => <Activity>{
   id: e.ActivityId,
@@ -40,7 +43,7 @@ const ActivityResponseAdapter = (e: ActivityResponseType) => <Activity>{
   ownerID: e.OwnerId,
   location: e.Location,
   maxParticipant: Number(e.MaxParticipant),
-  activityType: e.Type,
+  activityType: e.ActivityType,
   participants: e.Participant,
   chatID: e.ChatId,
   date: e.Date,
@@ -70,6 +73,21 @@ const initialState: activitiesState = {
       loading: false,
       error: "",
     },
+    fetchActivityById : {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+    joinActivityAsync : {
+      message: "idle",
+      loading: false,
+      error: "",
+    },
+    leaveActivityAsync : {
+      message: "idle",
+      loading: false,
+      error: "",
+    }
   },
 };
 
@@ -78,7 +96,7 @@ export const fetchActivities = createAsyncThunk(
   async () => {
     const response = await activityServices.getAll();
     // The value we return becomes the `fulfilled` action payload
-    if (response.status == 200) {
+    if (response.status === 200) {
       return response.data;
     } else {
       return null
@@ -90,7 +108,19 @@ export const fetchActivityById = createAsyncThunk(
   'activity/getById',
   async (id : string) => {
     const response = await activityServices.get(id);
-    if (response.status == 200) {
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return null
+    }
+  }
+);
+
+export const fetchMyActivities = createAsyncThunk(
+  'activity/getMyActivities',
+  async (sid : string) => {
+    const response = await activityServices.getMyActivities(sid);
+    if (response.status === 200) {
       return response.data;
     } else {
       return null
@@ -111,6 +141,25 @@ export const editActivityAsync = createAsyncThunk(
   async (input: NewActivity) => {
     const response = await activityServices.edit(input);
     return response.data;
+
+  }
+);
+
+export const joinActivityAsync = createAsyncThunk(
+  "activity/joinActivity",
+  async (data:{aid:string, sid: string}) => {
+    const {aid, sid} = data
+    const response = await activityServices.join(aid, sid);
+    return response.data;
+  }
+);
+
+export const leaveActivityAsync = createAsyncThunk(
+  "activity/leaveActivity",
+  async (data:{aid:string, sid: string}) => {
+    const {aid, sid} = data
+    const response = await activityServices.leave(aid, sid);
+    return response.data;
   }
 );
 
@@ -129,13 +178,10 @@ const activitySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchActivities.fulfilled,(state, action:PayloadAction<ActivityResponseType[]>) => {
-      state.activities = action.payload.map((e : ActivityResponseType) => ActivityResponseAdapter(e))
+    builder.addCase(fetchActivities.fulfilled,(state, action) => {
+      console.log(action.payload)
+      state.activities = action.payload.data.map((e : ActivityResponseType) => ActivityResponseAdapter(e))
     })
-    .addCase(fetchActivityById.fulfilled, (state, action: PayloadAction<ActivityResponseType>) => {
-      state.activity = ActivityResponseAdapter(action.payload)
-    })
-
     .addCase(createActivityAsync.pending, (state) => {
       state.status.create.message = "loading";
       state.status.create.loading = true;
@@ -171,7 +217,51 @@ const activitySlice = createSlice({
       state.status.edit.error = errorMessage
         ? errorMessage
         : "Fail to edit an activity.";
-    });
+    })
+    .addCase(fetchActivityById.pending, (state) => {
+      state.status.fetchActivityById.message = "loading";
+      state.status.fetchActivityById.loading = true;
+    })
+    .addCase(fetchActivityById.fulfilled, (state, action) => {
+      console.log("finished loading")
+      console.log(action.payload)
+      state.status.fetchActivityById.message = "success";
+      state.status.fetchActivityById.loading = false;
+      state.activity = ActivityResponseAdapter(action.payload)
+    })
+    .addCase(fetchActivityById.rejected, (state, action) => {
+      state.status.fetchActivityById.message = "failed";
+      state.status.fetchActivityById.loading = false;
+    })
+    .addCase(joinActivityAsync.pending, (state) => {
+      state.status.joinActivityAsync.message = "loading";
+      state.status.joinActivityAsync.loading = true;
+    })
+    .addCase(joinActivityAsync.fulfilled, (state, action) => {
+      console.log("finished joining")
+      console.log(action.payload)
+      state.status.joinActivityAsync.message = "success";
+      state.status.joinActivityAsync.loading = false;
+    })
+    .addCase(joinActivityAsync.rejected, (state, action) => {
+      state.status.joinActivityAsync.message = "failed";
+      state.status.joinActivityAsync.loading = false;
+    })
+    .addCase(leaveActivityAsync.pending, (state) => {
+      state.status.leaveActivityAsync.message = "loading";
+      state.status.leaveActivityAsync.loading = true;
+    })
+    .addCase(leaveActivityAsync.fulfilled, (state, action) => {
+      console.log("finished joining")
+      console.log(action.payload)
+      state.status.leaveActivityAsync.message = "success";
+      state.status.leaveActivityAsync.loading = false;
+    })
+    .addCase(leaveActivityAsync.rejected, (state, action) => {
+      state.status.leaveActivityAsync.message = "failed";
+      state.status.leaveActivityAsync.loading = false;
+    })
+    ;
   }
 })
 
@@ -194,5 +284,25 @@ export const selectEditMessage = (state: RootState) =>
 export const selectEditError = (state: RootState) =>
   state.activityReducer.status.edit.error;
 
+export const selectFetchActivityByIdLoading = (state: RootState) =>
+  state.activityReducer.status.fetchActivityById.loading;
+export const selectFetchActivityByIdMessage = (state: RootState) =>
+  state.activityReducer.status.fetchActivityById.message;
+export const selectFetchActivityByIdError = (state: RootState) =>
+  state.activityReducer.status.fetchActivityById.error;
+
+export const selectJoinActivityLoading = (state: RootState) =>
+  state.activityReducer.status.joinActivityAsync.loading;
+export const selectJoinActivityMessage = (state: RootState) =>
+  state.activityReducer.status.joinActivityAsync.message;
+export const selectJoinActivityError = (state: RootState) =>
+  state.activityReducer.status.joinActivityAsync.error;
+
+export const selectLeaveActivityLoading = (state: RootState) =>
+  state.activityReducer.status.leaveActivityAsync.loading;
+export const selectLeaveActivityMessage = (state: RootState) =>
+  state.activityReducer.status.leaveActivityAsync.message;
+export const selectLeaveActivityError = (state: RootState) =>
+  state.activityReducer.status.leaveActivityAsync.error;
 
 export default activitySlice.reducer

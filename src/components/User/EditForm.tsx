@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useTranslation } from 'react-i18next';
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -10,12 +11,15 @@ import Stack from "react-bootstrap/Stack";
 import Alert from "react-bootstrap/Alert";
 
 import { RegisterInput } from "../../models/userTypes";
-import { getProfileAsync, editProfileAsync, selectUser, selectEditMessage } from "../../features/user/userSlice";
+import { getProfileAsync, editProfileAsync, selectUser, selectEditMessage, selectEditLoading } from "../../features/user/userSlice";
 
 function EditForm() {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const editMessage = useAppSelector(selectEditMessage);
+  const editLoading = useAppSelector(selectEditLoading);
+  const { t } = useTranslation('translation');
+
   const spaceIdx = user.name ? user.name.indexOf(" ") : 0;
 
   const [formData, setFormData] = useState<RegisterInput>({studentId: user.studentId});
@@ -116,14 +120,14 @@ function EditForm() {
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
           {showSuccessPopup && EditSuccess}
-          <h1 className="mb-3">Edit Profile</h1>
+          <h1 className="mb-3">{t("Edit Profile")}</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formFirstname">
-                <Form.Label>First name</Form.Label>
+                <Form.Label>{t("First name")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter first name"
+                  placeholder={t("Enter first name")}
                   value={formData.firstName}
                   onChange={firstNameChangeHandler}
                   required
@@ -132,10 +136,10 @@ function EditForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formLastname">
-                <Form.Label>Last name</Form.Label>
+                <Form.Label>{t("Last name")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter last name"
+                  placeholder={t("Enter last name")}
                   value={formData.lastName}
                   onChange={lastNameChangeHandler}
                   required
@@ -145,10 +149,10 @@ function EditForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formEmail">
-                <Form.Label>Email</Form.Label>
+                <Form.Label>{t("Email")}</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter email"
+                  placeholder={t("Enter email")}
                   value={formData.email}
                   onChange={emailChangeHandler}
                   required
@@ -167,10 +171,10 @@ function EditForm() {
               </Form.Group> */}
 
               <Form.Group as={Col} className="" controlId="formNickName">
-                <Form.Label>Nickname</Form.Label>
+                <Form.Label>{t("Nickname")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter nickname"
+                  placeholder={t("Enter nickname")}
                   value={formData.nickname}
                   onChange={nicknameChangeHandler}
                   required
@@ -182,10 +186,10 @@ function EditForm() {
               
 
               <Form.Group as={Col} className="" controlId="formPhoneNumber">
-                <Form.Label>Phone number</Form.Label>
+                <Form.Label>{t("Phone number")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter phone number"
+                  placeholder={t("Enter phone number")}
                   value={formData.tel}
                   onChange={telChangeHandler}
                   required
@@ -193,10 +197,10 @@ function EditForm() {
               </Form.Group>
 
               <Form.Group as={Col} controlId="formFaculty">
-                  <Form.Label>Faculty</Form.Label>
+                  <Form.Label>{t("Faculty")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Select faculty"
+                    placeholder={t("Select faculty")}
                     value={formData.faculty}
                     onChange={facultyChangeHandler}
                     required
@@ -251,8 +255,8 @@ function EditForm() {
             </Row> */}
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="info" type="submit" className="ms-auto">
-                Save Changes
+              <Button variant="info" type="submit" className="ms-auto" disabled={editLoading ? true : false}>
+              {editLoading? t('Loading...'): t('Save Changes')}
               </Button>
             </Stack>
           </Form>

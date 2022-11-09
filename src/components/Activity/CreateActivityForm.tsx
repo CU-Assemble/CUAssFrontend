@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -8,18 +9,26 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
 import Alert from "react-bootstrap/Alert";
+import Image from "react-bootstrap/Image";
 
-import { createActivityAsync, selectCreateMessage, selectCreateError, setCreateError } from "../../features/activityPost/activitySlice";
+import {
+  createActivityAsync,
+  selectCreateMessage,
+  selectCreateError,
+  setCreateError,
+  selectCreateLoading,
+} from "../../features/activityPost/activitySlice";
+import { selectUser } from "../../features/user/userSlice";
 import { NewActivity } from "../../models/activityTypes";
 import { MultiSelect } from "react-multi-select-component";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const options = [
   { label: "Sport", value: "sport" },
-  { label: "Food", value: "food"},
-  { label: "Music", value: "music"},
-  { label: "Arts", value: "arts"},
-  { label: "Game", value: "game"},
+  { label: "Food", value: "food" },
+  { label: "Music", value: "music" },
+  { label: "Arts", value: "arts" },
+  { label: "Game", value: "game" },
   { label: "Board game", value: "boardGame" },
   { label: "Travel", value: "travel" },
   { label: "Study", value: "study" },
@@ -29,8 +38,11 @@ const options = [
 function CreateActivityForm() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const createMessage = useAppSelector(selectCreateMessage)
+  const createMessage = useAppSelector(selectCreateMessage);
   const errorMessage = useAppSelector(selectCreateError);
+  const user = useAppSelector(selectUser);
+  const createLoading = useAppSelector(selectCreateLoading);
+  const { t } = useTranslation('translation');
 
   const [formData, setFormData] = useState<NewActivity>({});
   const [selectedType, setSelectedType] = useState<any[]>([]);
@@ -45,15 +57,28 @@ function CreateActivityForm() {
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    console.log({Name: formData.Name,
+      Description: formData.Description || '',
+      ActivityType: selectedType.map((x) => x.value),
+      Location: formData.Location,
+      MaxParticipant: formData.MaxParticipant,
+      Date: formData.Date,
+      Duration: formData.Duration,
+      ImageProfile: formData.ImageProfile || '',
+      OwnerId: user.studentId,})
+    
     dispatch(
       createActivityAsync({
         Name: formData.Name,
-        Description: formData.Description,
-        Type: selectedType.map(x => x.value),
+        Description: formData.Description || '',
+        ActivityType: selectedType.map((x) => x.value),
         Location: formData.Location,
         MaxParticipant: formData.MaxParticipant,
-        Date: formData.Date,
+        // Date: formData.Date,
+        Date: "0",
         Duration: formData.Duration,
+        ImageProfile: formData.ImageProfile || '',
+        OwnerId: user.studentId,
       })
     );
     setRedirect(true);
@@ -89,6 +114,17 @@ function CreateActivityForm() {
       return { ...prevState, Description: event.target.value };
     });
   };
+  const imageChangeHandler = (event: any) => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prevState: NewActivity) => {
+        return { ...prevState, ImageProfile: reader.result as string };
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const CreateError = (
     <Alert
@@ -105,15 +141,15 @@ function CreateActivityForm() {
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-        {errorMessage && CreateError}
-          <h1 className="mb-3">New Activity</h1>
+          {errorMessage && CreateError}
+          <h1 className="mb-3">{t("New Activity")}</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formEventName">
-                <Form.Label>Event Name</Form.Label>
+                <Form.Label>{t("Event Name")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter event name"
+                  placeholder={t("Enter event name")}
                   value={formData.Name}
                   onChange={nameChangeHandler}
                   required
@@ -122,10 +158,10 @@ function CreateActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formMaxParticipants">
-                <Form.Label>Max Participants</Form.Label>
+                <Form.Label>{t("Max Participants")}</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter max participants"
+                  placeholder={t("Enter max participants")}
                   min="2"
                   max="50"
                   value={formData.MaxParticipant}
@@ -137,10 +173,10 @@ function CreateActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formLocation">
-                <Form.Label>Location</Form.Label>
+                <Form.Label>{t("Location")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter location"
+                  placeholder={t("Enter location")}
                   value={formData.Location}
                   onChange={locationChangeHandler}
                   required
@@ -148,7 +184,7 @@ function CreateActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="actType">
-                <Form.Label>Activity Type</Form.Label>
+                <Form.Label>{t("Activity Type")}</Form.Label>
                 <MultiSelect
                   options={options}
                   value={selectedType}
@@ -156,16 +192,11 @@ function CreateActivityForm() {
                   labelledBy="Select"
                 />
               </Form.Group>
-
-              {/* <Form.Group as={Col} className="" controlId="formImgFile">
-                <Form.Label>Picture</Form.Label>
-                <Form.Control type="file" required />
-              </Form.Group> */}
             </Row>
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formDateTime">
-                <Form.Label>Date & Time</Form.Label>
+                <Form.Label>{t("Date & Time")}</Form.Label>
                 <Form.Control
                   type="datetime-local"
                   value={formData.Date}
@@ -175,10 +206,10 @@ function CreateActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formDuration">
-                <Form.Label>Duration (minutes)</Form.Label>
+                <Form.Label>{t("Duration (minutes)")}</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter duration of the activity"
+                  placeholder={t("Enter duration of the activity")}
                   min="5"
                   max="2000"
                   value={formData.Duration}
@@ -190,7 +221,7 @@ function CreateActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formDesc">
-                <Form.Label>Description</Form.Label>
+                <Form.Label>{t("Description")}</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -200,9 +231,26 @@ function CreateActivityForm() {
               </Form.Group>
             </Row>
 
+            <Row className="mb-3">
+              <Form.Group as={Col} className="" controlId="formImgFile">
+                <Form.Label>{t("Picture")}</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={imageChangeHandler}
+                />
+              </Form.Group>
+            </Row>
+            {formData.ImageProfile && (
+              <Image
+                className="imgPreview mb-3"
+                src={formData.ImageProfile}
+                alt="preview"
+              />
+            )}
+
             <Stack direction="horizontal" gap={3}>
-              <Button variant="success" type="submit" className="ms-auto">
-                Create
+              <Button variant="success" type="submit" className="ms-auto" disabled={createLoading ? true : false}>
+              {createLoading? t('Loading...'): t('Create')}
               </Button>
             </Stack>
           </Form>

@@ -8,6 +8,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Stack from "react-bootstrap/Stack";
 import Alert from "react-bootstrap/Alert";
+import Image from "react-bootstrap/Image";
+
 import { MultiSelect } from "react-multi-select-component";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -17,7 +19,9 @@ import {
   selectEditMessage,
   selectEditError,
   setEditError,
+  selectEditLoading,
 } from "../../features/activityPost/activitySlice";
+import { selectUser } from "../../features/user/userSlice";
 import { NewActivity } from "../../models/activityTypes";
 
 const options = [
@@ -49,9 +53,11 @@ function EditActivityForm() {
   const activityDetail = useAppSelector(selectActivity);
   const editMessage = useAppSelector(selectEditMessage);
   const errorMessage = useAppSelector(selectEditError);
+  const editLoading = useAppSelector(selectEditLoading);
+  const user = useAppSelector(selectUser);
   console.log(activityDetail);
 
-  const [formData, setFormData] = useState<NewActivity>({ActivityId: id});
+  const [formData, setFormData] = useState<NewActivity>({ ActivityId: id });
   const [selectedType, setSelectedType] = useState<any[]>([]);
   const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
 
@@ -68,22 +74,22 @@ function EditActivityForm() {
       const newUserState = {
         Name: activityDetail.name,
         Description: activityDetail.desc,
-        // ImageProfile?: string,
-        //Type: activityDetail.activityType,
-        Type: ["game", "boardGame"],
+        ImageProfile: activityDetail.url,
+        ActivityType: activityDetail.activityType? activityDetail.activityType: [],
         Location: activityDetail.location,
         MaxParticipant: activityDetail.maxParticipant,
         Date: activityDetail.date,
         Duration: activityDetail.duration,
+        OwnerId: user.studentId,
       };
       return { ...prevState, ...newUserState };
     });
-    setSelectedType(mapDataToOption(["game", "walk","boardGame"]))
+    setSelectedType(mapDataToOption(activityDetail.activityType? activityDetail.activityType: []));
   }, [activityDetail]);
 
   useEffect(() => {
     setShowSuccessPopup(editMessage == "success");
-  }, [editMessage])
+  }, [editMessage]);
 
   const formSubmissionHandler = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -92,11 +98,13 @@ function EditActivityForm() {
         ActivityId: formData.ActivityId,
         Name: formData.Name,
         Description: formData.Description,
-        Type: selectedType.map(x => x.value),
+        ActivityType: selectedType.map((x) => x.value),
         Location: formData.Location,
         MaxParticipant: formData.MaxParticipant,
-        Date: formData.Date,
+        Date: "0",
         Duration: formData.Duration,
+        ImageProfile: formData.ImageProfile,
+        OwnerId: user.studentId,
       })
     );
   };
@@ -131,6 +139,17 @@ function EditActivityForm() {
       return { ...prevState, Description: event.target.value };
     });
   };
+  const imageChangeHandler = (event: any) => {
+    const file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prevState: NewActivity) => {
+        return { ...prevState, ImageProfile: reader.result as string };
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   const EditSuccess = (
     <Alert
@@ -157,8 +176,8 @@ function EditActivityForm() {
     <Container className="my-5">
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-        {showSuccessPopup && EditSuccess}
-        {errorMessage && EditError}
+          {showSuccessPopup && EditSuccess}
+          {errorMessage && EditError}
           <h1 className="mb-3">Edit Activity</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
@@ -209,11 +228,6 @@ function EditActivityForm() {
                   labelledBy="Select"
                 />
               </Form.Group>
-
-              {/* <Form.Group as={Col} className="" controlId="formImgFile">
-                <Form.Label>Picture</Form.Label>
-                <Form.Control type="file" required />
-              </Form.Group> */}
             </Row>
 
             <Row className="mb-3">
@@ -253,9 +267,26 @@ function EditActivityForm() {
               </Form.Group>
             </Row>
 
+            <Row className="mb-3">
+              <Form.Group as={Col} className="" controlId="formImgFile">
+                <Form.Label>Picture</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={imageChangeHandler}
+                />
+              </Form.Group>
+            </Row>
+            {formData.ImageProfile && (
+              <Image
+                className="imgPreview mb-3"
+                src={formData.ImageProfile}
+                alt="preview"
+              />
+            )}
+
             <Stack direction="horizontal" gap={3}>
-              <Button variant="outline-info" type="submit" className="ms-auto">
-                Save Changes
+              <Button variant="outline-info" type="submit" className="ms-auto" disabled={editLoading ? true : false}>
+                {editLoading? 'Loading...': 'Save Changes'}
               </Button>
             </Stack>
           </Form>

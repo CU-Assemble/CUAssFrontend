@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -15,6 +16,7 @@ import {
   selectRegisterMessage,
   selectRegisterError,
   setRegisterError,
+  selectRegisterLoading
 } from "../../features/user/userSlice";
 import { RegisterInput } from "../../models/userTypes";
 
@@ -23,6 +25,8 @@ function RegisterForm() {
   const dispatch = useAppDispatch();
   const registerMessage = useAppSelector(selectRegisterMessage);
   const errorMessage = useAppSelector(selectRegisterError);
+  const registerLoading = useAppSelector(selectRegisterLoading);
+  const { t } = useTranslation('translation');
   
   const [formData, setFormData] = useState<RegisterInput>({});
   const [passwordValid, setPasswordValid] = useState<boolean>(true);
@@ -131,14 +135,14 @@ function RegisterForm() {
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
         {errorMessage && RegisterError}
-          <h1 className="mb-3">Register</h1>
+          <h1 className="mb-3">{t("Register")}</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formFirstname">
-                <Form.Label>First name</Form.Label>
+                <Form.Label>{t("First name")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter first name"
+                  placeholder={t("Enter first name")}
                   value={formData.firstName}
                   onChange={firstNameChangeHandler}
                   required
@@ -147,10 +151,10 @@ function RegisterForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formLastname">
-                <Form.Label>Last name</Form.Label>
+                <Form.Label>{t("Last name")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter last name"
+                  placeholder={t("Enter last name")}
                   value={formData.lastName}
                   onChange={lastNameChangeHandler}
                   required
@@ -160,10 +164,10 @@ function RegisterForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formEmail">
-                <Form.Label>Email</Form.Label>
+                <Form.Label>{t("Email")}</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter email"
+                  placeholder={t("Enter email")}
                   value={formData.email}
                   onChange={emailChangeHandler}
                   required
@@ -171,10 +175,10 @@ function RegisterForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formStudentID">
-                <Form.Label>Student ID</Form.Label>
+                <Form.Label>{t("Student ID")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter student ID"
+                  placeholder={t("Enter student ID")}
                   value={formData.studentId}
                   onChange={studentIdChangeHandler}
                   isInvalid={!idValid}
@@ -188,10 +192,10 @@ function RegisterForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formNickName">
-                <Form.Label>Nickname</Form.Label>
+                <Form.Label>{t("Nickname")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter nickname"
+                  placeholder={t("Enter nickname")}
                   value={formData.nickname}
                   onChange={nicknameChangeHandler}
                   required
@@ -199,10 +203,10 @@ function RegisterForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formPhoneNumber">
-                <Form.Label>Phone number</Form.Label>
+                <Form.Label>{t("Phone number")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter phone number"
+                  placeholder={t("Enter phone number")}
                   value={formData.tel}
                   onChange={telChangeHandler}
                   required
@@ -213,10 +217,10 @@ function RegisterForm() {
             <Row className="mb-3">
               <Col xs={6}>
                 <Form.Group as={Col} controlId="formFaculty">
-                  <Form.Label>Faculty</Form.Label>
+                  <Form.Label>{t("Faculty")}</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Select faculty"
+                    placeholder={t("Select faculty")}
                     value={formData.faculty}
                     onChange={facultyChangeHandler}
                     required
@@ -234,10 +238,10 @@ function RegisterForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formPassword">
-                <Form.Label>Password</Form.Label>
+                <Form.Label>{t("Password")}</Form.Label>
                 <Form.Control
                   type="password"
-                  placeholder="Enter password"
+                  placeholder={t("Enter password")}
                   value={formData.password}
                   onChange={passwordChangeHandler}
                   required
@@ -245,10 +249,10 @@ function RegisterForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formConfirmPassword">
-                <Form.Label>Confirm password</Form.Label>
+                <Form.Label>{t("Confirm password")}</Form.Label>
                 <Form.Control
                   type="password"
-                  placeholder="Please re-enter your password"
+                  placeholder={t("Please re-enter your password")}
                   value={formData.cfPassword}
                   onChange={cfPasswordChangeHandler}
                   isInvalid={!passwordValid}
@@ -261,8 +265,8 @@ function RegisterForm() {
             </Row>
 
             <Stack direction="horizontal" gap={3}>
-              <Button variant="success" type="submit" className="ms-auto">
-                Sign Up
+              <Button variant="success" type="submit" className="ms-auto" disabled={registerLoading ? true : false}>
+              {registerLoading? t('Loading...'): t('Sign Up')}
               </Button>
             </Stack>
           </Form>

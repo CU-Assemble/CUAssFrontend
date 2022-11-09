@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 
@@ -10,18 +11,40 @@ import Card from "react-bootstrap/Card";
 
 import "./ActivityCard.css";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
+import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
 
 // interface CardPropsObj {
 //   cardProps: Activity;
 // }
 
-const requestJoinActivity = () => {
+const requestAttendActivity = () => {
   alert("clicked join");
 }
+
+const requestLeaveActivity = () => {
+  alert("clicked leave");
+}
+
+// const requestEditActivity = () => {
+//   alert("clicked edit");
+// }
+
+const requestDeleteActivity = () => {
+  alert("clicked delete");
+}
+
 
 export default function ActivityCard(props: {activityDetail:Activity}) { //Activity
 
   const activityDetail = props.activityDetail
+
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const currentUser = useAppSelector(selectUser);
+
+  const dispatch = useAppDispatch();
+
+  const isParticipant = ((activityDetail.participants !== undefined) && (currentUser.studentId !== undefined) && activityDetail.participants.indexOf(currentUser.studentId) > -1)
+  const isOwner = (activityDetail.ownerID === currentUser.studentId)
 
   console.log(activityDetail)
   
@@ -37,7 +60,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
           }
         />
         <Card.Body>
-          <Card.Title><a href={`/activity/${activityDetail.id}`}>Event : {activityDetail.name}</a></Card.Title>
+          <Card.Title><Link to={`/activity/${activityDetail.id}`}>Event : {activityDetail.name}</Link></Card.Title>
         </Card.Body>
         <ListGroup className="list-group-flush">
           {/* <ListGroup.Item>{`Date : ${(new Date(date)).toUTCString()}`}</ListGroup.Item> */}
@@ -46,13 +69,43 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
         </ListGroup>
         <Card.Footer>
           <div>
-            <Button
+            {/* check if current user is owner? */}
+            {!isOwner? <Button
               variant="success"
-              className="join-activity-button"
-              onClick={requestJoinActivity}
-            >
-              Join
-            </Button>
+              className="activity-card-btn join-activity-button"
+              onClick={requestAttendActivity}
+              disabled={!(isLoggedIn && !isParticipant)}
+            > {isParticipant? "Joined" : "Join"}
+            </Button> : null}
+
+            {(!isOwner 
+              && activityDetail.ownerID !== currentUser.studentId 
+              && isParticipant)? <Button
+              variant="danger"
+              className="activity-card-btn leave-activity-button"
+              onClick={requestLeaveActivity}
+              disabled={!(isLoggedIn && isParticipant)}
+            > Leave
+            </Button> : null}
+
+            {isOwner? <Button
+              variant="outline-info"
+              className="activity-card-btn edit-activity-button"
+              //onClick={requestEditActivity}
+              as={Link as any}
+              to={`/myactivities/${activityDetail.id}`}
+              disabled={!isLoggedIn}
+            > Edit
+            </Button> : null}
+
+            {isOwner? <Button
+              variant="danger"
+              className="activity-card-btn delete-activity-button"
+              onClick={requestDeleteActivity}
+              disabled={!isLoggedIn}
+            > Delete
+            </Button> : null}
+
           </div>
         </Card.Footer>
       </Card>

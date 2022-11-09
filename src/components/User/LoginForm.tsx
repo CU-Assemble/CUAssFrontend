@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -26,7 +27,9 @@ function LoginForm() {
   const user = useAppSelector(selectUser);
   const loginMessage = useAppSelector(selectLoginMessage);
   const errorMessage = useAppSelector(selectLoginError);
+  const loginLoading = useAppSelector(selectLoginLoading);
   const navigate = useNavigate();
+  const { t } = useTranslation('translation');
 
   const [studentId, setStudentId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -66,14 +69,14 @@ function LoginForm() {
       <Row>
         <Col md={{ span: 6, offset: 3 }}>
           {errorMessage && LoginError}
-          <h1 className="mb-3">Login</h1>
+          <h1 className="mb-3">{t("Login")}</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Form.Group className="mb-3" controlId="formStudentIDEmail">
-              <Form.Label>Student ID</Form.Label>
+              <Form.Label>{t("Student ID")}</Form.Label>
               <Form.Control
                 type="text"
                 value={studentId}
-                placeholder="Enter student ID"
+                placeholder={t("Enter student ID")}
                 onChange={studentIdChangeHandler}
                 required
                 autoFocus
@@ -81,11 +84,11 @@ function LoginForm() {
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="formPassword">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>{t("Password")}</Form.Label>
               <Form.Control
                 type="password"
                 value={password}
-                placeholder="Enter password"
+                placeholder={t("Enter password")}
                 onChange={passwordChangeHandler}
                 required
               />
@@ -98,10 +101,10 @@ function LoginForm() {
                 to="/createprofile"
                 className="ms-auto"
               >
-                Register
+                {t("Register")}
               </Button>
-              <Button variant="success" type="submit" className="">
-                Submit
+              <Button variant="success" type="submit" className="" disabled={loginLoading ? true : false}>
+                {loginLoading? t('Loading...'): t('Submit')}
               </Button>
             </Stack>
           </Form>
