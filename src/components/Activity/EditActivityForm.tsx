@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -55,7 +56,7 @@ function EditActivityForm() {
   const errorMessage = useAppSelector(selectEditError);
   const editLoading = useAppSelector(selectEditLoading);
   const user = useAppSelector(selectUser);
-  console.log(activityDetail);
+  const { t } = useTranslation('translation');
 
   const [formData, setFormData] = useState<NewActivity>({ ActivityId: id });
   const [selectedType, setSelectedType] = useState<any[]>([]);
@@ -178,14 +179,14 @@ function EditActivityForm() {
         <Col md={{ span: 10, offset: 1 }}>
           {showSuccessPopup && EditSuccess}
           {errorMessage && EditError}
-          <h1 className="mb-3">Edit Activity</h1>
+          <h1 className="mb-3">{t("Edit Activity")}</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formEventName">
-                <Form.Label>Event Name</Form.Label>
+                <Form.Label>{t("Event Name")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter event name"
+                  placeholder={t("Enter event name")}
                   value={formData.Name}
                   onChange={nameChangeHandler}
                   required
@@ -194,10 +195,10 @@ function EditActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formMaxParticipants">
-                <Form.Label>Max Participants</Form.Label>
+                <Form.Label>{t("Max Participants")}</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter max participants"
+                  placeholder={t("Enter max participants")}
                   value={formData.MaxParticipant}
                   onChange={maxParticipantChangeHandler}
                   min="2"
@@ -209,10 +210,10 @@ function EditActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formLocation">
-                <Form.Label>Location</Form.Label>
+                <Form.Label>{t("Location")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter location"
+                  placeholder={t("Enter location")}
                   value={formData.Location}
                   onChange={locationChangeHandler}
                   required
@@ -220,7 +221,7 @@ function EditActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="actType">
-                <Form.Label>Activity Type</Form.Label>
+                <Form.Label>{t("Activity Type")}</Form.Label>
                 <MultiSelect
                   options={options}
                   value={selectedType}
@@ -232,7 +233,7 @@ function EditActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formDateTime">
-                <Form.Label>Date & Time</Form.Label>
+                <Form.Label>{t("Date & Time")}</Form.Label>
                 <Form.Control
                   type="datetime-local"
                   value={formData.Date}
@@ -242,10 +243,10 @@ function EditActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formDuration">
-                <Form.Label>Duration (minutes)</Form.Label>
+                <Form.Label>{t("Duration (minutes)")}</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter duration of the activity"
+                  placeholder={t("Enter duration of the activity")}
                   value={formData.Duration}
                   onChange={durationChangeHandler}
                   min="5"
@@ -257,7 +258,7 @@ function EditActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formDesc">
-                <Form.Label>Description</Form.Label>
+                <Form.Label>{t("Description")}</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -269,7 +270,7 @@ function EditActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formImgFile">
-                <Form.Label>Picture</Form.Label>
+                <Form.Label>{t("Picture")}</Form.Label>
                 <Form.Control
                   type="file"
                   onChange={imageChangeHandler}
@@ -286,7 +287,7 @@ function EditActivityForm() {
 
             <Stack direction="horizontal" gap={3}>
               <Button variant="outline-info" type="submit" className="ms-auto" disabled={editLoading ? true : false}>
-                {editLoading? 'Loading...': 'Save Changes'}
+                {editLoading? t('Loading...'): t('Save Changes')}
               </Button>
             </Stack>
           </Form>

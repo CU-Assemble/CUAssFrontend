@@ -43,5 +43,6 @@
     "Enter duration of the activity": "กรุณากรอกระยะเวลาของกิจกรรม",
     "Description": "รายละเอียด",
     "Picture": "รูปภาพประกอบ",
-    "Create": "สร้าง"
+    "Create": "สร้าง",
+    "Edit Activity": "แก้ไขข้อมูลกิจกรรม"
 }
