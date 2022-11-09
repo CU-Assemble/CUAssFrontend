@@ -30,5 +30,18 @@
     "Sign Up": "สมัคร",
     "Submit": "ส่ง",
     "Save Changes": "บันทึกการเปลี่ยนแปลง",
-    "Edit Profile": "แก้ไขข้อมูลผู้ใช้"
+    "Edit Profile": "แก้ไขข้อมูลผู้ใช้",
+    "Event Name": "ชื่อกิจกรรม",
+    "Enter event name": "กรุณากรอกชื่อกิจกรรม",
+    "Max Participants": "จำนวนผู้เข้าร่วมสูงสุด",
+    "Enter max participants": "กรุณากรอกจำนวนผู้เข้าร่วมสูงสุด",
+    "Location": "สถานที่",
+    "Enter location": "กรุณากรอกสถานที่",
+    "Activity Type": "ประเภทกิจกรรม",
+    "Date & Time": "วันที่ และเวลา",
+    "Duration (minutes)": "ระยะเวลา (นาที)",
+    "Enter duration of the activity": "กรุณากรอกระยะเวลาของกิจกรรม",
+    "Description": "รายละเอียด",
+    "Picture": "รูปภาพประกอบ",
+    "Create": "สร้าง"
 }
