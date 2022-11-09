@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { RootState } from "../../app/store";
 import { 
     fetchActivityById, 
+    resetStatusState,
     joinActivityAsync, 
     selectJoinActivityMessage, 
     leaveActivityAsync, 
@@ -159,8 +160,9 @@ export default function ActivityPage() {
     useEffect(() => {
         console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
         if ((joinActivityMessage === "success") || (leaveActivityMessage === "success") || (deleteMatchingAsyncMessage === "success")) {
-            navigate("/dashboard")
+            navigate("/myactivities")
             console.log("something success!!!")
+            dispatch(resetStatusState());
         }
     }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
 
