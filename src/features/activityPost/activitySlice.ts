@@ -178,6 +178,7 @@ const activitySlice = createSlice({
     setEditError: (state, action: PayloadAction<string>) => {
       state.status.edit.error = action.payload;
     },
+    resetState: () => initialState
   },
   extraReducers: (builder) => {
     builder.addCase(fetchActivities.fulfilled,(state, action) => {
@@ -267,7 +268,7 @@ const activitySlice = createSlice({
   }
 })
 
-export const { setActivities, setCreateError, setEditError } = activitySlice.actions;
+export const { setActivities, setCreateError, setEditError, resetState} = activitySlice.actions;
 
 export const selectActivity = (state: RootState) =>
   state.activityReducer.activity;
