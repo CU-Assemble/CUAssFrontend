@@ -28,6 +28,13 @@ const getDefaultImg = () => {
 
 }
 
+const sidToYearConverter = (sid:string) => {
+    let y = parseInt(sid.slice(0, 2))+2500-543;
+    let currentYear = new Date().getFullYear();
+    return currentYear-y;
+    
+}
+
 export default function ParticipantCard(props : {user:User}) {
 
     //call getuserbyid
@@ -94,11 +101,11 @@ export default function ParticipantCard(props : {user:User}) {
                             </img>
                         </Col>
                         <Col sm={7} md={7}>
-                            <Card.Text style={{textAlign:"left"}}>
+                            <div style={{textAlign:"left"}}>
                                 <p>Name : {props.user.name}</p>
                                 <p>Faculty : {props.user.faculty}</p>
-                                <p>Year : {"4"}</p>
-                            </Card.Text>
+                                {props.user.studentId!==undefined? (<p>Year : {sidToYearConverter(props.user.studentId)}</p>) : <p>Year : Error</p>}
+                            </div>
                         </Col>
                     </Row>
                 </Card.Body>

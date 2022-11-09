@@ -20,7 +20,7 @@ import ParticipantCard from "../User/ParticipantCard";
 import Figure from 'react-bootstrap/Figure';
 import Image from 'react-bootstrap/Image'
 import { getArraySlice } from "../Dashboard/Dashboard";
-import { deleteMatchingAsync, fetchMatchingByActivityId, fetchMatchingById, selectDeleteMatchingAsyncMessage, selectfetchMatchingByActivityIdError, selectfetchMatchingByActivityIdMessage, selectMatching, setMatching } from "../../features/matching/matchingSlice";
+import { deleteMatchingAsync, fetchMatchingByActivityId, fetchMatchingById, selectDeleteMatchingAsyncMessage, selectfetchMatchingByActivityIdError, selectfetchMatchingByActivityIdMessage, selectMatching, selectParticipantsFromMatching, setMatching } from "../../features/matching/matchingSlice";
 import { User } from "../../models/userTypes";
 import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
 
@@ -52,14 +52,6 @@ export default function ActivityPage() {
     const currentUser = useAppSelector(selectUser);
     
     const activity = useAppSelector(selectActivity)
-    
-    const [activityDetail, setActivityDetail]  = useState(activity)
-
-    const [participants, setParticipants] = useState<User[]>([])
-
-    const isParticipant = ((participants !== undefined) && (currentUser.studentId !== undefined) && checkStudentIdInParticipantList(participants, currentUser.studentId))
-    const isOwner = (activityDetail.ownerID === currentUser.studentId)
-
     const fetchActivityMessage = useAppSelector(selectFetchActivityByIdMessage)
     const fetchMatchingByActivityIdMessage = useAppSelector(selectfetchMatchingByActivityIdMessage)
 
@@ -68,6 +60,13 @@ export default function ActivityPage() {
     const deleteMatchingAsyncMessage = useAppSelector(selectDeleteMatchingAsyncMessage)
     
     const matching = useAppSelector(selectMatching)
+    const participants = useAppSelector(selectParticipantsFromMatching)
+    
+    // const [activityDetail, setActivityDetail]  = useState(activity)
+    // const [participants, setParticipants] = useState<User[]>([])
+
+    const isParticipant = ((participants !== undefined) && (currentUser.studentId !== undefined) && checkStudentIdInParticipantList(participants, currentUser.studentId))
+    const isOwner = (activity.ownerID === currentUser.studentId)
     
     const [showAllParticipant, setShowAllParticipant] = useState(false)
     const [max_rows, setMaxRows] = useState(1);
@@ -76,7 +75,6 @@ export default function ActivityPage() {
     //     await dispatch(fetchActivityById(id));
     // }
 
-    
     const requestAttendActivity = (e:React.FormEvent, aid:string) => {
         // alert("clicked join");
         e.preventDefault()
@@ -122,40 +120,40 @@ export default function ActivityPage() {
         }
     }, []);
 
-    useEffect(() => {
-        if (fetchActivityMessage == "success") {
-            console.log("load success")
-            setActivityDetail(activity)
-        } else {
-            console.log("error")
-            console.log(activity)
-        }
-    }, [fetchActivityMessage]);
+    // useEffect(() => {
+    //     if (fetchActivityMessage === "success") {
+    //         console.log("load success")
+    //         setActivityDetail(activity)
+    //     } else {
+    //         console.log("error")
+    //         console.log(activity)
+    //     }
+    // }, [fetchActivityMessage]);
 
-    useEffect(() => {
-        if (fetchMatchingByActivityIdMessage == "success") {
-            console.log("load success")
+    // useEffect(() => {
+    //     if (fetchMatchingByActivityIdMessage === "success") {
+    //         console.log("load success")
 
-            console.log(matching)
-            setMatching(matching)
-            setParticipants(matching.participants)
-            console.log(participants)
+    //         console.log(matching)
+    //         setMatching(matching)
+    //         setParticipants(matching.participants)
+    //         console.log(participants)
 
-        } else {
-            console.log("error")
-            console.log(matching)
-        }
-    }, [fetchMatchingByActivityIdMessage]);
+    //     } else {
+    //         console.log("error")
+    //         console.log(matching)
+    //     }
+    // }, [fetchMatchingByActivityIdMessage]);
 
-    useEffect(() => {
-        if (fetchActivityMessage == "success") {
-            console.log("load success")
-            setActivityDetail(activity)
-        } else {
-            console.log("error")
-            console.log(activity)
-        }
-    }, [fetchActivityMessage]);
+    // useEffect(() => {
+    //     if (fetchActivityMessage === "success") {
+    //         console.log("load success")
+    //         setActivityDetail(activity)
+    //     } else {
+    //         console.log("error")
+    //         console.log(activity)
+    //     }
+    // }, [fetchActivityMessage]);
 
     // console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
     useEffect(() => {
@@ -199,7 +197,9 @@ export default function ActivityPage() {
         }
         else {
             console.log("oh no")
-            console.log(activityDetail)
+            console.log(activity)
+            console.log(matching)
+            console.log(participants)
             return <div></div>
         }
     }
@@ -220,25 +220,25 @@ export default function ActivityPage() {
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>Date</Accordion.Header>
                     <Accordion.Body>
-                        {activityDetail.date}
+                        {activity.date}
                     </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
                     <Accordion.Header>Location</Accordion.Header>
                     <Accordion.Body>
-                        {activityDetail.location}
+                        {activity.location}
                     </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="2">
                     <Accordion.Header>Description</Accordion.Header>
                     <Accordion.Body>
-                        {activityDetail.desc}
+                        {activity.desc}
                     </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="3">
                     <Accordion.Header>Number of Participant</Accordion.Header>
                     <Accordion.Body>
-                        {participants? participants.length : 0}/{activityDetail.maxParticipant}
+                        {participants? participants.length : 0}/{activity.maxParticipant}
                     </Accordion.Body>
                 </Accordion.Item>
             </Accordion>
@@ -263,13 +263,13 @@ export default function ActivityPage() {
                         className="img img-thumbnail rounded mx-auto d-block"
                         style={{"height":"400px", "margin":"2%", "objectFit": "contain"}}
                         alt="Activity Image"
-                        src={activityDetail.url}>
+                        src={activity.url}>
                         {/* src={"https://wallpaperaccess.com/full/12313.jpg"}> */}
                     </Image>
                     <div style={{"marginTop":"2%", "marginBottom":"2%", "marginLeft":"5%", "marginRight":"5%"}}>
-                        <Row><h2>{activityDetail.name}</h2></Row>
+                        <Row><h2>{activity.name}</h2></Row>
                         {getAccordion()}
-                        {participantCards}
+                        {getParticipantCard(max_rows)}
                         {!isOwner? <Button
                             variant="success"
                             className="activity-card-btn join-activity-button"
@@ -279,7 +279,7 @@ export default function ActivityPage() {
                         </Button> : null}
 
                         {(!isOwner 
-                        && activityDetail.ownerID !== currentUser.studentId 
+                        && activity.ownerID !== currentUser.studentId 
                         && isParticipant)? <Button
                             variant="danger"
                             className="activity-card-btn leave-activity-button"
@@ -293,7 +293,7 @@ export default function ActivityPage() {
                             className="activity-card-btn edit-activity-button"
                             //onClick={requestEditActivity}
                             as={Link as any}
-                            to={`/myactivities/${activityDetail.id}`}
+                            to={`/myactivities/${activity.id}`}
                             disabled={!isLoggedIn}
                             > Edit
                         </Button> : null}

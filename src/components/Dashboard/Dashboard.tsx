@@ -20,7 +20,6 @@ let date: Date = new Date();
 
 //slice array to array of subarray
 export const getArraySlice = (arr: any[], l: number, max_rows: number = 1): any[][] => {
-    console.log(max_rows)
     if (max_rows === -1) {
         max_rows = Math.ceil(arr.length / l)
     }
@@ -29,10 +28,6 @@ export const getArraySlice = (arr: any[], l: number, max_rows: number = 1): any[
         tmp.push(arr.slice(i, i + l))
         if (((i+l)/l) >= max_rows) break
     }
-    console.log(arr)
-    console.log(max_rows)
-    console.log(tmp)
-
     return tmp
 }
 
