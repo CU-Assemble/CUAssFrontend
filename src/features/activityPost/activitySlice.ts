@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { Activity } from "../../models/activityTypes";
+import { Activity, MyActivityResponseType } from "../../models/activityTypes";
 import activityServices from "../../services/activityServices";
 
 import { ActivityResponseType, NewActivity } from "../../models/activityTypes";
@@ -186,6 +186,10 @@ const activitySlice = createSlice({
     builder.addCase(fetchActivities.fulfilled,(state, action) => {
       console.log(action.payload)
       state.activities = action.payload.data.map((e : ActivityResponseType) => ActivityResponseAdapter(e))
+    })
+    .addCase(fetchMyActivities.fulfilled,(state, action) => {
+      console.log(action.payload)
+      state.activities = action.payload.data.data.map((e : MyActivityResponseType) => ActivityResponseAdapter(e.Activity))
     })
     .addCase(createActivityAsync.pending, (state) => {
       state.status.create.message = "loading";

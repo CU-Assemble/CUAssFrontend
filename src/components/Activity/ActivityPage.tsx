@@ -173,27 +173,42 @@ export default function ActivityPage() {
             console.log(tmp)
             return (
                 <div style={{"marginTop":"2%", "marginBottom":"2%"}}>
-                {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
-                    {tmp.map((p : User[], idx_0:number)=>{
-                        //get participantbyid
-                            console.log(p)
-                            return (
-                            <div key={`row_${idx_0}`}>
-                                <Row style={{"marginTop":"1%", "marginBottom":"1%"}}> 
-                                    {/* md = 3 => 3 rows */}
-                                    {p.map((y, idx_1) => {
-                                        return (
-                                            <Col
-                                                key={`card_${idx_1}`} 
-                                                md={{span: 4}}>
-                                                <ParticipantCard user={y}/>
-                                            </Col>
-                                        )
-                                    })}
-                                </Row>
-                            </div>
-                            )
-                    })}
+                    <h2>
+                        Participants
+                        <Button
+                        variant="primary"
+                        className="activity-card-btn add-row-button"
+                        onClick={()=>{
+                            if (!(Math.ceil(participants.length/n_cols) <= max_rows)) {
+                                setMaxRows(max_rows+1)
+                            }}}
+                        disabled={Math.ceil(participants.length/n_cols) <= max_rows}
+                        > Load More
+                    </Button>
+                    </h2>
+                    <div style={{"marginTop":"2%", "marginBottom":"2%"}}>
+                    {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
+                        {tmp.map((p : User[], idx_0:number)=>{
+                            //get participantbyid
+                                console.log(p)
+                                return (
+                                <div key={`row_${idx_0}`}>
+                                    <Row style={{"marginTop":"1%", "marginBottom":"1%"}}> 
+                                        {/* md = 3 => 3 rows */}
+                                        {p.map((y, idx_1) => {
+                                            return (
+                                                <Col
+                                                    key={`card_${idx_1}`} 
+                                                    md={{span: 4}}>
+                                                    <ParticipantCard user={y}/>
+                                                </Col>
+                                            )
+                                        })}
+                                    </Row>
+                                </div>
+                                )
+                        })}
+                    </div>
                 {/* </CardGroup> */}
                 </div>
             )
@@ -218,7 +233,7 @@ export default function ActivityPage() {
 
     const getAccordion = () => {
         return (
-        <div>
+        <div style={{"marginTop":"2%", "marginBottom":"2%"}}>
             <Accordion>
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>Date</Accordion.Header>

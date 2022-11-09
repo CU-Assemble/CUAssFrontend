@@ -59,25 +59,25 @@ export default function Dashboard() {
             {/* <Container className='dashboardContainer'> */}
             <h1>Dashboard</h1>
             {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
-                {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
-                    return (
-                        <CardGroup style={{"marginTop":"1%", "marginBottom":"1%"}}>
-                        <div key={`dashboard_div_${idx}`}>
-                            {/* <Row xs={1} md={3} className="g-4">  */}
-                            <Row>
-                                {/* md = 3 => 3 rows */}
-                                {x.map(y => {
-                                    return (
-                                        <Col>
-                                            <ActivityCard activityDetail={y}/>
-                                        </Col>
-                                    )
-                                })}
-                            </Row>
-                        </div>
-                        </CardGroup>
-                    )
-                })
+            {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
+                return (
+                    <CardGroup style={{"marginTop":"1%", "marginBottom":"1%"}}>
+                    <div key={`dashboard_div_${idx}`}>
+                        {/* <Row xs={1} md={3} className="g-4">  */}
+                        <Row>
+                            {/* md = 3 => 3 rows */}
+                            {x.map(y => {
+                                return (
+                                    <Col>
+                                        <ActivityCard activityDetail={y}/>
+                                    </Col>
+                                )
+                            })}
+                        </Row>
+                    </div>
+                    </CardGroup>
+                )
+            })
             }
             {/* </CardGroup> */}
             <FetchActivityButton txt={"Refresh"}/>

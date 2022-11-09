@@ -26,12 +26,18 @@ export default function MyActivity() {
         dispatch(setActivities(activityList));
     };
 
-    // useEffect(() => {
-    //     dispatch(fetchMyActivities(id))
-    // }, []);
     useEffect(() => {
-        dispatch(fetchActivities())
+        console.log(currentUser)
+        if(currentUser.studentId != undefined){
+            dispatch(fetchMyActivities(currentUser.studentId))
+        } else {
+            navigate("/")
+        }
     }, []);
+    
+    // useEffect(() => {
+    //     dispatch(fetchActivities())
+    // }, []);
 
     const [max_rows, setMaxRows] = useState(-1);
     // const [cards_per_row, setCardPerRows] = useState(4)
@@ -47,11 +53,13 @@ export default function MyActivity() {
             style={{"marginTop":"1%"}}
         > Create New Activity
         </Button>
-        {getArraySlice(activities, cards_per_row, max_rows).map(x => {
-            return (
-                <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
-                    <div>
+        {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
+                return (
+                    <CardGroup style={{"marginTop":"1%", "marginBottom":"1%"}}>
+                    <div key={`dashboard_div_${idx}`}>
+                        {/* <Row xs={1} md={3} className="g-4">  */}
                         <Row>
+                            {/* md = 3 => 3 rows */}
                             {x.map(y => {
                                 return (
                                     <Col>
@@ -61,9 +69,9 @@ export default function MyActivity() {
                             })}
                         </Row>
                     </div>
-                </CardGroup>
-            )
-        })}
+                    </CardGroup>
+                )
+            })}
         <FetchActivityButton txt={"Refresh"}/>
 
     </div>

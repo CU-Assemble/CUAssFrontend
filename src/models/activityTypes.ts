@@ -1,3 +1,5 @@
+import { User } from "./userTypes";
+
 export interface Activity {
   id: string,
   name: string, //key?
@@ -26,6 +28,12 @@ export interface ActivityResponseType {
   Duration: Number,
   ChatId: string,
   ActivityId: string
+}
+
+export interface MyActivityResponseType {
+  Activity: ActivityResponseType,
+  MatchingId: string,
+  ParticipantId: User [],
 }
 
 export interface NewActivity {
