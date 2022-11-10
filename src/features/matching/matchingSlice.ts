@@ -45,6 +45,7 @@ const initialState: MatchingState = {
             name: "",
             ownerID: "",
         },
+        activityId: "",
         matchingId: "",
         participants: []
     },
@@ -74,8 +75,9 @@ const initialState: MatchingState = {
 }
 
 const MatchingResponseAdapter = (e: MatchingResponseType) => <Matching>{
-    activity: e.Activity,
-    matchingId: e.MatchingId,
+    // activity: e.Activity,
+    activityId: e.ActivityId.slice(10,-2),
+    matchingId: e.MatchingId.slice(10,-2),
     participants: e.ParticipantId
 }
 
@@ -104,11 +106,15 @@ export const fetchMatchingByActivityId = createAsyncThunk(
     'matching/getByActivityId',
     async (aid : string) => {
       const response = await matchingService.getMatchingByActivity(aid);
+      // console.log(response)
       if (response.status === 200) {
-        return response.data;
-      } else {
-        return null
+        const responseActivity = await activityServices.get(aid);
+        if (responseActivity.status === 200) {
+          // console.log(responseActivity)
+          return {matching: response.data, activity: responseActivity.data}
+        }
       }
+      return null
     }
 );
 
@@ -185,10 +191,16 @@ const matchingSlice = createSlice({
           .addCase(fetchMatchingByActivityId.fulfilled, (state, action) => {
             state.status.fetchMatchingByActivityId.message = "success";
             state.status.fetchMatchingByActivityId.loading = false;
-            console.log(action.payload.data.data);
-            let tmp = action.payload.data.data
-            tmp.ParticipantId = tmp.ParticipantId.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
+            console.log(action.payload?.matching.data.data);
+            console.log(action.payload?.activity);
+            let tmp = action.payload?.matching.data.data
+            if (tmp.ParticipantId != null){
+              tmp.ParticipantId = tmp.ParticipantId.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
+            } else {
+              tmp.ParticipantId = []
+            }
             state.matching = MatchingResponseAdapter(tmp)
+            state.matching.activity = action.payload?.activity
             console.log(state.matching)
             // state.matching.participants = state.matching.participants.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
           })
