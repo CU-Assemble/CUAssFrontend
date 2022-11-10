@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
@@ -39,6 +39,7 @@ import { deleteMatchingAsync } from "../../features/matching/matchingSlice";
 
 export default function ActivityCard(props: {activityDetail:Activity, activityInfo:MyActivityResponseType|undefined}) { //Activity
   const { t } = useTranslation('translation');
+  const navigate = useNavigate();
 
   const activityDetail = props.activityDetail
   const activityInfo = props.activityInfo
@@ -65,6 +66,7 @@ export default function ActivityCard(props: {activityDetail:Activity, activityIn
             aid: aid, 
             sid: currentUser.studentId}
         ));
+        navigate("/")
     } else {
         console.log("request attend no userid")
     }
@@ -78,6 +80,7 @@ const requestLeaveActivity = (e:React.FormEvent, aid: string) => {
             aid: aid, 
             sid: currentUser.studentId}
         ));
+        navigate("/")
     } else {
         console.log("request leave no userid")
     }
@@ -87,6 +90,7 @@ const requestDeleteActivity = (e:React.FormEvent, mid: string) => {
     // alert("clicked delete");
     e.preventDefault()
     dispatch(deleteMatchingAsync(mid));
+    navigate("/")
 }
   
   return (
