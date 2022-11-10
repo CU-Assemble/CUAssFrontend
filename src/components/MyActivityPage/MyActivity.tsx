@@ -30,7 +30,7 @@ export default function MyActivity() {
 
     useEffect(() => {
         console.log(currentUser)
-        if(currentUser.studentId != undefined){
+        if (currentUser.studentId != undefined){
             dispatch(fetchMyActivities(currentUser.studentId))
         } else {
             navigate("/")
