@@ -7,10 +7,15 @@ import { ActivityResponseType, NewActivity } from "../../models/activityTypes";
 
 //https://stackoverflow.com/questions/61704805/getting-an-error-a-non-serializable-value-was-detected-in-the-state-when-using
 
+export const cleanObjectId = (id:string) => {
+  return id.replace('ObjectID("',"").replace('")',"")
+}
+
 export interface activitiesState {
   activity: Activity
   activities: Activity[],
   myActivities: Activity[],
+  myActivitiesWithInfo: MyActivityResponseType[],
   cardsPerRow: number,
   status: {
     create: {
@@ -67,6 +72,7 @@ const initialState: activitiesState = {
   },
   activities: [],
   myActivities: [],
+  myActivitiesWithInfo: [],
   cardsPerRow: 5,
   status: {
     create: {
@@ -179,6 +185,9 @@ const activitySlice = createSlice({
     setMyActivities: (state, action: PayloadAction<Activity[]>) => {
       state.myActivities = [...action.payload];
     },
+    setMyActivitiesWithInfo: (state, action: PayloadAction<MyActivityResponseType[]>) => {
+      state.myActivitiesWithInfo = [...action.payload];
+    },
     setCreateError: (state, action: PayloadAction<string>) => {
       state.status.create.error = action.payload;
     },
@@ -197,6 +206,14 @@ const activitySlice = createSlice({
     .addCase(fetchMyActivities.fulfilled,(state, action) => {
       console.log(action.payload)
       state.myActivities = action.payload.data.data.map((e : MyActivityResponseType) => ActivityResponseAdapter(e.Activity))
+      state.myActivitiesWithInfo = action.payload.data.data.map((e : MyActivityResponseType) => {
+        return {
+          Activity: e.Activity,
+          MatchingId: cleanObjectId(e.MatchingId),
+          ParticipantId: e.ParticipantId
+        }
+      })
+      console.log(state.myActivitiesWithInfo)
       // for (let i=0; i<state.myActivities.length;i++) {
       //   state.myActivitiesMap.set(state.myActivities[i].id, action.payload.data.data[i])
       // }
@@ -292,6 +309,9 @@ export const selectActivity = (state: RootState) =>
 
 export const selectMyActivities = (state: RootState) =>
   state.activityReducer.myActivities;
+
+export const selectMyActivitiesWithInfo = (state: RootState) =>
+  state.activityReducer.myActivitiesWithInfo;
 
 export const selectCardsPerRow = (state: RootState) =>
   state.activityReducer.cardsPerRow;

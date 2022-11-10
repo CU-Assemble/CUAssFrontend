@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 
-import { Activity } from "../../models/activityTypes";
+import { Activity, MyActivityResponseType } from "../../models/activityTypes";
 
 
 import Button from "react-bootstrap/Button";
@@ -13,43 +13,81 @@ import Card from "react-bootstrap/Card";
 import "./ActivityCard.css";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
+import { joinActivityAsync, leaveActivityAsync } from "../../features/activityPost/activitySlice";
+import { deleteMatchingAsync } from "../../features/matching/matchingSlice";
 
 // interface CardPropsObj {
 //   cardProps: Activity;
 // }
 
-const requestAttendActivity = () => {
-  alert("clicked join");
-}
-
-const requestLeaveActivity = () => {
-  alert("clicked leave");
-}
-
-// const requestEditActivity = () => {
-//   alert("clicked edit");
+// const requestAttendActivity = () => {
+//   alert("clicked join");
 // }
 
-const requestDeleteActivity = () => {
-  alert("clicked delete");
-}
+// const requestLeaveActivity = () => {
+//   alert("clicked leave");
+// }
+
+// // const requestEditActivity = () => {
+// //   alert("clicked edit");
+// // }
+
+// const requestDeleteActivity = () => {
+//   alert("clicked delete");
+// }
 
 
-export default function ActivityCard(props: {activityDetail:Activity}) { //Activity
+export default function ActivityCard(props: {activityDetail:Activity, activityInfo:MyActivityResponseType|undefined}) { //Activity
   const { t } = useTranslation('translation');
 
   const activityDetail = props.activityDetail
+  const activityInfo = props.activityInfo
 
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const currentUser = useAppSelector(selectUser);
 
   const dispatch = useAppDispatch();
 
-  const isParticipant = ((activityDetail.participants !== undefined) && (currentUser.studentId !== undefined) && activityDetail.participants.indexOf(currentUser.studentId) > -1)
-  const isOwner = (activityDetail.ownerID === currentUser.studentId)
-
-  // console.log(activityDetail)
+  const isOwner = (activityInfo !== undefined) && (activityDetail.ownerID === currentUser.studentId) //be careful
+  const isParticipant = ((activityInfo !== undefined) && (!isOwner))
+  // console.log(currentUser.studentId, activityDetail.ownerID)
   // console.log(isParticipant)
+  // console.log(activityDetail)
+  // console.log(activityInfo)
+
+  // const refreshPage = () => {window.location.reload(false);}
+
+  const requestAttendActivity = (e:React.FormEvent, aid:string) => {
+    // alert("clicked join");
+    e.preventDefault()
+    if (currentUser.studentId != undefined) {
+        dispatch(joinActivityAsync({
+            aid: aid, 
+            sid: currentUser.studentId}
+        ));
+    } else {
+        console.log("request attend no userid")
+    }
+}
+
+const requestLeaveActivity = (e:React.FormEvent, aid: string) => {
+    // alert("clicked leave");
+    e.preventDefault()
+    if (currentUser.studentId != undefined) {
+        dispatch(leaveActivityAsync({
+            aid: aid, 
+            sid: currentUser.studentId}
+        ));
+    } else {
+        console.log("request leave no userid")
+    }
+}
+
+const requestDeleteActivity = (e:React.FormEvent, mid: string) => {
+    // alert("clicked delete");
+    e.preventDefault()
+    dispatch(deleteMatchingAsync(mid));
+}
   
   return (
     <div>
@@ -76,7 +114,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
             {!isOwner? <Button
               variant="success"
               className="activity-card-btn join-activity-button"
-              onClick={requestAttendActivity}
+              onClick={(e : React.FormEvent)=>{requestAttendActivity(e,activityDetail.id)}}
               disabled={!(isLoggedIn && !isParticipant)}
             > {isParticipant? t("Joined") : t("Join")}
             </Button> : null}
@@ -86,7 +124,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
               && isParticipant)? <Button
               variant="danger"
               className="activity-card-btn leave-activity-button"
-              onClick={requestLeaveActivity}
+              onClick={(e : React.FormEvent)=>{requestLeaveActivity(e,activityDetail.id)}}
               disabled={!(isLoggedIn && isParticipant)}
             > {t("Leave")}
             </Button> : null}
@@ -104,7 +142,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
             {isOwner? <Button
               variant="danger"
               className="activity-card-btn delete-activity-button"
-              onClick={requestDeleteActivity}
+              onClick={(e : React.FormEvent)=>{requestDeleteActivity(e,activityInfo.MatchingId)}}
               disabled={!isLoggedIn}
             > {t("Delete")}
             </Button> : null}

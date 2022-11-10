@@ -5,11 +5,11 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 
-import { Activity } from '../../models/activityTypes';
+import { Activity, MyActivityResponseType } from '../../models/activityTypes';
 import ActivityCard from './ActivityCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import { fetchActivities, fetchMyActivities, selectCardsPerRow, selectMyActivities, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, fetchMyActivities, resetStatusState, selectCardsPerRow, selectMyActivities, selectMyActivitiesWithInfo, setActivities } from '../../features/activityPost/activitySlice';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
@@ -43,24 +43,36 @@ export default function Dashboard() {
     const currentUser = useAppSelector(selectUser);
 
     const myActivities = useAppSelector(selectMyActivities);
-    const myActivitiesToMatchingID = new Map<string, string>();
 
-    const dispatch = useAppDispatch();
-
-    const handleChangeActivities = (activityList : Activity []) => {
-        dispatch(setActivities(activityList));
-    };
-
+    const myActivitiesWithInfo = useSelector(selectMyActivitiesWithInfo);
+    const [activityMatchingMap, setActivityMatchingMap] = useState(new Map<string, MyActivityResponseType>());
 
     useEffect(() => {
         dispatch(fetchActivities())
         if (currentUser.studentId != null) {
+            dispatch(resetStatusState());
             dispatch(fetchMyActivities(currentUser.studentId))
             // for (let i = 0; i<myActivities.length; i++) {
             //     myActivitiesToMatchingID.set(myActivities[i].id, myActivities[i].)
             // }
         }
     }, []);
+    
+    useEffect(() => {
+        if (myActivitiesWithInfo.length > 0) {
+            let tmp = new Map<string, MyActivityResponseType>()
+            for (let i=0; i<myActivitiesWithInfo.length; i++) {
+                tmp.set(myActivitiesWithInfo[i].Activity.ActivityId, myActivitiesWithInfo[i])
+            }
+            setActivityMatchingMap(tmp)
+        }
+    }, [myActivitiesWithInfo]);
+
+    const dispatch = useAppDispatch();
+
+    const handleChangeActivities = (activityList : Activity []) => {
+        dispatch(setActivities(activityList));
+    };
 
     const [max_rows, setMaxRows] = useState(-1)
     // const [cards_per_row, setCardPerRows] = useState(4)
@@ -77,21 +89,21 @@ export default function Dashboard() {
             {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
             {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
                 return (
-                    <CardGroup style={{"marginTop":"1%", "marginBottom":"1%"}}>
-                    <div key={`dashboard_div_${idx}`}>
+                    <CardGroup key={`dashboard_div_${idx}`} style={{"marginTop":"1%", "marginBottom":"1%"}}>
+                    
                         {/* <Row xs={1} md={3} className="g-4">  */}
                         <Row>
                             {/* md = 3 => 3 rows */}
-                            {x.map(y => {
+                            {x.map((y,idx2) => {
                                 return (
-                                    <Col>
+                                    <Col key={`dashboard_col_${idx}_${idx2}`}>
                                         {/* <ActivityCard activityDetail={y} matchingId={}/> */}
-                                        <ActivityCard activityDetail={y}/>
+                                        <ActivityCard activityDetail={y} activityInfo={activityMatchingMap.get(y.id)}/>
                                     </Col>
                                 )
                             })}
                         </Row>
-                    </div>
+                    
                     </CardGroup>
                 )
             })
