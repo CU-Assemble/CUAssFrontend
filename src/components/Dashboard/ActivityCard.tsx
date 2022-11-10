@@ -46,7 +46,8 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
   const isParticipant = ((activityDetail.participants !== undefined) && (currentUser.studentId !== undefined) && activityDetail.participants.indexOf(currentUser.studentId) > -1)
   const isOwner = (activityDetail.ownerID === currentUser.studentId)
 
-  console.log(activityDetail)
+  // console.log(activityDetail)
+  // console.log(isParticipant)
   
   return (
     <div>

@@ -6,7 +6,7 @@ import { RootState } from '../../app/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Activity } from '../../models/activityTypes';
-import { fetchActivities, fetchMyActivities, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, fetchMyActivities, selectCardsPerRow, selectMyActivities, setActivities } from '../../features/activityPost/activitySlice';
 import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 import ActivityCard from '../Dashboard/ActivityCard';
 import FetchActivityButton from '../Layout/FetchActivityButton';
@@ -15,7 +15,7 @@ import FetchActivityButton from '../Layout/FetchActivityButton';
 export default function MyActivity() {
 
     const navigate = useNavigate();
-    const activities = useSelector((state: RootState) => state.activityReducer.activities);
+    const activities = useSelector(selectMyActivities);
     const dispatch = useAppDispatch();
 
     const isLoggedIn = useAppSelector(selectIsLoggedIn);
@@ -26,14 +26,22 @@ export default function MyActivity() {
         dispatch(setActivities(activityList));
     };
 
-    // useEffect(() => {
-    //     dispatch(fetchMyActivities(id))
-    // }, []);
     useEffect(() => {
-        dispatch(fetchActivities())
+        console.log(currentUser)
+        if(currentUser.studentId != undefined){
+            dispatch(fetchMyActivities(currentUser.studentId))
+        } else {
+            navigate("/")
+        }
     }, []);
+    
+    // useEffect(() => {
+    //     dispatch(fetchActivities())
+    // }, []);
 
     const [max_rows, setMaxRows] = useState(-1);
+    // const [cards_per_row, setCardPerRows] = useState(4)
+    const cards_per_row = useAppSelector(selectCardsPerRow)
 
     return (
     <div style={{"marginLeft":"5%", "marginRight":"5%", "marginTop": "2%"}}>
@@ -45,11 +53,13 @@ export default function MyActivity() {
             style={{"marginTop":"1%"}}
         > Create New Activity
         </Button>
-        <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
-            {getArraySlice(activities, 3, max_rows).map(x => {
+        {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
                 return (
-                    <div>
+                    <CardGroup style={{"marginTop":"1%", "marginBottom":"1%"}}>
+                    <div key={`dashboard_div_${idx}`}>
+                        {/* <Row xs={1} md={3} className="g-4">  */}
                         <Row>
+                            {/* md = 3 => 3 rows */}
                             {x.map(y => {
                                 return (
                                     <Col>
@@ -59,9 +69,9 @@ export default function MyActivity() {
                             })}
                         </Row>
                     </div>
+                    </CardGroup>
                 )
             })}
-        </CardGroup>
         <FetchActivityButton txt={"Refresh"}/>
 
     </div>
