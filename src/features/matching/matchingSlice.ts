@@ -106,9 +106,11 @@ export const fetchMatchingByActivityId = createAsyncThunk(
     'matching/getByActivityId',
     async (aid : string) => {
       const response = await matchingService.getMatchingByActivity(aid);
+      // console.log(response)
       if (response.status === 200) {
         const responseActivity = await activityServices.get(aid);
         if (responseActivity.status === 200) {
+          // console.log(responseActivity)
           return {matching: response.data, activity: responseActivity.data}
         }
       }
@@ -192,7 +194,11 @@ const matchingSlice = createSlice({
             console.log(action.payload?.matching.data.data);
             console.log(action.payload?.activity);
             let tmp = action.payload?.matching.data.data
-            tmp.ParticipantId = tmp.ParticipantId.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
+            if (tmp.ParticipantId != null){
+              tmp.ParticipantId = tmp.ParticipantId.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
+            } else {
+              tmp.ParticipantId = []
+            }
             state.matching = MatchingResponseAdapter(tmp)
             state.matching.activity = action.payload?.activity
             console.log(state.matching)

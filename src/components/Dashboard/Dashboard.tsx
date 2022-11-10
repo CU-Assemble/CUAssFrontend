@@ -8,11 +8,13 @@ import { Activity } from '../../models/activityTypes';
 import ActivityCard from './ActivityCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import { fetchActivities, selectCardsPerRow, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, fetchMyActivities, selectCardsPerRow, selectMyActivities, setActivities } from '../../features/activityPost/activitySlice';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
 import FetchActivityButton from '../Layout/FetchActivityButton';
+import { fetchMatchingByIds } from '../../features/matching/matchingSlice';
+import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 // import { JsxElement } from 'typescript';
 
 
@@ -35,6 +37,11 @@ export default function Dashboard() {
 
     const activities = useSelector((state: RootState) => state.activityReducer.activities);
 
+    const isLoggedIn = useAppSelector(selectIsLoggedIn);
+    const currentUser = useAppSelector(selectUser);
+
+    const myActivities = useAppSelector(selectMyActivities);
+
     const dispatch = useAppDispatch();
 
     const handleChangeActivities = (activityList : Activity []) => {
@@ -44,6 +51,9 @@ export default function Dashboard() {
 
     useEffect(() => {
         dispatch(fetchActivities())
+        if (currentUser.studentId != null) {
+            dispatch(fetchMyActivities(currentUser.studentId))
+        }
     }, []);
 
     const [max_rows, setMaxRows] = useState(-1)

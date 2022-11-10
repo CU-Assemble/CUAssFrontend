@@ -6,7 +6,7 @@ import { RootState } from '../../app/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Activity } from '../../models/activityTypes';
-import { fetchActivities, fetchMyActivities, selectCardsPerRow, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, fetchMyActivities, selectCardsPerRow, selectMyActivities, setActivities } from '../../features/activityPost/activitySlice';
 import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 import ActivityCard from '../Dashboard/ActivityCard';
 import FetchActivityButton from '../Layout/FetchActivityButton';
@@ -15,7 +15,7 @@ import FetchActivityButton from '../Layout/FetchActivityButton';
 export default function MyActivity() {
 
     const navigate = useNavigate();
-    const activities = useSelector((state: RootState) => state.activityReducer.activities);
+    const activities = useSelector(selectMyActivities);
     const dispatch = useAppDispatch();
 
     const isLoggedIn = useAppSelector(selectIsLoggedIn);

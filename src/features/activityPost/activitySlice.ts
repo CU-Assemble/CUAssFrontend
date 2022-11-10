@@ -5,9 +5,13 @@ import activityServices from "../../services/activityServices";
 
 import { ActivityResponseType, NewActivity } from "../../models/activityTypes";
 
+//https://stackoverflow.com/questions/61704805/getting-an-error-a-non-serializable-value-was-detected-in-the-state-when-using
+
 export interface activitiesState {
   activity: Activity
   activities: Activity[],
+  myActivities: Activity[],
+  myActivitiesMap: Map<string, MyActivityResponseType>,
   cardsPerRow: number,
   status: {
     create: {
@@ -63,6 +67,8 @@ const initialState: activitiesState = {
     activityType: [""]
   },
   activities: [],
+  myActivities: [],
+  myActivitiesMap: new Map<string, MyActivityResponseType>(),
   cardsPerRow: 5,
   status: {
     create: {
@@ -172,6 +178,9 @@ const activitySlice = createSlice({
     setActivities: (state, action: PayloadAction<Activity[]>) => {
       state.activities = [...action.payload];
     },
+    setMyActivities: (state, action: PayloadAction<Activity[]>) => {
+      state.myActivities = [...action.payload];
+    },
     setCreateError: (state, action: PayloadAction<string>) => {
       state.status.create.error = action.payload;
     },
@@ -189,7 +198,11 @@ const activitySlice = createSlice({
     })
     .addCase(fetchMyActivities.fulfilled,(state, action) => {
       console.log(action.payload)
-      state.activities = action.payload.data.data.map((e : MyActivityResponseType) => ActivityResponseAdapter(e.Activity))
+      state.myActivities = action.payload.data.data.map((e : MyActivityResponseType) => ActivityResponseAdapter(e.Activity))
+      for (let i=0; i<state.myActivities.length;i++) {
+        state.myActivitiesMap.set(state.myActivities[i].id, action.payload.data.data[i])
+      }
+      console.log(state.myActivitiesMap)
     })
     .addCase(createActivityAsync.pending, (state) => {
       state.status.create.message = "loading";
@@ -274,10 +287,13 @@ const activitySlice = createSlice({
   }
 })
 
-export const { setActivities, setCreateError, setEditError, resetStatusState} = activitySlice.actions;
+export const { setActivities, setMyActivities, setCreateError, setEditError, resetStatusState} = activitySlice.actions;
 
 export const selectActivity = (state: RootState) =>
   state.activityReducer.activity;
+
+export const selectMyActivities = (state: RootState) =>
+  state.activityReducer.myActivities;
 
 export const selectCardsPerRow = (state: RootState) =>
   state.activityReducer.cardsPerRow;
