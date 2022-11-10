@@ -41,6 +41,7 @@ export default function Dashboard() {
     const currentUser = useAppSelector(selectUser);
 
     const myActivities = useAppSelector(selectMyActivities);
+    const myActivitiesToMatchingID = new Map<string, string>();
 
     const dispatch = useAppDispatch();
 
@@ -53,6 +54,9 @@ export default function Dashboard() {
         dispatch(fetchActivities())
         if (currentUser.studentId != null) {
             dispatch(fetchMyActivities(currentUser.studentId))
+            // for (let i = 0; i<myActivities.length; i++) {
+            //     myActivitiesToMatchingID.set(myActivities[i].id, myActivities[i].)
+            // }
         }
     }, []);
 
@@ -79,6 +83,7 @@ export default function Dashboard() {
                             {x.map(y => {
                                 return (
                                     <Col>
+                                        {/* <ActivityCard activityDetail={y} matchingId={}/> */}
                                         <ActivityCard activityDetail={y}/>
                                     </Col>
                                 )
