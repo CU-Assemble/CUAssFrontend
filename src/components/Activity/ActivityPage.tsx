@@ -69,7 +69,7 @@ export default function ActivityPage() {
     // const [participants, setParticipants] = useState<User[]>([])
 
     const isParticipant = ((participants !== undefined) && (currentUser.studentId !== undefined) && checkStudentIdInParticipantList(participants, currentUser.studentId))
-    const isOwner = (activity.ownerID === currentUser.studentId)
+    const isOwner = (activity.ownerID === currentUser.studentId) && (currentUser.studentId !== undefined) && checkStudentIdInParticipantList(participants, currentUser.studentId)
     
     const [showAllParticipant, setShowAllParticipant] = useState(false)
     const [max_rows, setMaxRows] = useState(1);
@@ -321,7 +321,7 @@ export default function ActivityPage() {
                         {isOwner? <Button
                             variant="danger"
                             className="activity-card-btn delete-activity-button"
-                            onClick={(e : React.FormEvent)=>{requestAttendActivity(e,matching.matchingId)}}
+                            onClick={(e : React.FormEvent)=>{requestDeleteActivity(e,matching.matchingId)}}
                             disabled={!isLoggedIn}
                             > {t("Delete")}
                         </Button> : null}

@@ -5,6 +5,7 @@ import { Matching, MatchingDict, MatchingResponseType } from "../../models/match
 import { User, UserResponseFromMatching } from "../../models/userTypes";
 import activityServices from "../../services/activityServices";
 import matchingService from "../../services/matchingService";
+import { cleanObjectId } from "../activityPost/activitySlice";
 
 
 export interface MatchingState {
@@ -76,8 +77,8 @@ const initialState: MatchingState = {
 
 const MatchingResponseAdapter = (e: MatchingResponseType) => <Matching>{
     // activity: e.Activity,
-    activityId: e.ActivityId.slice(10,-2),
-    matchingId: e.MatchingId.slice(10,-2),
+    activityId: cleanObjectId(e.ActivityId),
+    matchingId: cleanObjectId(e.MatchingId),
     participants: e.ParticipantId
 }
 
@@ -140,6 +141,7 @@ export const deleteMatchingAsync = createAsyncThunk(
   "matching/deleteMatching",
   async (mid: string) => {
     const response = await matchingService.delete(mid);
+    console.log(response)
     return response.data;
   }
 );
@@ -152,10 +154,9 @@ const matchingSlice = createSlice({
     //   setActivities: (state, action: PayloadAction<Activity[]>) => {
     //     state.activities = [...action.payload];
     //   }
-    setMatching: (state, action: PayloadAction<Matching>) => {
+      setMatching: (state, action: PayloadAction<Matching>) => {
         state.matching = action.payload;
       },
-    
       setMatchings: (state, action: PayloadAction<Matching []>) => {
         let tmp:MatchingDict = {}
         for (let i=0; i<action.payload.length; i++) {
