@@ -11,7 +11,6 @@ export interface activitiesState {
   activity: Activity
   activities: Activity[],
   myActivities: Activity[],
-  myActivitiesMap: Map<string, MyActivityResponseType>,
   cardsPerRow: number,
   status: {
     create: {
@@ -68,7 +67,6 @@ const initialState: activitiesState = {
   },
   activities: [],
   myActivities: [],
-  myActivitiesMap: new Map<string, MyActivityResponseType>(),
   cardsPerRow: 5,
   status: {
     create: {
@@ -199,10 +197,10 @@ const activitySlice = createSlice({
     .addCase(fetchMyActivities.fulfilled,(state, action) => {
       console.log(action.payload)
       state.myActivities = action.payload.data.data.map((e : MyActivityResponseType) => ActivityResponseAdapter(e.Activity))
-      for (let i=0; i<state.myActivities.length;i++) {
-        state.myActivitiesMap.set(state.myActivities[i].id, action.payload.data.data[i])
-      }
-      console.log(state.myActivitiesMap)
+      // for (let i=0; i<state.myActivities.length;i++) {
+      //   state.myActivitiesMap.set(state.myActivities[i].id, action.payload.data.data[i])
+      // }
+      // console.log(state.myActivitiesMap)
     })
     .addCase(createActivityAsync.pending, (state) => {
       state.status.create.message = "loading";
