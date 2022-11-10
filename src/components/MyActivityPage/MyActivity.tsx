@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 import { Button, CardGroup, Col, Row } from 'react-bootstrap'
 import { getArraySlice } from '../Dashboard/Dashboard';
 import { RootState } from '../../app/store';
@@ -13,6 +14,7 @@ import FetchActivityButton from '../Layout/FetchActivityButton';
 
 
 export default function MyActivity() {
+    const { t } = useTranslation('translation');
 
     const navigate = useNavigate();
     const activities = useSelector(selectMyActivities);
@@ -45,13 +47,13 @@ export default function MyActivity() {
 
     return (
     <div style={{"marginLeft":"5%", "marginRight":"5%", "marginTop": "2%"}}>
-        <h1>My Activities</h1>
+        <h1>{t("My Activities")}</h1>
         <Button
             variant="success"
             className="create-activity-button"
             onClick={()=>{navigate("/createactivity")}}
             style={{"marginTop":"1%"}}
-        > Create New Activity
+        > {t("Create New Activity")}
         </Button>
         {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
                 return (
@@ -72,7 +74,7 @@ export default function MyActivity() {
                     </CardGroup>
                 )
             })}
-        <FetchActivityButton txt={"Refresh"}/>
+        <FetchActivityButton txt={t("Refresh")}/>
 
     </div>
   )

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 
@@ -35,6 +36,7 @@ const requestDeleteActivity = () => {
 
 
 export default function ActivityCard(props: {activityDetail:Activity}) { //Activity
+  const { t } = useTranslation('translation');
 
   const activityDetail = props.activityDetail
 
@@ -65,8 +67,8 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
         </Card.Body>
         <ListGroup className="list-group-flush">
           {/* <ListGroup.Item>{`Date : ${(new Date(date)).toUTCString()}`}</ListGroup.Item> */}
-          <ListGroup.Item>{`Date : ${activityDetail.date}`}</ListGroup.Item>
-          <ListGroup.Item>Description : {activityDetail.desc}</ListGroup.Item>
+          <ListGroup.Item>{`${t("Date")} : ${activityDetail.date}`}</ListGroup.Item>
+          <ListGroup.Item>{t("Description")} : {activityDetail.desc}</ListGroup.Item>
         </ListGroup>
         <Card.Footer>
           <div>
@@ -76,7 +78,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
               className="activity-card-btn join-activity-button"
               onClick={requestAttendActivity}
               disabled={!(isLoggedIn && !isParticipant)}
-            > {isParticipant? "Joined" : "Join"}
+            > {isParticipant? t("Joined") : t("Join")}
             </Button> : null}
 
             {(!isOwner 
@@ -86,7 +88,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
               className="activity-card-btn leave-activity-button"
               onClick={requestLeaveActivity}
               disabled={!(isLoggedIn && isParticipant)}
-            > Leave
+            > {t("Leave")}
             </Button> : null}
 
             {isOwner? <Button
@@ -96,7 +98,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
               as={Link as any}
               to={`/myactivities/${activityDetail.id}`}
               disabled={!isLoggedIn}
-            > Edit
+            > {t("Edit")}
             </Button> : null}
 
             {isOwner? <Button
@@ -104,7 +106,7 @@ export default function ActivityCard(props: {activityDetail:Activity}) { //Activ
               className="activity-card-btn delete-activity-button"
               onClick={requestDeleteActivity}
               disabled={!isLoggedIn}
-            > Delete
+            > {t("Delete")}
             </Button> : null}
 
           </div>

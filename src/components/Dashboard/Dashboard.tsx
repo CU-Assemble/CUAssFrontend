@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next';
 
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
@@ -34,6 +35,7 @@ export const getArraySlice = (arr: any[], l: number, max_rows: number = 1): any[
 }
 
 export default function Dashboard() {
+    const { t } = useTranslation('translation');
 
     const activities = useSelector((state: RootState) => state.activityReducer.activities);
 
@@ -71,7 +73,7 @@ export default function Dashboard() {
         }
         >
             {/* <Container className='dashboardContainer'> */}
-            <h1>Dashboard</h1>
+            <h1>{t("Dashboard")}</h1>
             {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
             {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
                 return (

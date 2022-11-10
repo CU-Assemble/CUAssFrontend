@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -41,6 +42,7 @@ function CreateActivityForm() {
   const errorMessage = useAppSelector(selectCreateError);
   const user = useAppSelector(selectUser);
   const createLoading = useAppSelector(selectCreateLoading);
+  const { t } = useTranslation('translation');
 
   const [formData, setFormData] = useState<NewActivity>({});
   const [selectedType, setSelectedType] = useState<any[]>([]);
@@ -140,14 +142,14 @@ function CreateActivityForm() {
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
           {errorMessage && CreateError}
-          <h1 className="mb-3">New Activity</h1>
+          <h1 className="mb-3">{t("New Activity")}</h1>
           <Form onSubmit={formSubmissionHandler}>
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formEventName">
-                <Form.Label>Event Name</Form.Label>
+                <Form.Label>{t("Event Name")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter event name"
+                  placeholder={t("Enter event name")}
                   value={formData.Name}
                   onChange={nameChangeHandler}
                   required
@@ -156,10 +158,10 @@ function CreateActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formMaxParticipants">
-                <Form.Label>Max Participants</Form.Label>
+                <Form.Label>{t("Max Participants")}</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter max participants"
+                  placeholder={t("Enter max participants")}
                   min="2"
                   max="50"
                   value={formData.MaxParticipant}
@@ -171,10 +173,10 @@ function CreateActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formLocation">
-                <Form.Label>Location</Form.Label>
+                <Form.Label>{t("Location")}</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter location"
+                  placeholder={t("Enter location")}
                   value={formData.Location}
                   onChange={locationChangeHandler}
                   required
@@ -182,7 +184,7 @@ function CreateActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="actType">
-                <Form.Label>Activity Type</Form.Label>
+                <Form.Label>{t("Activity Type")}</Form.Label>
                 <MultiSelect
                   options={options}
                   value={selectedType}
@@ -194,7 +196,7 @@ function CreateActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formDateTime">
-                <Form.Label>Date & Time</Form.Label>
+                <Form.Label>{t("Date & Time")}</Form.Label>
                 <Form.Control
                   type="datetime-local"
                   value={formData.Date}
@@ -204,10 +206,10 @@ function CreateActivityForm() {
               </Form.Group>
 
               <Form.Group as={Col} className="" controlId="formDuration">
-                <Form.Label>Duration (minutes)</Form.Label>
+                <Form.Label>{t("Duration (minutes)")}</Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter duration of the activity"
+                  placeholder={t("Enter duration of the activity")}
                   min="5"
                   max="2000"
                   value={formData.Duration}
@@ -219,7 +221,7 @@ function CreateActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formDesc">
-                <Form.Label>Description</Form.Label>
+                <Form.Label>{t("Description")}</Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -231,7 +233,7 @@ function CreateActivityForm() {
 
             <Row className="mb-3">
               <Form.Group as={Col} className="" controlId="formImgFile">
-                <Form.Label>Picture</Form.Label>
+                <Form.Label>{t("Picture")}</Form.Label>
                 <Form.Control
                   type="file"
                   onChange={imageChangeHandler}
@@ -248,7 +250,7 @@ function CreateActivityForm() {
 
             <Stack direction="horizontal" gap={3}>
               <Button variant="success" type="submit" className="ms-auto" disabled={createLoading ? true : false}>
-              {createLoading? 'Loading...': 'Create'}
+              {createLoading? t('Loading...'): t('Create')}
               </Button>
             </Stack>
           </Form>
