@@ -122,8 +122,8 @@ export default function ActivityPage() {
     
     useEffect(() => {
         if (id) {
-            dispatch(fetchActivityById(id)); // request api
             dispatch(fetchMatchingByActivityId(id)); // request api
+            dispatch(fetchActivityById(id)); // request api
         } else {
             navigate("/")
         }
