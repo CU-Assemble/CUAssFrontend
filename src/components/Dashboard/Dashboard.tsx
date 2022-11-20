@@ -9,7 +9,7 @@ import { Activity, MyActivityResponseType } from '../../models/activityTypes';
 import ActivityCard from './ActivityCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import { fetchActivities, fetchMyActivities, resetStatusState, selectCardsPerRow, selectMyActivities, selectMyActivitiesWithInfo, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, fetchMyActivities, resetState, resetStatusState, selectCardsPerRow, selectMyActivities, selectMyActivitiesWithInfo, setActivities } from '../../features/activityPost/activitySlice';
 
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
@@ -48,8 +48,8 @@ export default function Dashboard() {
     const [activityMatchingMap, setActivityMatchingMap] = useState(new Map<string, MyActivityResponseType>());
 
     useEffect(() => {
+        dispatch(resetState());
         if (currentUser.studentId != null) {
-            dispatch(resetStatusState());
             dispatch(fetchMyActivities(currentUser.studentId))
             // for (let i = 0; i<myActivities.length; i++) {
             //     myActivitiesToMatchingID.set(myActivities[i].id, myActivities[i].)

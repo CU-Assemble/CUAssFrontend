@@ -196,6 +196,9 @@ const activitySlice = createSlice({
     },
     resetStatusState: (state) => {
       state.status = initialState.status;
+    },
+    resetState: (state) => {
+      state = initialState;
     }
   },
   extraReducers: (builder) => {
@@ -308,7 +311,7 @@ const activitySlice = createSlice({
   }
 })
 
-export const { setActivities, setMyActivities, setCreateError, setEditError, resetStatusState} = activitySlice.actions;
+export const { setActivities, setMyActivities, setCreateError, setEditError, resetStatusState, resetState} = activitySlice.actions;
 
 export const selectActivity = (state: RootState) =>
   state.activityReducer.activity;
