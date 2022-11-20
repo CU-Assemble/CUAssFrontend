@@ -7,7 +7,7 @@ import { RootState } from '../../app/store';
 import { useSelector } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Activity, MyActivityResponseType } from '../../models/activityTypes';
-import { fetchActivities, fetchMyActivities, resetStatusState, selectCardsPerRow, selectMyActivities, selectMyActivitiesWithInfo, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, fetchMyActivities, resetState, resetStatusState, selectCardsPerRow, selectMyActivities, selectMyActivitiesWithInfo, setActivities } from '../../features/activityPost/activitySlice';
 import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 import ActivityCard from '../Dashboard/ActivityCard';
 import FetchActivityButton from '../Layout/FetchActivityButton';
@@ -33,7 +33,7 @@ export default function MyActivity() {
     useEffect(() => {
         // console.log(currentUser)
         if (currentUser.studentId !== undefined){
-            dispatch(resetStatusState());
+            dispatch(resetState());
             dispatch(fetchMyActivities(currentUser.studentId))
         } else {
             navigate("/")
