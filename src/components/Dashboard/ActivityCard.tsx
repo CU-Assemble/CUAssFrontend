@@ -125,7 +125,7 @@ const requestDeleteActivity = (e:React.FormEvent, mid: string) => {
         </Card.Body>
         <ListGroup className="list-group-flush">
           {/* <ListGroup.Item>{`Date : ${(new Date(date)).toUTCString()}`}</ListGroup.Item> */}
-          <ListGroup.Item>{`${t("Date")} : ${activityDetail.date}`}</ListGroup.Item>
+          <ListGroup.Item>{`${t("Date")} : ${activityDetail.date?.replace("T", " ")}`}</ListGroup.Item>
           <ListGroup.Item>{t("Description")} : {activityDetail.desc}</ListGroup.Item>
         </ListGroup>
         <Card.Footer>
