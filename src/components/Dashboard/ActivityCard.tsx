@@ -13,7 +13,7 @@ import Card from "react-bootstrap/Card";
 import "./ActivityCard.css";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
-import { joinActivityAsync, leaveActivityAsync } from "../../features/activityPost/activitySlice";
+import { joinActivityAsync, leaveActivityAsync, resetStatusState } from "../../features/activityPost/activitySlice";
 import { deleteMatchingAsync } from "../../features/matching/matchingSlice";
 
 // interface CardPropsObj {
@@ -66,6 +66,7 @@ export default function ActivityCard(props: {activityDetail:Activity, activityIn
             aid: aid, 
             sid: currentUser.studentId}
         ));
+        dispatch(resetStatusState());
         navigate("/")
     } else {
         console.log("request attend no userid")
@@ -80,6 +81,7 @@ const requestLeaveActivity = (e:React.FormEvent, aid: string) => {
             aid: aid, 
             sid: currentUser.studentId}
         ));
+        dispatch(resetStatusState());
         navigate("/")
     } else {
         console.log("request leave no userid")
@@ -90,6 +92,7 @@ const requestDeleteActivity = (e:React.FormEvent, mid: string) => {
     // alert("clicked delete");
     e.preventDefault()
     dispatch(deleteMatchingAsync(mid));
+    dispatch(resetStatusState());
     navigate("/")
 }
   

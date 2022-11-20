@@ -201,18 +201,24 @@ const activitySlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchActivities.fulfilled,(state, action) => {
       console.log(action.payload)
-      state.activities = action.payload.data.map((e : ActivityResponseType) => ActivityResponseAdapter(e))
+      if (action.payload.data != null) {state.activities = action.payload.data.map((e : ActivityResponseType) => ActivityResponseAdapter(e))}
+      else {
+        state.activities = []
+      }
     })
     .addCase(fetchMyActivities.fulfilled,(state, action) => {
       console.log(action.payload)
-      state.myActivities = action.payload.data.data.map((e : MyActivityResponseType) => ActivityResponseAdapter(e.Activity))
+      if (action.payload.data.data != null) {state.myActivities = action.payload.data.data.map((e : MyActivityResponseType) => ActivityResponseAdapter(e.Activity))
       state.myActivitiesWithInfo = action.payload.data.data.map((e : MyActivityResponseType) => {
         return {
           Activity: e.Activity,
           MatchingId: cleanObjectId(e.MatchingId),
           ParticipantId: e.ParticipantId
         }
-      })
+      })}
+      else {
+        state.myActivitiesWithInfo = []
+      }
       console.log(state.myActivitiesWithInfo)
       // for (let i=0; i<state.myActivities.length;i++) {
       //   state.myActivitiesMap.set(state.myActivities[i].id, action.payload.data.data[i])
