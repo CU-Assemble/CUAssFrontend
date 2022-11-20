@@ -48,7 +48,6 @@ export default function Dashboard() {
     const [activityMatchingMap, setActivityMatchingMap] = useState(new Map<string, MyActivityResponseType>());
 
     useEffect(() => {
-        dispatch(fetchActivities())
         if (currentUser.studentId != null) {
             dispatch(resetStatusState());
             dispatch(fetchMyActivities(currentUser.studentId))
@@ -56,6 +55,7 @@ export default function Dashboard() {
             //     myActivitiesToMatchingID.set(myActivities[i].id, myActivities[i].)
             // }
         }
+        dispatch(fetchActivities())
     }, []);
     
     useEffect(() => {
