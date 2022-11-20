@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next';
 
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 
-import { Activity } from '../../models/activityTypes';
+import { Activity, MyActivityResponseType } from '../../models/activityTypes';
 import ActivityCard from './ActivityCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../app/store';
-import { fetchActivities, setActivities } from '../../features/activityPost/activitySlice';
+import { fetchActivities, fetchMyActivities, resetStatusState, selectCardsPerRow, selectMyActivities, selectMyActivitiesWithInfo, setActivities } from '../../features/activityPost/activitySlice';
 
-import { useAppDispatch } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
 import FetchActivityButton from '../Layout/FetchActivityButton';
+import { fetchMatchingByIds } from '../../features/matching/matchingSlice';
+import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 // import { JsxElement } from 'typescript';
 
 
@@ -20,7 +23,6 @@ let date: Date = new Date();
 
 //slice array to array of subarray
 export const getArraySlice = (arr: any[], l: number, max_rows: number = 1): any[][] => {
-    console.log(max_rows)
     if (max_rows === -1) {
         max_rows = Math.ceil(arr.length / l)
     }
@@ -29,16 +31,42 @@ export const getArraySlice = (arr: any[], l: number, max_rows: number = 1): any[
         tmp.push(arr.slice(i, i + l))
         if (((i+l)/l) >= max_rows) break
     }
-    console.log(arr)
-    console.log(max_rows)
-    console.log(tmp)
-
     return tmp
 }
 
 export default function Dashboard() {
+    const { t } = useTranslation('translation');
 
     const activities = useSelector((state: RootState) => state.activityReducer.activities);
+
+    const isLoggedIn = useAppSelector(selectIsLoggedIn);
+    const currentUser = useAppSelector(selectUser);
+
+    const myActivities = useAppSelector(selectMyActivities);
+
+    const myActivitiesWithInfo = useSelector(selectMyActivitiesWithInfo);
+    const [activityMatchingMap, setActivityMatchingMap] = useState(new Map<string, MyActivityResponseType>());
+
+    useEffect(() => {
+        dispatch(fetchActivities())
+        if (currentUser.studentId != null) {
+            dispatch(resetStatusState());
+            dispatch(fetchMyActivities(currentUser.studentId))
+            // for (let i = 0; i<myActivities.length; i++) {
+            //     myActivitiesToMatchingID.set(myActivities[i].id, myActivities[i].)
+            // }
+        }
+    }, []);
+    
+    useEffect(() => {
+        if (myActivitiesWithInfo.length > 0) {
+            let tmp = new Map<string, MyActivityResponseType>()
+            for (let i=0; i<myActivitiesWithInfo.length; i++) {
+                tmp.set(myActivitiesWithInfo[i].Activity.ActivityId, myActivitiesWithInfo[i])
+            }
+            setActivityMatchingMap(tmp)
+        }
+    }, [myActivitiesWithInfo]);
 
     const dispatch = useAppDispatch();
 
@@ -46,12 +74,9 @@ export default function Dashboard() {
         dispatch(setActivities(activityList));
     };
 
-
-    useEffect(() => {
-        dispatch(fetchActivities())
-    }, []);
-
     const [max_rows, setMaxRows] = useState(-1)
+    // const [cards_per_row, setCardPerRows] = useState(4)
+    const cards_per_row = useAppSelector(selectCardsPerRow)
 
     return (
         <div 
@@ -60,27 +85,30 @@ export default function Dashboard() {
         }
         >
             {/* <Container className='dashboardContainer'> */}
-            <h1>Dashboard</h1>
-            <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}>
-                {getArraySlice(activities, 3, max_rows).map((x, idx) => {
-                    return (
-                        <div key={`dashboard_div_${idx}`}>
-                            {/* <Row xs={1} md={3} className="g-4">  */}
-                            <Row>
-                                {/* md = 3 => 3 rows */}
-                                {x.map(y => {
-                                    return (
-                                        <Col>
-                                            <ActivityCard activityDetail={y}/>
-                                        </Col>
-                                    )
-                                })}
-                            </Row>
-                        </div>
-                    )
-                })
+            <h1>{t("Dashboard")}</h1>
+            {/* <CardGroup style={{"marginTop":"2%", "marginBottom":"2%"}}> */}
+            {getArraySlice(activities, cards_per_row, max_rows).map((x, idx) => {
+                return (
+                    <CardGroup key={`dashboard_div_${idx}`} style={{"marginTop":"1%", "marginBottom":"1%"}}>
+                    
+                        {/* <Row xs={1} md={3} className="g-4">  */}
+                        <Row>
+                            {/* md = 3 => 3 rows */}
+                            {x.map((y,idx2) => {
+                                return (
+                                    <Col key={`dashboard_col_${idx}_${idx2}`}>
+                                        {/* <ActivityCard activityDetail={y} matchingId={}/> */}
+                                        <ActivityCard activityDetail={y} activityInfo={activityMatchingMap.get(y.id)}/>
+                                    </Col>
+                                )
+                            })}
+                        </Row>
+                    
+                    </CardGroup>
+                )
+            })
             }
-            </CardGroup>
+            {/* </CardGroup> */}
             <FetchActivityButton txt={"Refresh"}/>
             {/* </Container> */}
         </div>

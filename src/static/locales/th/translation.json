@@ -39,9 +39,21 @@
     "Enter location": "กรุณากรอกสถานที่",
     "Activity Type": "ประเภทกิจกรรม",
     "Date & Time": "วันที่ และเวลา",
+    "Date": "วันที่ และเวลา",
     "Duration (minutes)": "ระยะเวลา (นาที)",
     "Enter duration of the activity": "กรุณากรอกระยะเวลาของกิจกรรม",
     "Description": "รายละเอียด",
     "Picture": "รูปภาพประกอบ",
-    "Create": "สร้าง"
+    "Create": "สร้าง",
+    "Edit Activity": "แก้ไขข้อมูลกิจกรรม",
+    "Joined": "เข้าร่วมแล้ว",
+    "Join": "เข้าร่วม",
+    "Leave": "ออกจากกิจกรรม",
+    "Edit": "แก้ไขข้อมูล",
+    "Delete": "ลบ",
+    "Number of Participant": "จำนวนผู้เข้าร่วมกิจกรรม",
+    "Participants": "ผู้เข้าร่วมกิจกรรม",
+    "Load More": "โหลดข้อมูลเพิ่มเติม",
+    "Create New Activity": "สร้างกิจกรรมใหม่",
+    "Refresh": "รีเฟรช"
 }

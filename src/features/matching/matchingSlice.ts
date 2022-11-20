@@ -5,6 +5,7 @@ import { Matching, MatchingDict, MatchingResponseType } from "../../models/match
 import { User, UserResponseFromMatching } from "../../models/userTypes";
 import activityServices from "../../services/activityServices";
 import matchingService from "../../services/matchingService";
+import { cleanObjectId } from "../activityPost/activitySlice";
 
 
 export interface MatchingState {
@@ -45,6 +46,7 @@ const initialState: MatchingState = {
             name: "",
             ownerID: "",
         },
+        activityId: "",
         matchingId: "",
         participants: []
     },
@@ -74,8 +76,9 @@ const initialState: MatchingState = {
 }
 
 const MatchingResponseAdapter = (e: MatchingResponseType) => <Matching>{
-    activity: e.Activity,
-    matchingId: e.MatchingId,
+    // activity: e.Activity,
+    activityId: cleanObjectId(e.ActivityId),
+    matchingId: cleanObjectId(e.MatchingId),
     participants: e.ParticipantId
 }
 
@@ -104,11 +107,15 @@ export const fetchMatchingByActivityId = createAsyncThunk(
     'matching/getByActivityId',
     async (aid : string) => {
       const response = await matchingService.getMatchingByActivity(aid);
+      // console.log(response)
       if (response.status === 200) {
-        return response.data;
-      } else {
-        return null
+        const responseActivity = await activityServices.get(aid);
+        if (responseActivity.status === 200) {
+          // console.log(responseActivity)
+          return {matching: response.data, activity: responseActivity.data}
+        }
       }
+      return null
     }
 );
 
@@ -134,6 +141,7 @@ export const deleteMatchingAsync = createAsyncThunk(
   "matching/deleteMatching",
   async (mid: string) => {
     const response = await matchingService.delete(mid);
+    console.log(response)
     return response.data;
   }
 );
@@ -146,10 +154,9 @@ const matchingSlice = createSlice({
     //   setActivities: (state, action: PayloadAction<Activity[]>) => {
     //     state.activities = [...action.payload];
     //   }
-    setMatching: (state, action: PayloadAction<Matching>) => {
+      setMatching: (state, action: PayloadAction<Matching>) => {
         state.matching = action.payload;
       },
-    
       setMatchings: (state, action: PayloadAction<Matching []>) => {
         let tmp:MatchingDict = {}
         for (let i=0; i<action.payload.length; i++) {
@@ -185,10 +192,16 @@ const matchingSlice = createSlice({
           .addCase(fetchMatchingByActivityId.fulfilled, (state, action) => {
             state.status.fetchMatchingByActivityId.message = "success";
             state.status.fetchMatchingByActivityId.loading = false;
-            console.log(action.payload.data.data);
-            let tmp = action.payload.data.data
-            tmp.ParticipantId = tmp.ParticipantId.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
+            console.log(action.payload?.matching.data.data);
+            console.log(action.payload?.activity);
+            let tmp = action.payload?.matching.data.data
+            if (tmp.ParticipantId != null){
+              tmp.ParticipantId = tmp.ParticipantId.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
+            } else {
+              tmp.ParticipantId = []
+            }
             state.matching = MatchingResponseAdapter(tmp)
+            state.matching.activity = action.payload?.activity
             console.log(state.matching)
             // state.matching.participants = state.matching.participants.map((e : UserResponseFromMatching)=>UserMatchingResponseAdapter(e))
           })
