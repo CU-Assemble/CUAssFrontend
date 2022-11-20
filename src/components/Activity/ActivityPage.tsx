@@ -86,8 +86,8 @@ export default function ActivityPage() {
                 aid: aid, 
                 sid: currentUser.studentId}
             ));
-            dispatch(resetStatusState());
-            navigate("/dashboard")
+            // dispatch(resetStatusState());
+            // navigate("/dashboard")
         } else {
             console.log("request attend no userid")
         }
@@ -101,8 +101,8 @@ export default function ActivityPage() {
                 aid: aid, 
                 sid: currentUser.studentId}
             ));
-            dispatch(resetStatusState());
-            navigate("/dashboard")
+            // dispatch(resetStatusState());
+            // navigate("/dashboard")
         } else {
             console.log("request leave no userid")
         }
@@ -116,11 +116,12 @@ export default function ActivityPage() {
         // alert("clicked delete");
         e.preventDefault()
         dispatch(deleteMatchingAsync(mid));
-        dispatch(resetStatusState());
-        navigate("/dashboard")
+        // dispatch(resetStatusState());
+        // navigate("/dashboard")
     }
     
     useEffect(() => {
+        dispatch(resetStatusState());
         if (id) {
             dispatch(fetchMatchingByActivityId(id)); // request api
             dispatch(fetchActivityById(id)); // request api
@@ -168,9 +169,10 @@ export default function ActivityPage() {
     useEffect(() => {
         console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
         if ((joinActivityMessage === "success") || (leaveActivityMessage === "success") || (deleteMatchingAsyncMessage === "success")) {
-            navigate("/myactivities")
             console.log("something success!!!")
             dispatch(resetStatusState());
+            navigate("/dashboard")
+            
         }
     }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
 

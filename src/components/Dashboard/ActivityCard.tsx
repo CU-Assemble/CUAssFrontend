@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
@@ -13,8 +13,8 @@ import Card from "react-bootstrap/Card";
 import "./ActivityCard.css";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
-import { joinActivityAsync, leaveActivityAsync, resetStatusState } from "../../features/activityPost/activitySlice";
-import { deleteMatchingAsync } from "../../features/matching/matchingSlice";
+import { joinActivityAsync, leaveActivityAsync, resetStatusState, selectJoinActivityMessage, selectLeaveActivityMessage } from "../../features/activityPost/activitySlice";
+import { deleteMatchingAsync, selectDeleteMatchingAsyncMessage } from "../../features/matching/matchingSlice";
 
 // interface CardPropsObj {
 //   cardProps: Activity;
@@ -58,6 +58,23 @@ export default function ActivityCard(props: {activityDetail:Activity, activityIn
 
   // const refreshPage = () => {window.location.reload(false);}
 
+  const joinActivityMessage = useAppSelector(selectJoinActivityMessage)
+  const leaveActivityMessage = useAppSelector(selectLeaveActivityMessage)
+  const deleteMatchingAsyncMessage = useAppSelector(selectDeleteMatchingAsyncMessage)
+  
+  useEffect(() => {
+    console.log(joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage)
+    if (joinActivityMessage === "success") {
+        console.log("join success!!!")
+        dispatch(resetStatusState());
+        navigate(`/activity/${activityDetail.id}`)
+    }
+    if ((leaveActivityMessage === "success") || (deleteMatchingAsyncMessage === "success")) {
+        dispatch(resetStatusState());
+        navigate(`/myactivities`)
+    }
+  }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
+
   const requestAttendActivity = (e:React.FormEvent, aid:string) => {
     // alert("clicked join");
     e.preventDefault()
@@ -66,8 +83,6 @@ export default function ActivityCard(props: {activityDetail:Activity, activityIn
             aid: aid, 
             sid: currentUser.studentId}
         ));
-        dispatch(resetStatusState());
-        navigate("/")
     } else {
         console.log("request attend no userid")
     }
@@ -81,8 +96,6 @@ const requestLeaveActivity = (e:React.FormEvent, aid: string) => {
             aid: aid, 
             sid: currentUser.studentId}
         ));
-        dispatch(resetStatusState());
-        navigate("/")
     } else {
         console.log("request leave no userid")
     }
@@ -93,7 +106,7 @@ const requestDeleteActivity = (e:React.FormEvent, mid: string) => {
     e.preventDefault()
     dispatch(deleteMatchingAsync(mid));
     dispatch(resetStatusState());
-    navigate("/")
+    navigate(`/myactivities`)
 }
   
   return (
