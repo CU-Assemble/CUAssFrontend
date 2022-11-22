@@ -291,7 +291,9 @@ export default function ActivityPage() {
                         className="img img-thumbnail rounded mx-auto d-block"
                         style={{"height":"400px", "margin":"2%", "objectFit": "contain"}}
                         alt="Activity Image"
-                        src={activity.url}>
+                        src={activity.url
+                            ? activity.url
+                            : "https://png.pngtree.com/thumb_back/fh260/background/20210902/pngtree-beautiful-sports-girls-beautiful-competition-photography-map-with-pictures-image_787591.jpg"}>
                         {/* src={"https://wallpaperaccess.com/full/12313.jpg"}> */}
                     </Image>
                     <div style={{"marginTop":"2%", "marginBottom":"2%", "marginLeft":"5%", "marginRight":"5%"}}>
