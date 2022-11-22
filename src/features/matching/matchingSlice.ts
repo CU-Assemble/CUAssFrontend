@@ -157,6 +157,9 @@ const matchingSlice = createSlice({
       setMatching: (state, action: PayloadAction<Matching>) => {
         state.matching = action.payload;
       },
+      resetMactchingStatusState: (state) => {
+        state.status = initialState.status;
+      },
       setMatchings: (state, action: PayloadAction<Matching []>) => {
         let tmp:MatchingDict = {}
         for (let i=0; i<action.payload.length; i++) {
@@ -238,7 +241,7 @@ const matchingSlice = createSlice({
     }
     })
   
-export const { setMatching, setMatchings } = matchingSlice.actions;
+export const { setMatching, setMatchings, resetMactchingStatusState} = matchingSlice.actions;
 
 export const selectMatching = (state: RootState) =>
     state.matchingReducer.matching;

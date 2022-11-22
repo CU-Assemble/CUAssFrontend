@@ -11,6 +11,7 @@ import { fetchActivities, fetchMyActivities, resetState, resetStatusState, selec
 import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 import ActivityCard from '../Dashboard/ActivityCard';
 import FetchActivityButton from '../Layout/FetchActivityButton';
+import { resetMactchingStatusState } from '../../features/matching/matchingSlice';
 
 export default function MyActivity() {
     const { t } = useTranslation('translation');
@@ -34,6 +35,7 @@ export default function MyActivity() {
         // console.log(currentUser)
         if (currentUser.studentId !== undefined){
             dispatch(resetState());
+            dispatch(resetMactchingStatusState())
             dispatch(fetchMyActivities(currentUser.studentId))
         } else {
             navigate("/")
@@ -78,7 +80,7 @@ export default function MyActivity() {
                             {x.map((y, idx2) => {
                                 console.log(y.id)
                                 console.log(activityMatchingMap.get(y.id))
-                                return (
+                                if (y.id !== null && y.id !== "") return (
                                     <Col key={`myactivity_col_${idx}_${idx2}`}>
                                         <ActivityCard activityDetail={y} activityInfo={activityMatchingMap.get(y.id)}/>
                                     </Col>

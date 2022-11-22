@@ -14,7 +14,7 @@ import { fetchActivities, fetchMyActivities, resetState, resetStatusState, selec
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Button, CardGroup } from 'react-bootstrap';
 import FetchActivityButton from '../Layout/FetchActivityButton';
-import { fetchMatchingByIds } from '../../features/matching/matchingSlice';
+import { fetchMatchingByIds, resetMactchingStatusState } from '../../features/matching/matchingSlice';
 import { selectIsLoggedIn, selectUser } from '../../features/user/userSlice';
 // import { JsxElement } from 'typescript';
 
@@ -49,6 +49,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         dispatch(resetState());
+        dispatch(resetMactchingStatusState())
         if (currentUser.studentId != null) {
             dispatch(fetchMyActivities(currentUser.studentId))
             // for (let i = 0; i<myActivities.length; i++) {

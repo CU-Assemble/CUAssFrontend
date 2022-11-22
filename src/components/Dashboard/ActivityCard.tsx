@@ -14,7 +14,7 @@ import "./ActivityCard.css";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { selectIsLoggedIn, selectUser } from "../../features/user/userSlice";
 import { joinActivityAsync, leaveActivityAsync, resetStatusState, selectJoinActivityMessage, selectLeaveActivityMessage } from "../../features/activityPost/activitySlice";
-import { deleteMatchingAsync, selectDeleteMatchingAsyncMessage } from "../../features/matching/matchingSlice";
+import { deleteMatchingAsync, resetMactchingStatusState, selectDeleteMatchingAsyncMessage } from "../../features/matching/matchingSlice";
 
 // interface CardPropsObj {
 //   cardProps: Activity;
@@ -67,10 +67,13 @@ export default function ActivityCard(props: {activityDetail:Activity, activityIn
     if (joinActivityMessage === "success") {
         console.log("join success!!!")
         dispatch(resetStatusState());
+        console.log("a")
         navigate(`/activity/${activityDetail.id}`)
     }
     if ((leaveActivityMessage === "success") || (deleteMatchingAsyncMessage === "success")) {
         dispatch(resetStatusState());
+        dispatch(resetMactchingStatusState())
+        console.log("b")
         navigate(`/myactivities`)
     }
   }, [joinActivityMessage, leaveActivityMessage, deleteMatchingAsyncMessage]);
