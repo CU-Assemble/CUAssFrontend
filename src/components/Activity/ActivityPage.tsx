@@ -248,7 +248,7 @@ export default function ActivityPage() {
                 <Accordion.Item eventKey="0">
                     <Accordion.Header>{t("Date")}</Accordion.Header>
                     <Accordion.Body>
-                        {activity.date}
+                        {activity.date?.replace("T", " ")}
                     </Accordion.Body>
                 </Accordion.Item>
                 <Accordion.Item eventKey="1">
